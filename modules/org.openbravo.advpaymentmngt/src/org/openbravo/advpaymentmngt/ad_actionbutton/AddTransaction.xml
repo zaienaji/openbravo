@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ *************************************************************************
+ * The contents of this file are subject to the Openbravo  Public  License
+ * Version  1.0  (the  "License"),  being   the  Mozilla   Public  License
+ * Version 1.1  with a permitted attribution clause; you may not  use this
+ * file except in compliance with the License. You  may  obtain  a copy of
+ * the License at http://www.openbravo.com/legal/license.html
+ * Software distributed under the License  is  distributed  on  an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific  language  governing  rights  and  limitations
+ * under the License.
+ * The Original Code is Openbravo ERP.
+ * The Initial Developer of the Original Code is Openbravo SLU
+ * All portions are Copyright (C) 2010-2014 Openbravo SLU
+ * All Rights Reserved.
+ * Contributor(s):  ______________________________________.
+ *************************************************************************
+-->
+<REPORT>
+    <template file="AddTransaction.html"/> 
+    <PARAMETER id="paramDirectory" name="directory" default=""/>
+    <PARAMETER id="paramLanguage" name="language" default=""/>
+    <PARAMETER id="paramCSS" name="theme" attribute="href" replace="Default"/>
+    <PARAMETER id="fieldCalendar" name="calendar" attribute="src" replace="es" default="en"/>
+    <PARAMETER id="messageBoxID" name="messageType" attribute="class" replace="yy" default="HIDDEN"/>
+    <PARAMETER id="messageBoxIDTitle" name="messageTitle" default=""/>
+    <PARAMETER id="messageBoxIDMessage" name="messageMessage" default=""/>
+    
+    <PARAMETER id="paramMainDate" name="mainDate" attribute="value"/>
+    <PARAMETER id="paramMainDate" name="dateDisplayFormat" attribute="displayformat" replace="xx"/>
+    <PARAMETER id="paramMainDate" name="dateDisplayFormat" attribute="saveformat" replace="yy"/>
+    <PARAMETER id="paramDepositAmount" name="depositAmount" attribute="value" format="euroEdition"/>
+    <PARAMETER id="paramPaymentAmount" name="paymentAmount" attribute="value" format="euroEdition"/>
+    <PARAMETER id="C_Glitem_ID" name="GLItemID" attribute="value"/>
+    <PARAMETER id="C_Glitem_ID" name="GLItemName" attribute="identifier"/>
+    <PARAMETER id="paramGLItemDescription" name="GLItemDescription"/>
+    <PARAMETER id="paramFeeDescription" name="FeeDescription"/>
+    <PARAMETER id="C_BPartner_ID" name="BPartnerID" attribute="value"/>
+    <PARAMETER id="C_BPartner_ID" name="BPartnerName" attribute="identifier"/>
+    <PARAMETER id="paramDepositAmountGLItem" name="depositAmountGLItem" attribute="value" format="euroEdition"/>
+    <PARAMETER id="paramPaymentAmountGLItem" name="paymentAmountGLItem" attribute="value" format="euroEdition"/>
+    <PARAMETER id="paramDateFrom" name="dateDisplayFormat" attribute="displayformat" replace="xx"/>
+    <PARAMETER id="paramDateFrom" name="dateDisplayFormat" attribute="saveformat" replace="yy"/>
+    <PARAMETER id="paramDateTo" name="dateDisplayFormat" attribute="displayformat" replace="xx"/>
+    <PARAMETER id="paramDateTo" name="dateDisplayFormat" attribute="saveformat" replace="yy"/>
+    
+    <PARAMETER id="fieldOrg" name="orgId" attribute="value"/>
+    <PARAMETER id="AD_Org_ID" name="orgTrxId" attribute="value"/>
+    <PARAMETER id="AD_Org_ID" name="orgTrxName" attribute="identifier"/>
+    <PARAMETER id="fieldWindowId" name="windowId" attribute="value"/>
+    <PARAMETER id="fieldTabId" name="tabId" attribute="value"/>
+    <PARAMETER id="fieldFinFinancialAccountId" name="finFinancialAccountId" attribute="value"/>
+    <PARAMETER id="fieldFinBankStatementLineId" name="finBankStatementLineId" attribute="value"/>
+    
+    <!-- Accounting Dimensions -->
+    <PARAMETER id="paramStrElement_OT" name="strElement_OT" attribute="value"/>
+    <PARAMETER id="paramStrElement_BP" name="strElement_BP" attribute="value"/>
+    <PARAMETER id="paramStrElement_PR" name="strElement_PR" attribute="value"/>
+    <PARAMETER id="paramStrElement_PJ" name="strElement_PJ" attribute="value"/>
+    <PARAMETER id="paramStrElement_AY" name="strElement_AY" attribute="value"/>
+    <PARAMETER id="paramStrElement_SR" name="strElement_SR" attribute="value"/>
+    <PARAMETER id="paramStrElement_MC" name="strElement_MC" attribute="value"/>
+    <PARAMETER id="paramStrElement_U1" name="strElement_U1" attribute="value"/>
+    <PARAMETER id="paramStrElement_U2" name="strElement_U2" attribute="value"/> 
+    <PARAMETER id="paramStrElement_CC" name="strElement_CC" attribute="value"/>       
+  
+    
+    <!-- Document Type -->
+    <PARAMETER id="paramDocumentType" name="documentType"/>
+      <SUBREPORT id="reportDocumentType" name="reportDocumentType" report="org/openbravo/erpCommon/reference/List">
+        <ARGUMENT name="parameterListSelected" withId="paramDocumentType"/>
+      </SUBREPORT>
+    <!-- Transaction Type -->
+    <PARAMETER id="paramTransactionType" name="transactionType"/>
+      <SUBREPORT id="reportTransactionType" name="reportTransactionType" report="org/openbravo/erpCommon/reference/List">
+        <ARGUMENT name="parameterListSelected" withId="paramTransactionType"/>
+      </SUBREPORT>
+
+    <DISCARD id="discard"/>
+    
+</REPORT>

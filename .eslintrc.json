@@ -1,0 +1,28 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "prettier"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 6
+  },
+  "globals": {
+    "OB": "writeable",
+    "Backbone": "readable",
+    "_": "readable",
+    "isc": "readable",
+    "BigDecimal": "readable"
+  },
+  "rules": {
+    "eqeqeq": ["warn", "smart"],
+    "no-unused-vars": ["warn", {
+      "args": "none"
+    }],
+    "no-console": ["warn"],
+    "no-useless-escape": ["warn"]
+  }
+}

@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+  <database name="TRIGGER C_CONVERSION_RATE_DOC_TRG2">
+    <trigger name="C_CONVERSION_RATE_DOC_TRG2" table="C_CONVERSION_RATE_DOCUMENT" fires="after" insert="true" update="true" delete="false" foreach="statement">
+      <body><![CDATA[
+/*************************************************************************
+* The contents of this file are subject to the Openbravo  Public  License
+* Version  1.1  (the  "License"),  being   the  Mozilla   Public  License
+* Version 1.1  with a permitted attribution clause; you may not  use this
+* file except in compliance with the License. You  may  obtain  a copy of
+* the License at http://www.openbravo.com/legal/license.html
+* Software distributed under the License  is  distributed  on  an "AS IS"
+* basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+* License for the specific  language  governing  rights  and  limitations
+* under the License.
+* The Original Code is Openbravo ERP.
+* The Initial Developer of the Original Code is Openbravo SLU
+* All portions are Copyright (C) 2012 Openbravo SLU
+* All Rights Reserved.
+* Contributor(s):  ______________________________________.
+************************************************************************/
+  v_Count NUMBER;
+
+BEGIN
+    
+    IF AD_isTriggerEnabled()='N' THEN RETURN;
+    END IF;
+
+    -- Invoice check
+    SELECT count(*)
+    INTO v_Count
+    FROM (
+      SELECT count(*)
+      FROM c_conversion_rate_document crd join c_invoice i on (crd.c_invoice_id = i.c_invoice_id)
+      WHERE crd.fin_payment_id is null and crd.aprm_finacc_transaction_v_id is null
+      GROUP BY crd.c_currency_id, crd.c_currency_id_to, crd.c_invoice_id
+      HAVING count(*) > 1) A;
+
+   IF v_Count > 0 THEN
+     RAISE_APPLICATION_ERROR(-20000, '@DuplicateDocumentExchangeRate@');
+   END IF;
+
+   -- Payment check
+   SELECT count(*)
+   INTO v_Count
+   FROM (
+     SELECT count(*)
+     FROM c_conversion_rate_document crd join fin_payment p on (crd.fin_payment_id = p.fin_payment_id)
+     WHERE crd.c_invoice_id is null and crd.aprm_finacc_transaction_v_id is null
+     GROUP BY crd.c_currency_id, crd.c_currency_id_to, crd.fin_payment_id
+     HAVING count(*) > 1) A;
+
+   IF v_Count > 0 THEN
+     RAISE_APPLICATION_ERROR(-20000, '@DuplicateDocumentExchangeRate@');
+   END IF;
+
+   -- Transaction check
+   SELECT count(*)
+   INTO v_Count
+   FROM (
+     SELECT count(*)
+     FROM c_conversion_rate_document crd join fin_finacc_transaction ft on (crd.aprm_finacc_transaction_v_id = ft.fin_finacc_transaction_id)
+     WHERE crd.c_invoice_id is null and crd.fin_payment_id is null
+     GROUP BY crd.c_currency_id, crd.c_currency_id_to, crd.aprm_finacc_transaction_v_id
+     HAVING count(*) > 1) A;
+     
+   IF v_Count > 0 THEN
+     RAISE_APPLICATION_ERROR(-20000, '@DuplicateDocumentExchangeRate@');
+   END IF;
+
+END C_CONVERSION_RATE_DOC_TRG2
+]]></body>
+    </trigger>
+  </database>

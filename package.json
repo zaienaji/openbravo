@@ -1,0 +1,17 @@
+{
+  "name": "openbravo",
+  "version": "1.0.0",
+  "description": "This contains some utilities used to format and lint Javascript code",
+  "scripts": {
+    "jslint": "eslint --max-warnings 0",
+    "jsformat": "prettier"
+  },
+  "repository": "https://code.openbravo.com/erp/devel/pi",
+  "author": "Openbravo SLU",
+  "license": "SEE LICENSE IN legal/Openbravo_license.txt",
+  "devDependencies": {
+    "eslint": "~5.16.0",
+    "eslint-config-prettier": "~4.3.0",
+    "prettier": "~1.18.2"
+  }
+}

@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+  <database name="TRIGGER M_CH_VALUE_TRG2">
+    <trigger name="M_CH_VALUE_TRG2" table="M_CH_VALUE" fires="after" insert="true" update="true" delete="false" foreach="statement">
+      <body><![CDATA[
+
+/*************************************************************************
+* The contents of this file are subject to the Openbravo  Public  License
+* Version  1.1  (the  "License"),  being   the  Mozilla   Public  License
+* Version 1.1  with a permitted attribution clause; you may not  use this
+* file except in compliance with the License. You  may  obtain  a copy of
+* the License at http://www.openbravo.com/legal/license.html
+* Software distributed under the License  is  distributed  on  an "AS IS"
+* basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+* License for the specific  language  governing  rights  and  limitations
+* under the License.
+* The Original Code is Openbravo ERP.
+* The Initial Developer of the Original Code is Openbravo SLU
+* All portions are Copyright (C) 2013-2016 Openbravo SLU
+* All Rights Reserved.
+* Contributor(s):  ______________________________________.
+************************************************************************/
+  v_Count     NUMBER;
+
+BEGIN
+  IF AD_isTriggerEnabled()='N' THEN RETURN;
+  END IF;
+
+  --check for duplicated names in variant characteristics
+  SELECT count(*)  INTO v_count
+  FROM dual
+  WHERE EXISTS (SELECT 1
+                FROM m_ch_value chv
+                    JOIN m_characteristic ch ON chv.m_characteristic_id = ch.m_characteristic_id AND ch.isvariant = 'Y'
+                GROUP BY chv.name, chv.m_characteristic_id
+                HAVING count(*) > 1);
+
+  IF (v_Count > 0) THEN
+    RAISE_APPLICATION_ERROR(-20000, '@DuplicatedChValueName@');
+  END IF;
+
+END M_CH_VALUE_TRG2
+]]></body>
+    </trigger>
+  </database>

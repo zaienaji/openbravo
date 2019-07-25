@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+  <database name="FUNCTION M_GET_TRANSACTION_COST">
+    <function name="M_GET_TRANSACTION_COST" type="NUMERIC">
+      <parameter name="p_transaction_id" type="VARCHAR" mode="in">
+        <default/>
+      </parameter>
+      <parameter name="p_date" type="TIMESTAMP" mode="in">
+        <default/>
+      </parameter>
+      <parameter name="p_currency_id" type="VARCHAR" mode="in">
+        <default/>
+      </parameter>
+      <body><![CDATA[/*************************************************************************
+* The contents of this file are subject to the Openbravo  Public  License
+* Version  1.1  (the  "License"),  being   the  Mozilla   Public  License
+* Version 1.1  with a permitted attribution clause; you may not  use this
+* file except in compliance with the License. You  may  obtain  a copy of
+* the License at http://www.openbravo.com/legal/license.html
+* Software distributed under the License  is  distributed  on  an "AS IS"
+* basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+* License for the specific  language  governing  rights  and  limitations
+* under the License.
+* The Original Code is Openbravo ERP.
+* The Initial Developer of the Original Code is Openbravo SLU
+* All portions are Copyright (C) 2012 Openbravo SLU
+* All Rights Reserved.
+* Contributor(s):  ______________________________________.
+************************************************************************/
+  v_product_id     M_Transaction.M_Product_ID%TYPE;
+  v_quantity       NUMBER;
+  v_costamt        NUMBER;
+  v_costtype       M_Product.Costtype%TYPE;
+  v_hasrule        CHAR(1);
+  v_hascost        M_Transaction.iscostcalculated%TYPE;
+  --TYPE RECORD IS REF CURSOR;
+  --  Cur_Cost RECORD;
+BEGIN
+  SELECT CASE count(1) WHEN 0 THEN 'N' ELSE 'Y' END, COALESCE(max(trx.iscostcalculated), 'N')
+    INTO v_hasrule, v_hascost
+  FROM m_costing_rule cr
+      JOIN m_transaction trx ON ad_isorgincluded(trx.ad_org_id, cr.ad_org_id, trx.ad_client_id) >= 0
+                                AND trx.m_transaction_id = p_transaction_id
+      JOIN m_product p ON trx.m_product_id = p.m_product_id
+  WHERE cr.isvalidated = 'Y'
+    AND COALESCE(cr.datefrom, trx.trxprocessdate) <= trx.trxprocessdate
+    AND p.producttype = 'I'
+    AND p.isstocked = 'Y';
+
+  IF (v_hasrule = 'Y') THEN
+    IF (v_hascost = 'Y') THEN
+			SELECT SUM(COST) 
+			INTO v_costamt
+			FROM (
+				SELECT CASE WHEN mt.c_currency_id <> p_currency_id 
+				THEN C_CURRENCY_CONVERT_PRECISION(sum(cost), mt.c_currency_id ,p_currency_id, TO_DATE(COALESCE (aa.dateacct, movementdate)), NULL,mt.ad_client_id, mt.ad_org_id,'C') 
+				ELSE sum(cost) END AS COST
+	      FROM m_transaction_cost mtc, m_transaction mt
+	      LEFT JOIN (SELECT DATEACCT , m_inoutline_id
+	            FROM m_inout mi , m_inoutline mil
+	            WHERE mi.m_inout_id=mil.m_inout_id
+	            AND dateacct <> movementdate ) aa ON mt.m_inoutline_id= aa.m_inoutline_id 
+	      WHERE mtc.m_transaction_id=mt.m_transaction_id
+	      AND mt.m_transaction_id = p_transaction_id
+	      AND mtc.costdate <= p_date
+	      GROUP BY mt.c_currency_id, aa.dateacct, movementdate ,mt.ad_client_id, mt.ad_org_id) A;
+      RETURN v_costamt;
+    ELSE
+      RETURN NULL;
+    END IF;
+  ELSE
+    --Calculate cost using legacy engine
+    SELECT m_transaction.m_product_id, movementqty, costtype
+      INTO v_product_id, v_quantity, v_costtype
+    FROM M_Transaction JOIN m_product ON m_transaction.m_product_id = m_product.m_product_id
+    WHERE m_transaction_id = p_transaction_id;
+
+    RETURN m_get_product_cost(v_product_id, p_date, v_costtype) * v_quantity;
+  END IF;
+END M_GET_TRANSACTION_COST
+]]></body>
+    </function>
+  </database>

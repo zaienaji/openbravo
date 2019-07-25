@@ -1,0 +1,147 @@
+<!--
+ *************************************************************************
+ * The contents of this file are subject to the Openbravo  Public  License
+ * Version  1.1  (the  "License"),  being   the  Mozilla   Public  License
+ * Version 1.1  with a permitted attribution clause; you may not  use this
+ * file except in compliance with the License. You  may  obtain  a copy of
+ * the License at http://www.openbravo.com/legal/license.html 
+ * Software distributed under the License  is  distributed  on  an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific  language  governing  rights  and  limitations
+ * under the License. 
+ * The Original Code is Openbravo ERP. 
+ * The Initial Developer of the Original Code is Openbravo SLU 
+ * All portions are Copyright (C) 2010-2019 Openbravo SLU 
+ * All Rights Reserved. 
+ * Contributor(s):  ______________________________________.
+ ************************************************************************
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Openbravo</title>
+<link rel="shortcut icon" href="../../../../../web/images/favicon.ico" type="image/x-icon" id="favicon" />
+<link rel="stylesheet" type="text/css" href="../../../../../web/skins/Default/loginStyles.css" id="paramCSS" />
+<script type="text/javascript" src="../../../../../web/js/login.js" type="text/javascript"></script>
+<script type="text/javascript" src="../../../../../web/js/utils.js" type="text/javascript"></script>
+<script type="text/javascript" src="../../../../../web/js/windowKeyboard.js" type="text/javascript"></script>
+<script type="text/javascript" src="../utility/CheckCleanCache.js?cache=true" type="text/javascript"></script>
+<script type="text/javascript" src="../utility/CheckCleanCache.js?cache=false" type="text/javascript"></script>
+<script type="text/javascript" id="visualPrefs">var showCompanyLogo = true, showSupportLogo = true, showForgeLogo = true, urlCompany = 'http://www.openbravo.com/', urlSupport = 'http://support.openbravo.com/';/* Parameters retreived from Login.java */</script>
+<script type="text/javascript">var urlForge = 'http://forge.openbravo.com/';</script>
+<script type="text/javascript" id="expirationMessage"></script>
+<script type="text/javascript" id="cacheMsg">var cacheMsg = 'xx';</script>
+<script type="text/javascript" id="validBrowserMsg">var validBrowserMsg = 'xx';</script>
+<script type="text/javascript" id="validBrowserMsgOrHigher">var validBrowserMsgOrHigher = 'xx';</script>
+<script type="text/javascript" id="recBrowserMsgTitle">var recBrowserMsgTitle = 'xx';</script>
+<script type="text/javascript" id="recBrowserMsgText">var recBrowserMsgText = 'xx';</script>
+<script type="text/javascript" id="identificationFailureTitle">var identificationFailureTitle = 'xx';</script>
+<script type="text/javascript" id="errorEmptyContent">var errorEmptyContent = 'xx';</script>
+<script type="text/javascript" id="errorSamePassword">var errorSamePassword = 'xx';</script>
+<script type="text/javascript" id="errorDifferentPasswordInFields">var errorDifferentPasswordInFields = 'xx';</script>
+
+<script type="text/javascript">
+var validBrowserFirefox = '52.0.0.0';
+var validBrowserChrome = '74.0.0.0';
+var validBrowserExplorer = '9.0.0.0';
+var validBrowserEdge = '42.0.0.0'; // EdgeHTML version
+var validBrowserSafari = '10.0.0.0';
+
+var recBrowserFirefox = '60.0.0.0';
+var recBrowserChrome = '75.0.0.0';
+var recBrowserExplorer = '11.0.0.0';
+var recBrowserEdge = '44.0.0.0'; // EdgeHTML version
+var recBrowserSafari = '12.0.0.0';
+
+// currentRevision must be the same value as the one returned by getCurrentRevision() (see utils.js)
+var currentRevision = '35323';
+
+beforeLoadDo();
+</script>
+
+</head>
+<body onload="onLoadDo();">
+  <div style="display: none; width: 100%; height: 100%; position: absolute; vertical-align: middle; padding: 0px; text-align: center;" id="blocker"></div>
+  <div class="Login_Main" id="client">
+    <div class="Login_Container">
+      <div class="Login_LogForm">
+        <form method="post" action="../secureApp/LoginHandler.html" name="frmIdentificacion" id="frmFormulario" autocomplete="off">
+          <input type="hidden" name="Command" value="" />
+          <input type="hidden" name="resetPassword" id="resetPassword" value="" />
+          <div class="Login_LogForm_CompanyLogo_Container">
+            <div class="Login_LogForm_CompanyLogo" id="CompanyLogo_Container" style="display: none;"><img class="Login_Logo_Company" src="../../../../../web/images/blank.gif" /></div>
+          </div>
+          <div class="Login_LogForm_Input_Container">
+            <dl>
+              <dt>
+                <label for="user" class="LabelText Login_LabelText" id="userlabel" >User Name</label>
+              </dt>
+              <dt>
+                <label for="user" class="LabelText Login_LabelText" id="newpasswordlabel" style="display:none;">New Password</label>
+              </dt>
+              <dd>
+                <input class="dojoValidateValid Login_TextBox" type="text" maxlength="60" name="user" id="user" />
+              </dd>
+              <dt>
+                <label for="password" class="LabelText Login_LabelText" id="passwordlabel" >Password</label>
+              </dt>
+              <dt>
+                <label for="password" class="LabelText Login_LabelText" id="confirmpasswordlabel" style="display:none;">Confirm Password</label>
+              </dt>
+              <dd>
+                <input class="dojoValidateValid Login_TextBox" type="password" maxlength="40" name="password" id="password" />
+              </dd>
+            </dl>
+            <div id="errorMsg" class="LabelText Login_ErrorMsg_Container" style="display:none;">
+              <span id="errorMsgTitle_Container"><span id="errorMsgTitle" class="Login_ErrorMsg_Title">xx</span><br></span><span id="errorMsgContent" class="Login_ErrorMsg_Content">xx</span>
+            </div>
+          </div>
+        </form>
+        <div class="Login_LogForm_Button_Container">
+          <div class="Login_LogForm_Button">
+            <button type="button" 
+              id="buttonOK" 
+              class="ButtonLink" 
+              onclick="doLogin();" 
+              onfocus="buttonEvent('onfocus', this); window.status='Login'; return true;" 
+              onblur="buttonEvent('onblur', this);" 
+              onkeyup="buttonEvent('onkeyup', this);" 
+              onkeydown="buttonEvent('onkeydown', this);" 
+              onkeypress="buttonEvent('onkeypress', this);" 
+              onmouseup="buttonEvent('onmouseup', this);" 
+              onmousedown="buttonEvent('onmousedown', this);" 
+              onmouseover="buttonEvent('onmouseover', this); window.status='Login'; return true;" 
+              onmouseout="buttonEvent('onmouseout', this);">
+              <table class="Button" id="fieldTable">
+                <tr>
+                  <td class="Button_left"><img class="Button_Icon Button_Icon_ok" alt="Login" title="Login" src="../../../../../web/images/blank.gif" border="0" id="fieldButton" /></td>
+                  <td class="Button_text Button_width">Log in</td>
+                  <td class="Button_right"></td>
+                </tr>
+              </table>
+            </button>
+          </div>
+          <div id="sign-in" style="margin-top:12px;">xxxSignIn</div>
+        </div>
+      </div>
+      <div class="Login_TopLogos_Container_Support_Forge" id="TopLogos_Container" style="display: none;">
+        <div style="height: 1px; width: 1px; font-size: 1"></div>
+        <div class="Login_TopLogos_ForgeLogo_Container">
+          <div class="LabelText Login_LabelText Login_TopLogos_ForgeLogo_Text">Project hosted at:</div>
+          <div class="Login_TopLogos_ForgeLogo_Logo_Container" id="ForgeLogo_Container"><img class="Login_Logo_Forge" src="../../../../../web/images/blank.gif" /></div>
+        </div>
+        <div class="Login_TopLogos_SupportLogo_Container">
+          <div class="LabelText Login_LabelText Login_TopLogos_SupportLogo_Text">For support, contact:</div>
+          <div class="Login_TopLogos_SupportLogo_Logo_Container" id="SupportLogo_Container"><img class="Login_Logo_Support" src="../../../../../web/images/blank.gif" /></div>
+        </div>
+      </div>
+      <div class="Login_BottomLogos_Container" id="BottomLogos_Container" style="display: none;">
+        <div class="Login_BottomLogos_Openbravo_Logo_Container" id="OpenbravoLogo_Container"><img class="Login_Logo_Openbravo" src="../../../../../web/images/blank.gif" /></div>
+        <div class="Login_BottomLogos_CopyrightText_Container"><span class="Login_BottomLogos_CopyrightText">&copy; Copyright Openbravo <br/> 2001-2019</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
