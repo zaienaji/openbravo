@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+  <vector>
+    <versionInfo version="3.0.35650"/>
+    <columnDataChange tablename="AD_PROCESS" columnname="PROCEDURENAME" pkRow="800131">
+      <oldValue><![CDATA[M_Internal_Consumption_Post]]></oldValue>
+      <newValue><![CDATA[skici_internalconsumptionpost]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_TAB" columnname="AD_PROCESS_ID" pkRow="800202">
+      <oldValue/>
+      <newValue><![CDATA[A4F8CA083A814379BA05EF0410A747AA]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="ISDISPLAYED" pkRow="9B6EEA981F0F11DEB6C6070C7D7693B0">
+      <oldValue><![CDATA[N]]></oldValue>
+      <newValue><![CDATA[Y]]></newValue>
+    </columnDataChange>
+  </vector>

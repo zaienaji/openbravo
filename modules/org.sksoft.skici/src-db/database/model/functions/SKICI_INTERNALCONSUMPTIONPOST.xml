@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+  <database name="FUNCTION SKICI_INTERNALCONSUMPTIONPOST">
+    <function name="SKICI_INTERNALCONSUMPTIONPOST" type="NULL">
+      <parameter name="pinstance_id" type="VARCHAR" mode="in">
+        <default/>
+      </parameter>
+      <body><![CDATA[BEGIN
+  --  Update AD_PInstance
+  SKICI_INTERNALCONSUMPTIONPOST1(pinstance_id, NULL, NULL);
+END SKICI_INTERNALCONSUMPTIONPOST
+]]></body>
+    </function>
+  </database>

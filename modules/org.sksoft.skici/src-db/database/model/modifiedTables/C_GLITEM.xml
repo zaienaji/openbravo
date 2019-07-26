@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+  <database name="MODIFIED TABLE C_GLITEM">
+    <table name="C_GLITEM" primaryKey="C_GLITEM_KEY">
+      <column name="EM_SKICI_ISINTERNALCONSUMPTION" primaryKey="false" required="true" type="CHAR" size="1" autoIncrement="false">
+        <default><![CDATA[N]]></default>
+        <onCreateDefault/>
+      </column>
+      <check name="EM_SKICI_ISINTERNALCNSMPTN_CHK"><![CDATA[EM_SKICI_ISINTERNALCONSUMPTION IN ('Y', 'N')]]></check>
+    </table>
+  </database>

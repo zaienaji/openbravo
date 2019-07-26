@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+  <database name="TRIGGER SKICI_INTERNALCONSUMPTION_TRG">
+    <trigger name="SKICI_INTERNALCONSUMPTION_TRG" table="M_INTERNAL_CONSUMPTION" fires="before" insert="true" update="true" delete="false" foreach="row">
+      <body><![CDATA[
+  v_internalconsumption_record RECORD;
+  v_internalconsumptionrecord_rowcount int;
+  c_defaultdocumentno constant varchar = '<>';
+
+begin
+	
+    IF AD_isTriggerEnabled()='N' THEN RETURN;
+    END IF;
+
+    if (:new.em_skici_documentno!=c_defaultdocumentno) then
+    	return new;
+    end if;
+
+    select coalesce(coalesce(b.prefix,'')||b.currentnext||coalesce(b.suffix,''),c_defaultdocumentno) as v_documentno,
+		b.currentnext+b.incrementno as v_nextdocumentno,
+		b.ad_sequence_id as v_sequence_id
+		into v_internalconsumption_record
+		from c_doctype as a
+		inner join ad_sequence as b on b.ad_sequence_id=a.docnosequence_id
+		where a.c_doctype_id=:new.em_skici_doctype_id;
+
+    GET DIAGNOSTICS v_internalconsumptionrecord_rowcount = ROW_COUNT;
+
+    if (v_internalconsumptionrecord_rowcount=0) then
+		raise exception 'can not find document sequence with document type id %', :new.em_skici_doctype_id;
+    end if;
+
+    if (v_internalconsumption_record.v_documentno=c_defaultdocumentno) then
+		return new;
+    end if;
+
+    :new.em_skici_documentno=v_internalconsumption_record.v_documentno;
+
+    update ad_sequence
+	    set currentnext=v_internalconsumption_record.v_nextdocumentno
+	    where ad_sequence_id=v_internalconsumption_record.v_sequence_id;
+    
+
+END SKICI_INTERNALCONSUMPTION_TRG
+]]></body>
+    </trigger>
+  </database>

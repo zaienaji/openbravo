@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+  <database name="MODIFIED TABLE M_INTERNAL_CONSUMPTIONLINE">
+    <table name="M_INTERNAL_CONSUMPTIONLINE" primaryKey="M_INTERNAL_CONSUMPTIONLINE_KEY">
+      <column name="EM_SKICI_GLITEM_ID" primaryKey="false" required="false" type="VARCHAR" size="32" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <foreign-key foreignTable="C_GLITEM" name="EM_SKICI_ICL_GLITEM_FK">
+        <reference local="EM_SKICI_GLITEM_ID" foreign="C_GLITEM_ID"/>
+      </foreign-key>
+    </table>
+  </database>

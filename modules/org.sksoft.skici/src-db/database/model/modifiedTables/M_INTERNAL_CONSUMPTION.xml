@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+  <database name="MODIFIED TABLE M_INTERNAL_CONSUMPTION">
+    <table name="M_INTERNAL_CONSUMPTION" primaryKey="M_INTERNAL_CONSUMPTION_KEY">
+      <column name="EM_SKICI_DOCUMENTNO" primaryKey="false" required="true" type="VARCHAR" size="60" autoIncrement="false">
+        <default><![CDATA[<>]]></default>
+        <onCreateDefault/>
+      </column>
+      <column name="EM_SKICI_DOCTYPE_ID" primaryKey="false" required="true" type="VARCHAR" size="32" autoIncrement="false">
+        <default><![CDATA[0]]></default>
+        <onCreateDefault/>
+      </column>
+      <foreign-key foreignTable="C_DOCTYPE" name="EM_SKICI_ICL_DOCTYPE_FK">
+        <reference local="EM_SKICI_DOCTYPE_ID" foreign="C_DOCTYPE_ID"/>
+      </foreign-key>
+    </table>
+  </database>

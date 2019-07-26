@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><ob:Openbravo xmlns:ob="http://www.openbravo.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <AD_CreateFact_template id="1979AC8138B240E0BEA3B7B1B7A3F6A6" identifier="Internal Consumption with GL Item expense account">
+    <id>1979AC8138B240E0BEA3B7B1B7A3F6A6</id>
+    <isactive>true</isactive>
+    <creationDate transient="true">2019-07-19T06:29:29.669Z</creationDate>
+    <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
+    <updated transient="true">2019-07-19T06:29:29.669Z</updated>
+    <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
+    <name>Internal Consumption with GL Item expense account</name>
+    <classname>org.sksoft.skici.accounting.DocInternalConsumptionWithGLItem</classname>
+    <description>if expense GL account set in internal consumption line, the internal consumption recognized as and expense accounting entries with GL item as an expense.</description>
+    <table id="800168" entity-name="ADTable" identifier="M_Internal_Consumption"/>
+  </AD_CreateFact_template>
+</ob:Openbravo>
