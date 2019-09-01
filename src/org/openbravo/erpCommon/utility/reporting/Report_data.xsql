@@ -47,7 +47,8 @@
 				'' as minduedate,
 				'' as maxduedate,
 				'' as docdesc,
-				'' as contact_name
+				'' as contact_name,
+                '' as docname
 			from
 				c_order
 			where
@@ -214,6 +215,39 @@
             ]]>
         </Sql>
         <Parameter name="FinPaymentId" />
+
+    </SqlMethod>
+
+    <SqlMethod name="getInternalConsumptionInfo" type="preparedStatement" return="multiple">
+        <SqlMethodComment></SqlMethodComment>
+        <Sql>
+            <![CDATA[
+            select
+                a.ad_org_id,
+                a.m_internal_consumption_id as document_id,
+                a.status as docstatus,
+                a.em_skici_doctype_id as docTypeTargetId,
+                a.em_skici_documentno as ourreference,
+                a.movementdate as docdate,
+                coalesce(a.description, a.name, '') as docdesc,
+                'Y' as isSalesOrderTransaction,
+                '' as cusreference,
+                '' as salnam,
+                '' as bpartner_id,
+                '' as bpartner_name,
+                '' as bpartner_language,
+                '' as minduedate,
+                '' as maxduedate,
+                '' as contact_name,
+                '' as bpartner_language
+            from
+                m_internal_consumption a
+            left join c_doctype b on b.c_doctype_id = a.em_skici_doctype_id
+            where
+                a.m_internal_consumption_id = ?
+            ]]>
+        </Sql>
+        <Parameter name="InternalConsumptionId" />
 
     </SqlMethod>
 

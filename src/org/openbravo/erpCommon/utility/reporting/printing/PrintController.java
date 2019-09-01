@@ -170,7 +170,7 @@ public class PrintController extends HttpSecureAppServlet {
   }
 
   @SuppressWarnings("unchecked")
-  void post(HttpServletRequest request, HttpServletResponse response, VariablesSecureApp vars,
+  protected void post(HttpServletRequest request, HttpServletResponse response, VariablesSecureApp vars,
       DocumentType documentType, String sessionValuePrefix, String strDocumentId)
       throws IOException, ServletException {
     String localStrDocumentId = strDocumentId;

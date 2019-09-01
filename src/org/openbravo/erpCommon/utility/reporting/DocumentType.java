@@ -23,7 +23,8 @@ public enum DocumentType {
   SALESINVOICE("C_INVOICE", "invoices/"),
   SHIPMENT("M_INOUT", "shipments/"),
   PURCHASEORDER("C_ORDER", "purchaseorders/"),
-  PAYMENT("FIN_PAYMENT", "payments/");
+  PAYMENT("FIN_PAYMENT", "payments/"),
+  INTERNALCONSUMPTION("INTERNALCONSUMPTION","internalconsumption");
 
   private String _tableName;
   private String _contextSubFolder;

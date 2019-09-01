@@ -32,8 +32,10 @@ import org.openbravo.erpCommon.utility.Utility;
 import org.openbravo.erpCommon.utility.reporting.TemplateInfo.EmailDefinition;
 import org.openbravo.service.db.DalConnectionProvider;
 
-@SuppressWarnings("serial")
 public class Report implements Serializable {
+
+  private static final long serialVersionUID = 860298671115200173L;
+
   public String getOrgId() {
     return orgId;
   }
@@ -116,6 +118,10 @@ public class Report implements Serializable {
 
       case PAYMENT: // Retrieve payment information
         reportData = ReportData.getPaymentInfo(connectionProvider, documentId);
+        break;
+        
+      case INTERNALCONSUMPTION:
+        reportData = ReportData.getInternalConsumptionInfo(connectionProvider, documentId);
         break;
 
       default:
