@@ -22,3 +22,4 @@
 /config/checksums
 /log/
 /src-db/database/formalChangesScript.xml
+/lib/openbravo.war
