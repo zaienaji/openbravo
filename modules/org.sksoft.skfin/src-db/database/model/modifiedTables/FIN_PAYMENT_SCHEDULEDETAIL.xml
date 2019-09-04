@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+  <database name="MODIFIED TABLE FIN_PAYMENT_SCHEDULEDETAIL">
+    <table name="FIN_PAYMENT_SCHEDULEDETAIL" primaryKey="FIN_PAYMENT_SCHEDULEDETAIL_KEY">
+      <column name="EM_SKFIN_DESCRIPTION" primaryKey="false" required="false" type="VARCHAR" size="2000" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+    </table>
+  </database>

@@ -1,4 +1,41 @@
 <?xml version="1.0"?>
   <vector>
     <versionInfo version="3.0.35650"/>
+    <columnDataChange tablename="AD_TABLE" columnname="HQLQUERY" pkRow="864A35C8FCD548B0AD1D69C89BBA6118">
+      <oldValue><![CDATA[select psd.id, gl, bp, prod, proj, cc, stDim, ndDim,
+    case when (p.receipt = 'Y'  and psd.amount > 0  ) or (p.receipt ='N'  and psd.amount < 0  ) then abs(psd.amount) else 0 end as receivedin,
+  case when (p.receipt = 'N'  and psd.amount > 0  ) or (p.receipt = 'Y'  and psd.amount < 0  )  then abs(psd.amount) else 0 end as paidout,
+    pd.id as fin_payment_detail_id,
+    case when 1 > 0 then true else false end as ob_selected
+from FIN_Payment_ScheduleDetail as psd
+  join psd.paymentDetails as pd
+  join pd.finPayment as p
+  join pd.gLItem as gl
+  left join  psd.businessPartner as bp
+  left join psd.product as prod
+  left join psd.project as proj
+  left join psd.costCenter as cc
+  left join psd.stDimension as stDim
+  left join psd.ndDimension as ndDim
+where @additional_filters@
+and @insertion_point_0@]]></oldValue>
+      <newValue><![CDATA[select psd.id, gl, bp, prod, proj, cc, stDim, ndDim,
+    case when (p.receipt = 'Y'  and psd.amount > 0  ) or (p.receipt ='N'  and psd.amount < 0  ) then abs(psd.amount) else 0 end as receivedin,
+  case when (p.receipt = 'N'  and psd.amount > 0  ) or (p.receipt = 'Y'  and psd.amount < 0  )  then abs(psd.amount) else 0 end as paidout,
+    pd.id as fin_payment_detail_id,
+    psd.skfinDescription as em_skfin_description,
+    case when 1 > 0 then true else false end as ob_selected
+from FIN_Payment_ScheduleDetail as psd
+  join psd.paymentDetails as pd
+  join pd.finPayment as p
+  join pd.gLItem as gl
+  left join  psd.businessPartner as bp
+  left join psd.product as prod
+  left join psd.project as proj
+  left join psd.costCenter as cc
+  left join psd.stDimension as stDim
+  left join psd.ndDimension as ndDim
+where @additional_filters@
+and @insertion_point_0@]]></newValue>
+    </columnDataChange>
   </vector>
