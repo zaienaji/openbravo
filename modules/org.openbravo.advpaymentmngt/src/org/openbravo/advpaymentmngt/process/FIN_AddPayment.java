@@ -722,7 +722,7 @@ public class FIN_AddPayment {
   public static void saveGLItem(FIN_Payment payment, BigDecimal glitemAmount, GLItem glitem,
       BusinessPartner businessPartner, Product product, Project project, Campaign campaign,
       ABCActivity activity, SalesRegion salesRegion, Costcenter costCenter, UserDimension1 user1,
-      UserDimension2 user2) {
+      UserDimension2 user2, String description) {
     // FIXME: added to access the FIN_PaymentSchedule and FIN_PaymentScheduleDetail tables to be
     // removed when new security implementation is done
     dao = new AdvPaymentMngtDao();
@@ -730,7 +730,7 @@ public class FIN_AddPayment {
     try {
       FIN_PaymentScheduleDetail psd = dao.getNewPaymentScheduleDetail(payment.getOrganization(),
           glitemAmount, businessPartner, product, project, campaign, activity, salesRegion,
-          costCenter, user1, user2);
+          costCenter, user1, user2, description);
       FIN_PaymentDetail pd = dao.getNewPaymentDetail(payment, psd, glitemAmount, BigDecimal.ZERO,
           false, glitem);
       pd.setFinPayment(payment);
@@ -766,9 +766,9 @@ public class FIN_AddPayment {
    */
   public static void saveGLItem(FIN_Payment payment, BigDecimal glitemAmount, GLItem glitem,
       BusinessPartner businessPartner, Product product, Project project, Campaign campaign,
-      ABCActivity activity, SalesRegion salesRegion) {
+      ABCActivity activity, SalesRegion salesRegion, String description) {
     saveGLItem(payment, glitemAmount, glitem, businessPartner, product, project, campaign, activity,
-        salesRegion, null, null, null);
+        salesRegion, null, null, null, description);
   }
 
   /**

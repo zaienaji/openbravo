@@ -497,9 +497,11 @@ public class AddPaymentActionHandler extends BaseProcessActionHandler {
         checkID(strElement_U2);
         user2 = OBDal.getInstance().get(UserDimension2.class, strElement_U2);
       }
+      
+      String description = glItem.has("skfinDescription")?(String)glItem.get("skfinDescription"):"";
       FIN_AddPayment.saveGLItem(payment, glItemAmt,
           OBDal.getInstance().get(GLItem.class, strGLItemId), businessPartnerGLItem, product,
-          project, campaign, activity, null, costCenter, user1, user2);
+          project, campaign, activity, null, costCenter, user1, user2, description);
     }
   }
 

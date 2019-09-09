@@ -126,13 +126,15 @@ public class FIN_AddPaymentFromJournalLine extends DalBaseProcess {
           date, null, journalLine.getCurrency(), null, null);
 
       // Add Payment Details
+      String description="";
       FIN_AddPayment.saveGLItem(payment,
           journalLine.getForeignCurrencyDebit()
               .subtract(journalLine.getForeignCurrencyCredit())
               .abs(),
           glItem, bPartner, journalLine.getProduct(), journalLine.getProject(),
           journalLine.getSalesCampaign(), journalLine.getActivity(), journalLine.getSalesRegion(),
-          journalLine.getCostCenter(), journalLine.getStDimension(), journalLine.getNdDimension());
+          journalLine.getCostCenter(), journalLine.getStDimension(), journalLine.getNdDimension(),
+          description);
 
       OBDal.getInstance().flush();
 

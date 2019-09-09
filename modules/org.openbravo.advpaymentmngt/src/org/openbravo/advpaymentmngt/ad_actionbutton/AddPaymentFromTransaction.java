@@ -337,9 +337,10 @@ public class AddPaymentFromTransaction extends HttpSecureAppServlet {
             checkID(strElement_U2);
             final UserDimension2 user2 = dao.getObject(UserDimension2.class, strElement_U2);
 
+            String description = glItem.has("skfinDescription")?(String)glItem.get("skfinDescription"):"";
             FIN_AddPayment.saveGLItem(payment, glItemAmt, dao.getObject(GLItem.class, strGLItemId),
                 businessPartner, product, project, campaign, activity, null, costCenter, user1,
-                user2);
+                user2, description);
           }
         }
         payment = FIN_AddPayment.savePayment(payment, isReceipt, null, null, null, null, null, null,

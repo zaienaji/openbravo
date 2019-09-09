@@ -656,7 +656,7 @@ public class AdvPaymentMngtDao {
   public FIN_PaymentScheduleDetail getNewPaymentScheduleDetail(Organization organization,
       BigDecimal amount, BusinessPartner businessPartner, Product product, Project project,
       Campaign campaign, ABCActivity activity, SalesRegion salesRegion, Costcenter costCenter,
-      UserDimension1 user1, UserDimension2 user2) {
+      UserDimension1 user1, UserDimension2 user2, String description) {
     final FIN_PaymentScheduleDetail psd = getNewPaymentScheduleDetail(organization, amount);
     psd.setBusinessPartner(businessPartner);
     psd.setProduct(product);
@@ -667,6 +667,7 @@ public class AdvPaymentMngtDao {
     psd.setCostCenter(costCenter);
     psd.setStDimension(user1);
     psd.setNdDimension(user2);
+    psd.setSkfinDescription(description);
     return psd;
   }
 
@@ -690,9 +691,9 @@ public class AdvPaymentMngtDao {
    */
   public FIN_PaymentScheduleDetail getNewPaymentScheduleDetail(Organization organization,
       BigDecimal amount, BusinessPartner businessPartner, Product product, Project project,
-      Campaign campaign, ABCActivity activity, SalesRegion salesRegion) {
+      Campaign campaign, ABCActivity activity, SalesRegion salesRegion, String description) {
     return getNewPaymentScheduleDetail(organization, amount, businessPartner, product, project,
-        campaign, activity, salesRegion, null, null, null);
+        campaign, activity, salesRegion, null, null, null, description);
   }
 
   /**
