@@ -27,6 +27,7 @@ The record saved to database. To see the effect, you need to use SQL client (e.g
     ```
     you will get this result:
     ![](doc/images/003_.png)
+    
     you can process this data further, e.g display it in the jrxml report.
 
 ## AR/AP Aging Report filtered by currency
