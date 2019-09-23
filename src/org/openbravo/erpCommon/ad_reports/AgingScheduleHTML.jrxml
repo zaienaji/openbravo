@@ -119,6 +119,15 @@
 		<parameterDescription><![CDATA[]]></parameterDescription>
 	</parameter>
 	<parameter name="warning" class="java.lang.String"/>
+	<parameter name="skfin_filterbycurrency_id" class="org.codehaus.jettison.json.JSONObject">
+		<defaultValueExpression><![CDATA[new org.codehaus.jettison.json.JSONObject("{\"value\":\"100\",\"identifier\":\"USD\"}")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="skfin_isfilterbycurrency" class="java.lang.Boolean">
+		<defaultValueExpression><![CDATA[new java.lang.Boolean(true)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="skfin_filterbycurrency_val" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{skfin_filterbycurrency_id}.getString("value")]]></defaultValueExpression>
+	</parameter>
 	<field name="BPartner" class="java.lang.String"/>
 	<field name="amount0" class="java.math.BigDecimal"/>
 	<field name="amount1" class="java.math.BigDecimal"/>
@@ -187,6 +196,12 @@
 				<reportElement key="textField-25" style="Report_Footer" x="499" y="63" width="179" height="18" uuid="a0709414-bade-4c76-ba3a-13b0945a81fc"/>
 				<textFieldExpression><![CDATA[$P{AccSchemaName}]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement key="textField-25" style="Report_Footer" x="499" y="81" width="179" height="18" uuid="de861f98-400f-42b7-bd95-2031541bc872">
+                    <printWhenExpression><![CDATA[$P{skfin_isfilterbycurrency}]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$P{skfin_filterbycurrency_id}.getString("identifier")]]></textFieldExpression>
+			</textField>
 			<staticText>
 				<reportElement key="staticText-26" style="Report_Footer" x="10" y="83" width="118" height="18" uuid="0dfa9a37-7b70-42d0-befb-3d451e960f83"/>
 				<textElement textAlignment="Right"/>
@@ -204,6 +219,13 @@
 				<reportElement key="staticText-27" style="Report_Footer" x="333" y="63" width="160" height="18" uuid="7942984d-da77-40b3-b0f1-6e845728aedf"/>
 				<textElement textAlignment="Right"/>
 				<text><![CDATA[General Ledger:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-27" style="Report_Footer" x="333" y="81" width="160" height="18" uuid="0809e39a-26d2-4c4a-8051-3c7b10949d86">
+                    <printWhenExpression><![CDATA[$P{skfin_isfilterbycurrency}]]></printWhenExpression>
+                </reportElement>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Filtered By Currency:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="staticText-24" style="Report_Footer" x="10" y="63" width="118" height="18" uuid="39be6ec7-84ca-45dd-a42c-54437a37ca7d"/>
@@ -454,6 +476,8 @@
 		+"    Doubtful:\'"+$P{showDoubtfulDebt}+"\',"
 		+"    Organization:\'"+$P{Organization}+"\',"
 		+"    RecOrPay:\'"+$P{recOrPay}+"\',"
+		+"    skfin_isfilterbycurrency:\'"+$P{skfin_isfilterbycurrency}+"\',"
+		+"    skfin_filterbycurrency_id:\'"+$P{skfin_filterbycurrency_val}+"\',"
 		+"    ShowVoid:\'"+$P{void}+"\'"
 		+"  }"
 		+"},"

@@ -332,6 +332,7 @@ public class BaseReportActionHandler extends BaseProcessActionHandler {
     jrParams.put("HTTP_SESSION", parameters.get(KernelConstants.HTTP_SESSION));
     allParametersMap.putAll(parameters);
     allParametersMap.put(JASPER_REPORT_PARAMETERS, jrParams);
+    JSONObject myjson = new JSONObject("{\"value\":\"100\",\"identifier\":\"USD\"}");
 
     log.debug("Report: {}. Start export JR process.", report.getId());
     long t1 = System.currentTimeMillis();

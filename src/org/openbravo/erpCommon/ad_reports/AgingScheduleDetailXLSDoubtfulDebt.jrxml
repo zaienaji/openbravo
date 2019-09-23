@@ -55,6 +55,16 @@
 	<parameter name="inpLabel3" class="java.lang.String"/>
 	<parameter name="inpLabel4" class="java.lang.String"/>
 	<parameter name="inpLabel5" class="java.lang.String"/>
+	<parameter name="skfin_filterbycurrency_id" class="org.codehaus.jettison.json.JSONObject">
+		<defaultValueExpression><![CDATA[new org.codehaus.jettison.json.JSONObject("{\"value\":\"100\",\"identifier\":\"USD\"}")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="skfin_isfilterbycurrency" class="java.lang.Boolean">
+		<defaultValueExpression><![CDATA[new java.lang.Boolean(true)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="skfin_filterbycurrency_val" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{skfin_filterbycurrency_id}.getString("value")]]></defaultValueExpression>
+	</parameter>
+
 	<queryString>
 		<![CDATA[SELECT 'hello' AS BP_GROUP, 'hello' AS BPARTNER, 'hello' AS PROJECT, 'hello' AS PAYMENT, 'hello' AS SALES_PERSON, 1234 AS INVOICE_NUMBER, to_Date('01/01/2010') AS INVOICE_DATE,
        to_Date('01/03/2010') AS DUE_DATE, 1234 AS PLANNED_DSO, 1234 AS CURRENT_DSO, 1234 AS OVERDUE, 1234 AS DAYS_OVERDUE, 1234 AS AMOUNT,
@@ -197,7 +207,7 @@ FROM DUAL]]>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="47" splitType="Stretch">
+		<band height="65" splitType="Stretch">
 			<textField>
 				<reportElement x="0" y="0" width="1138" height="29"/>
 				<textElement>
@@ -209,6 +219,15 @@ FROM DUAL]]>
 				<reportElement key="textField-25" style="Report_Footer" x="783" y="29" width="355" height="18"/>
 				<textElement/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{AccSchema}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement key="textField-25" style="Report_Footer" x="783" y="47" width="355" height="18">
+                    <printWhenExpression><![CDATA[$P{skfin_isfilterbycurrency}]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{skfin_filterbycurrency_id}.getString("identifier")]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement key="staticText-26" style="Report_Footer" x="333" y="29" width="150" height="18"/>
@@ -229,6 +248,13 @@ FROM DUAL]]>
 				<reportElement key="staticText-27" style="Report_Footer" x="633" y="29" width="150" height="18"/>
 				<textElement textAlignment="Right"/>
 				<text><![CDATA[General Ledger:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-27" style="Report_Footer" x="633" y="47" width="150" height="18">
+                    <printWhenExpression><![CDATA[$P{skfin_isfilterbycurrency}]]></printWhenExpression>
+                </reportElement>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Filtered By Currency:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="staticText-24" style="Report_Footer" x="0" y="29" width="99" height="18"/>

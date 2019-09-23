@@ -70,6 +70,15 @@
 		<parameterDescription><![CDATA[]]></parameterDescription>
 	</parameter>
 	<parameter name="warning" class="java.lang.String"/>
+	<parameter name="skfin_filterbycurrency_id" class="org.codehaus.jettison.json.JSONObject">
+		<defaultValueExpression><![CDATA[new org.codehaus.jettison.json.JSONObject("{\"value\":\"100\",\"identifier\":\"USD\"}")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="skfin_isfilterbycurrency" class="java.lang.Boolean">
+		<defaultValueExpression><![CDATA[new java.lang.Boolean(true)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="skfin_filterbycurrency_val" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{skfin_filterbycurrency_id}.getString("value")]]></defaultValueExpression>
+	</parameter>
 	<queryString>
 		<![CDATA[SELECT 'hello' AS BP_GROUP, 'hello' AS BPARTNER, 'hello' AS PROJECT, 'hello' AS PAYMENT, 'hello' AS SALES_PERSON, 1234 AS INVOICE_NUMBER, to_Date('01/01/2010') AS INVOICE_DATE,
        to_Date('01/03/2010') AS DUE_DATE, 1234 AS PLANNED_DSO, 1234 AS CURRENT_DSO, 1234 AS OVERDUE, 1234 AS DAYS_OVERDUE, 1234 AS AMOUNT,
@@ -401,7 +410,7 @@ $V{SUMDOUBTFULDEBT} != null ? $P{AMOUNTFORMAT}.format($V{SUMDOUBTFULDEBT}) : $P{
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="85" splitType="Stretch">
+		<band height="101" splitType="Stretch">
 			<staticText>
 				<reportElement key="staticText-24" style="Report_Footer" x="1" y="61" width="118" height="18" uuid="e07db061-6cf3-488c-93ec-23705d2fe00a"/>
 				<textElement textAlignment="Right"/>
@@ -417,6 +426,13 @@ $V{SUMDOUBTFULDEBT} != null ? $P{AMOUNTFORMAT}.format($V{SUMDOUBTFULDEBT}) : $P{
 				<textElement textAlignment="Right"/>
 				<text><![CDATA[General Ledger:]]></text>
 			</staticText>
+			<staticText>
+				<reportElement key="staticText-27" style="Report_Footer" x="532" y="81" width="160" height="20" uuid="e9c82d36-ece4-4f40-9537-2538197313ca">
+                    <printWhenExpression><![CDATA[$P{skfin_isfilterbycurrency}]]></printWhenExpression>
+                </reportElement>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Filtered By Currency:]]></text>
+			</staticText>
 			<textField isBlankWhenNull="true">
 				<reportElement key="textField-25" style="Report_Footer" x="125" y="61" width="168" height="18" uuid="987f8147-4975-4d22-a7dc-ddf0ea9378ca"/>
 				<textFieldExpression><![CDATA[$P{Organization}]]></textFieldExpression>
@@ -428,6 +444,12 @@ $V{SUMDOUBTFULDEBT} != null ? $P{AMOUNTFORMAT}.format($V{SUMDOUBTFULDEBT}) : $P{
 			<textField isBlankWhenNull="true">
 				<reportElement key="textField-25" style="Report_Footer" x="698" y="61" width="179" height="20" uuid="971b8815-79be-464c-adf2-0f785d0dbb12"/>
 				<textFieldExpression><![CDATA[$P{AccSchema}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement key="textField-25" style="Report_Footer" x="698" y="81" width="179" height="20" uuid="8fb12a6c-71ac-4abf-8595-daadd747b853">
+                    <printWhenExpression><![CDATA[$P{skfin_isfilterbycurrency}]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$P{skfin_filterbycurrency_id}.getString("identifier")]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="11" y="11" width="500" height="28" uuid="f7b46b64-ef9b-4f8f-8626-62df17b66264"/>
@@ -457,6 +479,8 @@ $V{SUMDOUBTFULDEBT} != null ? $P{AMOUNTFORMAT}.format($V{SUMDOUBTFULDEBT}) : $P{
 		+"    Doubtful:\'"+$P{showDoubtfulDebt}+"\',"
 		+"    Organization:\'"+$P{organizationID}+"\',"
 		+"    RecOrPay:\'"+$P{recOrPay}+"\',"
+		+"    skfin_isfilterbycurrency:\'"+$P{skfin_isfilterbycurrency}+"\',"
+		+"    skfin_filterbycurrency_id:\'"+$P{skfin_filterbycurrency_val}+"\',"
 		+"    ShowVoid:\'"+$P{void}+"\'"
 		+"  }"
 		+"},"
@@ -492,6 +516,8 @@ $V{SUMDOUBTFULDEBT} != null ? $P{AMOUNTFORMAT}.format($V{SUMDOUBTFULDEBT}) : $P{
 		+"    Doubtful:\'"+$P{showDoubtfulDebt}+"\',"
 		+"    Organization:\'"+$P{organizationID}+"\',"
 		+"    RecOrPay:\'"+$P{recOrPay}+"\',"
+		+"    skfin_isfilterbycurrency:\'"+$P{skfin_isfilterbycurrency}+"\',"
+		+"    skfin_filterbycurrency_id:\'"+$P{skfin_filterbycurrency_val}+"\',"
 		+"    ShowVoid:\'"+$P{void}+"\'"
 		+"  }"
 		+"},"

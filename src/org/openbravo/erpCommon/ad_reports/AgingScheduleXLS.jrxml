@@ -97,6 +97,15 @@
 	<parameter name="AccSchemaName" class="java.lang.String"/>
 	<parameter name="OrganizationName" class="java.lang.String"/>
 	<parameter name="showDoubtfulDebt" class="java.lang.String"/>
+	<parameter name="skfin_filterbycurrency_id" class="org.codehaus.jettison.json.JSONObject">
+		<defaultValueExpression><![CDATA[new org.codehaus.jettison.json.JSONObject("{\"value\":\"100\",\"identifier\":\"USD\"}")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="skfin_isfilterbycurrency" class="java.lang.Boolean">
+		<defaultValueExpression><![CDATA[new java.lang.Boolean(true)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="skfin_filterbycurrency_val" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{skfin_filterbycurrency_id}.getString("value")]]></defaultValueExpression>
+	</parameter>
 	<field name="BPartner" class="java.lang.String"/>
 	<field name="amount0" class="java.math.BigDecimal"/>
 	<field name="amount1" class="java.math.BigDecimal"/>
@@ -168,9 +177,22 @@
 				<textElement textAlignment="Right"/>
 				<text><![CDATA[General Ledger:]]></text>
 			</staticText>
+			<staticText>
+				<reportElement key="staticText-27" style="Report_Footer" x="359" y="46" width="195" height="18" uuid="2c391202-95d9-49c8-88df-d0ffc90791f7">
+                    <printWhenExpression><![CDATA[$P{skfin_isfilterbycurrency}]]></printWhenExpression>
+                </reportElement>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Filtered By Currency:]]></text>
+			</staticText>
 			<textField isBlankWhenNull="true">
 				<reportElement key="textField-25" style="Report_Footer" x="554" y="28" width="366" height="18" uuid="d8eaf337-082a-4fc6-9fc8-604901eb0099"/>
 				<textFieldExpression><![CDATA[$P{AccSchemaName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement key="textField-25" style="Report_Footer" x="554" y="46" width="366" height="18" uuid="25779d6a-dbf7-4098-9f49-01c261754546">
+                    <printWhenExpression><![CDATA[$P{skfin_isfilterbycurrency}]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$P{skfin_filterbycurrency_id}.getString("identifier")]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement key="staticText-24" style="Report_Footer" x="0" y="28" width="165" height="18" uuid="e705d86b-c96b-4edc-a6a7-bad78446de18"/>

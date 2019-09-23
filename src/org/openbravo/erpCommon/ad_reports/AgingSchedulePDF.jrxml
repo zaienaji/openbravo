@@ -95,6 +95,15 @@
 	<parameter name="title" class="java.lang.String"/>
 	<parameter name="AccSchemaName" class="java.lang.String"/>
 	<parameter name="OrganizationName" class="java.lang.String"/>
+	<parameter name="skfin_filterbycurrency_id" class="org.codehaus.jettison.json.JSONObject">
+		<defaultValueExpression><![CDATA[new org.codehaus.jettison.json.JSONObject("{\"value\":\"100\",\"identifier\":\"USD\"}")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="skfin_isfilterbycurrency" class="java.lang.Boolean">
+		<defaultValueExpression><![CDATA[new java.lang.Boolean(true)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="skfin_filterbycurrency_val" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{skfin_filterbycurrency_id}.getString("value")]]></defaultValueExpression>
+	</parameter>
 	<field name="BPartner" class="java.lang.String"/>
 	<field name="amount0" class="java.math.BigDecimal"/>
 	<field name="amount1" class="java.math.BigDecimal"/>
@@ -401,12 +410,30 @@
 				</textElement>
 				<text><![CDATA[General Ledger:]]></text>
 			</staticText>
+			<staticText>
+				<reportElement key="staticText-27" style="Report_Footer" x="276" y="103" width="136" height="18">
+                    <printWhenExpression><![CDATA[$P{skfin_isfilterbycurrency}]]></printWhenExpression>
+                </reportElement>
+				<textElement textAlignment="Right">
+                    <font size="9"/>
+				</textElement>
+				<text><![CDATA[Filtered By Currency:]]></text>
+			</staticText>
 			<textField isBlankWhenNull="true">
 				<reportElement key="textField-25" style="Report_Footer" x="417" y="85" width="179" height="18"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{AccSchemaName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement key="textField-25" style="Report_Footer" x="417" y="103" width="179" height="18">
+                    <printWhenExpression><![CDATA[$P{skfin_isfilterbycurrency}]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{skfin_filterbycurrency_id}.getString("identifier")]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement key="staticText-26" style="Report_Footer" x="0" y="105" width="107" height="18"/>

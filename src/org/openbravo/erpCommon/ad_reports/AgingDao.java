@@ -74,7 +74,8 @@ public class AgingDao {
   public FieldProvider[] getOpenReceivablesAgingSchedule(ConnectionProvider connectionProvider,
       String strcBpartnerId, String strAccSchema, Date currentDate, String strcolumn1,
       String strcolumn2, String strcolumn3, String strcolumn4, String strOrg,
-      Set<String> organizations, String recOrPay, boolean showDoubtfulDebt, boolean excludeVoids)
+      Set<String> organizations, String recOrPay, boolean showDoubtfulDebt, boolean excludeVoids,
+      boolean isFilterByCurrency, String filterCurrencyId)
       throws IOException, ServletException {
 
     // Initialization of some variables
@@ -114,15 +115,28 @@ public class AgingDao {
 
     try {
       // Amounts coming from normal PSD (non credit)
-      dataSR = AgingDaoData.select(connectionProvider, showDoubtfulDebt ? "Y" : "N",
-          OBDateUtils.formatDate(currentDate), convCurrency.getId(),
-          OBDateUtils.formatDate(convertToDate(currentDate, strcolumn1)),
-          OBDateUtils.formatDate(convertToDate(currentDate, strcolumn2)),
-          OBDateUtils.formatDate(convertToDate(currentDate, strcolumn3)),
-          OBDateUtils.formatDate(convertToDate(currentDate, strcolumn4)),
-          Utility.getInStrSet(organizations), strcBpartnerId,
-          StringUtils.equals(recOrPay, "RECEIVABLES") ? "Y" : "N",
-          excludeVoids ? "excludeVoids" : "", pgLimit, oraLimit);
+      if (isFilterByCurrency) {
+        dataSR = AgingDaoData.selectbycurrency(connectionProvider, showDoubtfulDebt ? "Y" : "N",
+            OBDateUtils.formatDate(currentDate),
+            OBDateUtils.formatDate(convertToDate(currentDate, strcolumn1)),
+            OBDateUtils.formatDate(convertToDate(currentDate, strcolumn2)),
+            OBDateUtils.formatDate(convertToDate(currentDate, strcolumn3)),
+            OBDateUtils.formatDate(convertToDate(currentDate, strcolumn4)), filterCurrencyId,
+            Utility.getInStrSet(organizations), strcBpartnerId,
+            StringUtils.equals(recOrPay, "RECEIVABLES") ? "Y" : "N",
+            excludeVoids ? "excludeVoids" : "", pgLimit, oraLimit);
+      } else{
+        dataSR = AgingDaoData.select(connectionProvider, showDoubtfulDebt ? "Y" : "N",
+            OBDateUtils.formatDate(currentDate), convCurrency.getId(),
+            OBDateUtils.formatDate(convertToDate(currentDate, strcolumn1)),
+            OBDateUtils.formatDate(convertToDate(currentDate, strcolumn2)),
+            OBDateUtils.formatDate(convertToDate(currentDate, strcolumn3)),
+            OBDateUtils.formatDate(convertToDate(currentDate, strcolumn4)),
+            Utility.getInStrSet(organizations), strcBpartnerId,
+            StringUtils.equals(recOrPay, "RECEIVABLES") ? "Y" : "N",
+            excludeVoids ? "excludeVoids" : "", pgLimit, oraLimit);
+      }
+      
       log4j.debug("Query: " + (System.currentTimeMillis() - init));
       init = System.currentTimeMillis();
       int i = 0;
@@ -155,11 +169,28 @@ public class AgingDao {
       // Credits: In this section the Credits are going to be processed.
       init = System.currentTimeMillis();
       // Query for credit payments
-      dataCreditSR = AgingDaoData.selectCredit(connectionProvider, convCurrency.getId(),
+      /*
+       * connectionProvider, convCurrency.getId(),
           Utility.getInStrSet(organizations), Utility.getInStrSet(new HashSet<String>(paidStatus)),
           OBDateUtils.formatDate(currentDate),
           StringUtils.equals(recOrPay, "RECEIVABLES") ? "Y" : "N", strcBpartnerId, pgLimit,
-          oraLimit);
+          oraLimit
+       */
+      if (isFilterByCurrency) {
+        dataCreditSR = AgingDaoData.selectCreditByCurrency(connectionProvider, filterCurrencyId,
+            Utility.getInStrSet(organizations),
+            Utility.getInStrSet(new HashSet<String>(paidStatus)),
+            OBDateUtils.formatDate(currentDate),
+            StringUtils.equals(recOrPay, "RECEIVABLES") ? "Y" : "N", strcBpartnerId, pgLimit,
+            oraLimit);
+      } else {
+        dataCreditSR = AgingDaoData.selectCredit(connectionProvider, convCurrency.getId(),
+            Utility.getInStrSet(organizations), Utility.getInStrSet(new HashSet<String>(paidStatus)),
+            OBDateUtils.formatDate(currentDate),
+            StringUtils.equals(recOrPay, "RECEIVABLES") ? "Y" : "N", strcBpartnerId, pgLimit,
+            oraLimit);
+      }
+      
       log4j.debug("Credit Query: " + (System.currentTimeMillis() - init));
       init = System.currentTimeMillis();
       i = 0;
@@ -218,7 +249,8 @@ public class AgingDao {
       ConnectionProvider connectionProvider, Date currentDate, SimpleDateFormat dateFormat,
       Currency convCurrency, Set<String> organizations, String recOrPay, String strcolumn1,
       String strcolumn2, String strcolumn3, String strcolumn4, String strcBpartnerId,
-      boolean showDoubtfulDebt, Boolean excludeVoid) throws IOException, ServletException {
+      boolean showDoubtfulDebt, Boolean excludeVoid,
+      boolean isFilterByCurrency, String filterCurrencyId) throws IOException, ServletException {
 
     List<HashMap<String, String>> hashMapList = new ArrayList<HashMap<String, String>>();
     FieldProvider[] data = null;
@@ -239,16 +271,28 @@ public class AgingDao {
 
     try {
       // Amounts coming from normal PSD (non credit)
-      dataSR = AgingDaoData.selectDetail(connectionProvider, convCurrency.getId(),
-          showDoubtfulDebt ? "Y" : "N", OBDateUtils.formatDate(currentDate),
-          OBDateUtils.formatDate(convertToDate(currentDate, strcolumn1)),
-          OBDateUtils.formatDate(convertToDate(currentDate, strcolumn2)),
-          OBDateUtils.formatDate(convertToDate(currentDate, strcolumn3)),
-          OBDateUtils.formatDate(convertToDate(currentDate, strcolumn4)),
-          Utility.getInStrSet(organizations), strcBpartnerId,
-          StringUtils.equals(recOrPay, "RECEIVABLES") ? "Y" : "N",
-          excludeVoid ? "excludeVoids" : "", pgLimit, oraLimit);
-
+      if (isFilterByCurrency) {
+        dataSR = AgingDaoData.selectDetailByCurrency(connectionProvider,
+            showDoubtfulDebt ? "Y" : "N", OBDateUtils.formatDate(currentDate),
+            OBDateUtils.formatDate(convertToDate(currentDate, strcolumn1)),
+            OBDateUtils.formatDate(convertToDate(currentDate, strcolumn2)),
+            OBDateUtils.formatDate(convertToDate(currentDate, strcolumn3)),
+            OBDateUtils.formatDate(convertToDate(currentDate, strcolumn4)),
+            Utility.getInStrSet(organizations), strcBpartnerId,
+            StringUtils.equals(recOrPay, "RECEIVABLES") ? "Y" : "N", filterCurrencyId,
+            excludeVoid ? "excludeVoids" : "", pgLimit, oraLimit);
+      } else {
+        dataSR = AgingDaoData.selectDetail(connectionProvider, convCurrency.getId(),
+            showDoubtfulDebt ? "Y" : "N", OBDateUtils.formatDate(currentDate),
+            OBDateUtils.formatDate(convertToDate(currentDate, strcolumn1)),
+            OBDateUtils.formatDate(convertToDate(currentDate, strcolumn2)),
+            OBDateUtils.formatDate(convertToDate(currentDate, strcolumn3)),
+            OBDateUtils.formatDate(convertToDate(currentDate, strcolumn4)),
+            Utility.getInStrSet(organizations), strcBpartnerId,
+            StringUtils.equals(recOrPay, "RECEIVABLES") ? "Y" : "N",
+            excludeVoid ? "excludeVoids" : "", pgLimit, oraLimit);
+      }
+      
       log4j.debug("Query Detail: " + (System.currentTimeMillis() - init));
       init = System.currentTimeMillis();
       int i = 0;

@@ -90,6 +90,8 @@ public class AgingBalanceReportActionHandler extends BaseReportActionHandler {
   private static final String PARAM_COLUMN3 = "Column3";
   private static final String PARAM_COLUMN4 = "Column4";
   private static final String PARAM_WARNING = "warning";
+  private static final String PARAM_ISFILTERBYCURRENCY = "skfin_isfilterbycurrency";
+  private static final String PARAM_FILTERBYCURRENCY = "skfin_filterbycurrency_id";
   private static final String TRUE = "true";
   private static final String FALSE = "false";
   private static final String BLANK = "";
@@ -201,6 +203,8 @@ public class AgingBalanceReportActionHandler extends BaseReportActionHandler {
     FieldProvider[] data;
     boolean showDoubtful = TRUE.equals(getParameter(PARAM_DOUBTFUL, content));
     boolean excludeVoid = FALSE.equals(getParameter(PARAM_SHOWVOID, content));
+    boolean isFilterByCurrency = TRUE.equals(getParameter(PARAM_ISFILTERBYCURRENCY, content));
+    String filterCurrencyId = getParameter(PARAM_FILTERBYCURRENCY, content);
     Currency convCurrency = null;
     String dateFormatString = OBPropertiesProvider.getInstance()
         .getOpenbravoProperties()
@@ -227,7 +231,7 @@ public class AgingBalanceReportActionHandler extends BaseReportActionHandler {
         getParameter(PARAM_RECORPAY, content), getParameter(PARAM_COLUMN1, content),
         getParameter(PARAM_COLUMN2, content), getParameter(PARAM_COLUMN3, content),
         getParameter(PARAM_COLUMN4, content), getParameter(PARAM_BP, content), showDoubtful,
-        excludeVoid);
+        excludeVoid, isFilterByCurrency, filterCurrencyId);
     return data;
   }
 
@@ -271,6 +275,8 @@ public class AgingBalanceReportActionHandler extends BaseReportActionHandler {
     cal.setTime(currentDate);
     boolean showDoubtful = TRUE.equals(getParameter(PARAM_DOUBTFUL, content));
     boolean excludeVoid = FALSE.equals(getParameter(PARAM_SHOWVOID, content));
+    boolean isFilterByCurrency = TRUE.equals(getParameter(PARAM_ISFILTERBYCURRENCY, content));
+    String filterCurrencyId = getParameter(PARAM_FILTERBYCURRENCY, content);
 
     // Save in session report limit
     RequestContext.get()
@@ -282,7 +288,8 @@ public class AgingBalanceReportActionHandler extends BaseReportActionHandler {
         getParameter(PARAM_COLUMN3, content), getParameter(PARAM_COLUMN4, content),
         getParameter(PARAM_ORGANIZATION, content), new OrganizationStructureProvider()
             .getChildTree(getParameter(PARAM_ORGANIZATION, content), true),
-        getParameter(PARAM_RECORPAY, content), showDoubtful, excludeVoid);
+        getParameter(PARAM_RECORPAY, content), showDoubtful, excludeVoid,
+        isFilterByCurrency, filterCurrencyId);
     return data;
   }
 
