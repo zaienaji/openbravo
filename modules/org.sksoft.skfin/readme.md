@@ -38,3 +38,11 @@ The record saved to database. To see the effect, you need to use SQL client (e.g
 5. Click one of business partner on the report to drill down the report. In this case, you will get detailed aging report, again filtered by given currency.![](doc/images/007_.png)
 6. You can play arround with Receivable Aging Schedule report, export to PDF/Excel, etc.
 
+## AR/AP Aging Report Calculated by Invoice Date instead of Due Date
+1. open menu **Payable Aging Schedule** report.![](doc/images/004_.png)
+2. thick **Calculate aging using invoice date instead of due date** checkbox, and also thick **Show Details** checkbox. ![](doc/images/008_.jpeg)
+3. Click **View** button on the top right. Your report will be shown.
+4. Your report now available, you can see this aging report is calculated using invoice date instead of payment schedule due date. All of the aging payment displayed in most left lane (over 120).![](doc/images/009_.jpeg)
+5. Back to the **Payable Aging Schedule** report form, unthick **Calculate aging using invoice date instead of due date** checkbox, then click **View** button on the top right once again. Your report will be shown. You can see this aging report now calculated using payment schedule due date, not invoice date. Some of aging payment displayed in 90 days lane.![](doc/images/0010_.jpeg)
+6. You can play arround without show detail, you will get respective result as per screenshots below:![](doc/images/0011_.jpeg)![](doc/images/0012_.jpeg)
+7. Also, you can try this refature for Receivable part on your end.
