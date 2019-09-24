@@ -20,6 +20,306 @@
 
 <SqlClass name="AgingDaoData" package="org.openbravo.erpCommon.ad_reports">
   <SqlClassComment></SqlClassComment>
+
+  <SqlMethod name="selectByCurrencyAndAgingByInvoiceDate" type="preparedStatement" return="scrollable">
+    <SqlMethodComment></SqlMethodComment>
+    <Sql>
+      <![CDATA[
+         SELECT B.* FROM (
+         SELECT A.bpId, bp.name as bpName, SUM(A.amount) as amount, A.scope, 0 as credit, '' as invoiceId, '' as docNo, '' as dateInvoiced, SUM(doubtfuldebtamt) as doubtfuldebt
+         FROM ( 
+	             SELECT i.c_bpartner_id AS bpId, 
+	                    CASE 
+	                     WHEN to_char('Y') = ? AND psd.DOUBTFULDEBT_AMOUNT <> 0 AND FIN_AGING_ISDOUBTFULTDEBT(psd.fin_payment_schedule_invoice, TO_DATE(?)) = 'Y' THEN (psd.amount + psd.writeoffamt - psd.DOUBTFULDEBT_AMOUNT) 
+	                     ELSE (psd.amount + psd.writeoffamt) 
+	                    END                AS amount,
+	                    CASE 
+                         WHEN psd.DOUBTFULDEBT_AMOUNT <> 0 AND FIN_AGING_ISDOUBTFULTDEBT(psd.fin_payment_schedule_invoice, TO_DATE(?)) = 'Y' THEN (psd.DOUBTFULDEBT_AMOUNT) 
+                         ELSE 0
+                        END                AS doubtfuldebtamt, 
+				        CASE 
+				         WHEN Trunc(i.dateinvoiced) > TO_DATE(?) THEN 0 
+				         WHEN Trunc(i.dateinvoiced) > TO_DATE(?) THEN 1 
+				         WHEN Trunc(i.dateinvoiced) > TO_DATE(?) THEN 2 
+				         WHEN Trunc(i.dateinvoiced) > TO_DATE(?) THEN 3 
+				         WHEN Trunc(i.dateinvoiced) > TO_DATE(?) THEN 4 
+				         ELSE 5 
+				        END                                                        AS scope
+				 FROM  fin_payment_scheduledetail psd 
+				       INNER JOIN fin_payment_schedule ps ON psd.fin_payment_schedule_invoice = ps.fin_payment_schedule_id 
+				       INNER JOIN c_invoice            i  ON ps.c_invoice_id = i.c_invoice_id 
+				 WHERE psd.isactive = 'Y'
+				   AND i.c_currency_id = ?  
+				   AND psd.iscanceled = 'N' 
+				   AND (psd.AD_Org_ID in ('1')) 
+				   AND (i.AD_Org_ID in ('1')) 
+				   AND 2=2
+				   AND i.issotrx = ? 
+				   AND 1=1
+				   AND Trunc(i.dateacct) <= TO_DATE(?)
+				   AND (   psd.fin_payment_detail_id IS NULL 
+				        OR psd.isinvoicepaid = 'N' 
+				        OR (psd.isinvoicepaid = 'Y' 
+				            AND EXISTS (SELECT 1 
+				                      FROM  fin_payment_detail pd 
+				                            INNER JOIN fin_payment p ON pd.fin_payment_id = p.fin_payment_id 
+				                      WHERE Trunc(p.paymentdate) > TO_DATE(?)
+				                        AND pd.fin_payment_detail_id = psd.fin_payment_detail_id) ) ) 
+			  ) A 
+			   INNER JOIN c_bpartner bp on (A.bpId = bp.c_bpartner_id)
+		GROUP BY A.bpId, bp.name, A.scope  
+        ) B		
+      ]]></Sql>
+    <Field name="rownum" value="count"/>
+    <Parameter name="showDoubtfulDebt"/>
+    <Parameter name="asOfDate"/>
+    <Parameter name="asOfDate"/>
+    <Parameter name="asOfDate"/>
+    <Parameter name="firstRangeBucket"/>
+    <Parameter name="secondRangeBucket"/>
+    <Parameter name="thirdRangeBucket"/>
+    <Parameter name="fourthRangeBucket"/>
+    <Parameter name="currencyId"/>
+    <Parameter name="org" type="replace" optional="true" after="AND (psd.AD_Org_ID in (" text="'1'"/>
+    <Parameter name="org" type="replace" optional="true" after="AND (i.AD_Org_ID in (" text="'1'"/>
+    <Parameter name="cbPartnerId" optional="true" type="argument" after="AND 2=2"><![CDATA[ AND i.C_BPARTNER_ID IN]]></Parameter>
+    <Parameter name="recOrPay"/>
+    <Parameter name="excludeVoids" type="none" optional="true" after="AND 1=1" text="AND i.DOCSTATUS NOT IN ('VO')"/>
+    <Parameter name="asOfDate"/>
+    <Parameter name="asOfDate"/>
+    <Parameter name="pgLimit" type="argument" optional="true" after=") B"><![CDATA[LIMIT ]]></Parameter>
+    <Parameter name="oraLimit1" type="argument" optional="true" after=") B"><![CDATA[WHERE ROWNUM <= ]]></Parameter>
+   </SqlMethod>
+
+   <SqlMethod name="selectDetailByCurrencyAndAgingByInvoiceDate" type="preparedStatement" return="scrollable">
+    <SqlMethodComment></SqlMethodComment>
+    <Sql>
+      <![CDATA[
+           SELECT C.* FROM (
+           SELECT B.bpId, bp.name as bpName, B.amount as amount, B.scope, B.c_invoice_id as invoiceId, B.documentNo as docNo, 
+           B.dateacct as dateInvoiced, (B.doubtfuldebtamt) as doubtfuldebt
+           FROM (  
+                 SELECT A.c_invoice_id, A.c_currency_id, A.bpId, A.documentNo, A.dateacct, SUM(A.amount) as amount, SUM(A.doubtfuldebtamt) as doubtfuldebtAmt, A.scope
+                 FROM ( 
+                         SELECT i.c_bpartner_id AS bpId, i.c_invoice_id,
+                                CASE
+                                 WHEN i.issotrx = 'N' AND i.poreference IS NOT NULL THEN FIN_AGING_GETDOCNO(i.poreference, i.documentNo, i.ad_org_id)
+                                 ELSE i.documentNo
+                                 END                AS documentNo,
+                                i.dateacct, i.c_currency_id,
+                                CASE 
+                                 WHEN to_char('Y') = ? AND psd.DOUBTFULDEBT_AMOUNT <> 0 AND FIN_AGING_ISDOUBTFULTDEBT(psd.fin_payment_schedule_invoice, TO_DATE(?)) = 'Y' THEN  psd.amount + psd.writeoffamt - psd.DOUBTFULDEBT_AMOUNT
+                                 ELSE psd.amount + psd.writeoffamt
+                                 END                AS amount, 
+                                CASE
+                                 WHEN psd.DOUBTFULDEBT_AMOUNT <> 0 AND FIN_AGING_ISDOUBTFULTDEBT(psd.fin_payment_schedule_invoice, TO_DATE(?)) = 'Y' THEN psd.DOUBTFULDEBT_AMOUNT
+                                 ELSE 0
+                                 END                AS doubtfuldebtamt,
+                                CASE 
+                                 WHEN Trunc(i.dateinvoiced) > TO_DATE(?) THEN 0 
+                                 WHEN Trunc(i.dateinvoiced) > TO_DATE(?) THEN 1 
+                                 WHEN Trunc(i.dateinvoiced) > TO_DATE(?) THEN 2 
+                                 WHEN Trunc(i.dateinvoiced) > TO_DATE(?) THEN 3 
+                                 WHEN Trunc(i.dateinvoiced) > TO_DATE(?) THEN 4 
+                                 ELSE 5 
+                                END                                                        AS scope
+                         FROM  fin_payment_scheduledetail psd 
+                               INNER JOIN fin_payment_schedule ps ON psd.fin_payment_schedule_invoice = ps.fin_payment_schedule_id 
+                               INNER JOIN c_invoice            i  ON ps.c_invoice_id = i.c_invoice_id 
+                         WHERE psd.isactive = 'Y' 
+                           AND psd.iscanceled = 'N' 
+                           AND (psd.AD_Org_ID in ('1')) 
+                           AND (i.AD_Org_ID in ('1')) 
+                           AND 2=2
+                           AND i.issotrx = ? 
+                           AND i.c_currency_id = ?  
+                           AND 1=1
+                           AND Trunc(i.dateacct) <= TO_DATE(?)
+                           AND (   psd.fin_payment_detail_id IS NULL 
+                                OR psd.isinvoicepaid = 'N' 
+                                OR (psd.isinvoicepaid = 'Y' 
+                                    AND EXISTS (SELECT 1 
+                                              FROM  fin_payment_detail pd 
+                                                    INNER JOIN fin_payment p ON pd.fin_payment_id = p.fin_payment_id 
+                                              WHERE Trunc(p.paymentdate) > TO_DATE(?)
+                                                AND pd.fin_payment_detail_id = psd.fin_payment_detail_id) ) ) 
+                      ) A       
+                GROUP BY A.c_invoice_id, A.c_currency_id, A.bpId, A.documentNo, A.dateacct, A.scope
+               ) B
+          INNER JOIN c_bpartner bp on (B.bpId = bp.c_bpartner_id)     
+          ) C		  
+      ]]></Sql>
+    <Field name="rownum" value="count"/>
+    <Parameter name="showDoubtfulDebt"/>
+    <Parameter name="asOfDate"/>
+    <Parameter name="asOfDate"/>
+    <Parameter name="asOfDate"/>
+    <Parameter name="firstRangeBucket"/>
+    <Parameter name="secondRangeBucket"/>
+    <Parameter name="thirdRangeBucket"/>
+    <Parameter name="fourthRangeBucket"/>
+    <Parameter name="org" type="replace" optional="true" after="AND (psd.AD_Org_ID in (" text="'1'"/>
+    <Parameter name="org" type="replace" optional="true" after="AND (i.AD_Org_ID in (" text="'1'"/>
+    <Parameter name="cbPartnerId" optional="true" type="argument" after="AND 2=2"><![CDATA[ AND i.C_BPARTNER_ID IN]]></Parameter>
+    <Parameter name="recOrPay"/>
+    <Parameter name="currencyId"/>
+    <Parameter name="excludeVoids" type="none" optional="true" after="AND 1=1" text="AND i.DOCSTATUS NOT IN ('VO')"/>
+    <Parameter name="asOfDate"/>
+    <Parameter name="asOfDate"/>
+    <Parameter name="pgLimit" type="argument" optional="true" after=") C"><![CDATA[LIMIT ]]></Parameter>
+    <Parameter name="oraLimit1" type="argument" optional="true" after=") C"><![CDATA[WHERE ROWNUM <= ]]></Parameter>
+   </SqlMethod>
+   
+   <SqlMethod name="selectAgingByInvoiceDate" type="preparedStatement" return="scrollable">
+    <SqlMethodComment></SqlMethodComment>
+    <Sql>
+      <![CDATA[
+         SELECT B.* FROM (
+         SELECT A.bpId, bp.name as bpName, SUM(A.amount) as amount, A.scope, 0 as credit, '' as invoiceId, '' as docNo, '' as dateInvoiced, SUM(doubtfuldebtamt) as doubtfuldebt
+         FROM ( 
+	             SELECT i.c_bpartner_id AS bpId, 
+	                    CASE 
+	                     WHEN to_char('Y') = ? AND psd.DOUBTFULDEBT_AMOUNT <> 0 AND FIN_AGING_ISDOUBTFULTDEBT(psd.fin_payment_schedule_invoice, TO_DATE(?)) = 'Y' THEN FIN_AGING_INVOICECURRENCY_RATE(i.c_invoice_id, ?, i.c_currency_id) * (psd.amount + psd.writeoffamt - psd.DOUBTFULDEBT_AMOUNT) 
+	                     ELSE FIN_AGING_INVOICECURRENCY_RATE(i.c_invoice_id, ?, i.c_currency_id) * (psd.amount + psd.writeoffamt) 
+	                    END                AS amount,
+	                    CASE 
+                         WHEN psd.DOUBTFULDEBT_AMOUNT <> 0 AND FIN_AGING_ISDOUBTFULTDEBT(psd.fin_payment_schedule_invoice, TO_DATE(?)) = 'Y' THEN FIN_AGING_INVOICECURRENCY_RATE(i.c_invoice_id, ?, i.c_currency_id) * (psd.DOUBTFULDEBT_AMOUNT) 
+                         ELSE 0
+                        END                AS doubtfuldebtamt, 
+				        CASE 
+				         WHEN Trunc(i.dateinvoiced) > TO_DATE(?) THEN 0 
+				         WHEN Trunc(i.dateinvoiced) > TO_DATE(?) THEN 1 
+				         WHEN Trunc(i.dateinvoiced) > TO_DATE(?) THEN 2 
+				         WHEN Trunc(i.dateinvoiced) > TO_DATE(?) THEN 3 
+				         WHEN Trunc(i.dateinvoiced) > TO_DATE(?) THEN 4 
+				         ELSE 5 
+				        END                                                        AS scope
+				 FROM  fin_payment_scheduledetail psd 
+				       INNER JOIN fin_payment_schedule ps ON psd.fin_payment_schedule_invoice = ps.fin_payment_schedule_id 
+				       INNER JOIN c_invoice            i  ON ps.c_invoice_id = i.c_invoice_id 
+				 WHERE psd.isactive = 'Y' 
+				   AND psd.iscanceled = 'N' 
+				   AND (psd.AD_Org_ID in ('1')) 
+				   AND (i.AD_Org_ID in ('1')) 
+				   AND 2=2
+				   AND i.issotrx = ? 
+				   AND 1=1
+				   AND Trunc(i.dateacct) <= TO_DATE(?)
+				   AND (   psd.fin_payment_detail_id IS NULL 
+				        OR psd.isinvoicepaid = 'N' 
+				        OR (psd.isinvoicepaid = 'Y' 
+				            AND EXISTS (SELECT 1 
+				                      FROM  fin_payment_detail pd 
+				                            INNER JOIN fin_payment p ON pd.fin_payment_id = p.fin_payment_id 
+				                      WHERE Trunc(p.paymentdate) > TO_DATE(?)
+				                        AND pd.fin_payment_detail_id = psd.fin_payment_detail_id) ) ) 
+			  ) A 
+			   INNER JOIN c_bpartner bp on (A.bpId = bp.c_bpartner_id)
+		GROUP BY A.bpId, bp.name, A.scope  
+        ) B		
+      ]]></Sql>
+    <Field name="rownum" value="count"/>
+    <Parameter name="showDoubtfulDebt"/>
+    <Parameter name="asOfDate"/>
+    <Parameter name="currencyId"/>
+    <Parameter name="currencyId"/>
+    <Parameter name="asOfDate"/>
+    <Parameter name="currencyId"/>
+    <Parameter name="asOfDate"/>
+    <Parameter name="firstRangeBucket"/>
+    <Parameter name="secondRangeBucket"/>
+    <Parameter name="thirdRangeBucket"/>
+    <Parameter name="fourthRangeBucket"/>
+    <Parameter name="org" type="replace" optional="true" after="AND (psd.AD_Org_ID in (" text="'1'"/>
+    <Parameter name="org" type="replace" optional="true" after="AND (i.AD_Org_ID in (" text="'1'"/>
+    <Parameter name="cbPartnerId" optional="true" type="argument" after="AND 2=2"><![CDATA[ AND i.C_BPARTNER_ID IN]]></Parameter>
+    <Parameter name="recOrPay"/>
+    <Parameter name="excludeVoids" type="none" optional="true" after="AND 1=1" text="AND i.DOCSTATUS NOT IN ('VO')"/>
+    <Parameter name="asOfDate"/>
+    <Parameter name="asOfDate"/>
+    <Parameter name="pgLimit" type="argument" optional="true" after=") B"><![CDATA[LIMIT ]]></Parameter>
+    <Parameter name="oraLimit1" type="argument" optional="true" after=") B"><![CDATA[WHERE ROWNUM <= ]]></Parameter>
+    </SqlMethod>
+    
+    <SqlMethod name="selectDetailAgingByInvoiceDate" type="preparedStatement" return="scrollable">
+    <SqlMethodComment></SqlMethodComment>
+    <Sql>
+      <![CDATA[
+           SELECT C.* FROM (
+           SELECT B.bpId, bp.name as bpName, FIN_AGING_INVOICECURRENCY_RATE(B.c_invoice_id, ?, B.c_currency_id) * B.amount as amount, B.scope, B.c_invoice_id as invoiceId, B.documentNo as docNo, 
+           B.dateacct as dateInvoiced, FIN_AGING_INVOICECURRENCY_RATE(B.c_invoice_id, ?, B.c_currency_id) * (B.doubtfuldebtamt) as doubtfuldebt
+           FROM (  
+                 SELECT A.c_invoice_id, A.c_currency_id, A.bpId, A.documentNo, A.dateacct, SUM(A.amount) as amount, SUM(A.doubtfuldebtamt) as doubtfuldebtAmt, A.scope
+                 FROM ( 
+                         SELECT i.c_bpartner_id AS bpId, i.c_invoice_id,
+                                CASE
+                                 WHEN i.issotrx = 'N' AND i.poreference IS NOT NULL THEN FIN_AGING_GETDOCNO(i.poreference, i.documentNo, i.ad_org_id)
+                                 ELSE i.documentNo
+                                 END                AS documentNo,
+                                i.dateacct, i.c_currency_id,
+                                CASE 
+                                 WHEN to_char('Y') = ? AND psd.DOUBTFULDEBT_AMOUNT <> 0 AND FIN_AGING_ISDOUBTFULTDEBT(psd.fin_payment_schedule_invoice, TO_DATE(?)) = 'Y' THEN  psd.amount + psd.writeoffamt - psd.DOUBTFULDEBT_AMOUNT
+                                 ELSE psd.amount + psd.writeoffamt
+                                 END                AS amount, 
+                                CASE
+                                 WHEN psd.DOUBTFULDEBT_AMOUNT <> 0 AND FIN_AGING_ISDOUBTFULTDEBT(psd.fin_payment_schedule_invoice, TO_DATE(?)) = 'Y' THEN psd.DOUBTFULDEBT_AMOUNT
+                                 ELSE 0
+                                 END                AS doubtfuldebtamt,
+                                CASE 
+                                 WHEN Trunc(i.dateinvoiced) > TO_DATE(?) THEN 0 
+                                 WHEN Trunc(i.dateinvoiced) > TO_DATE(?) THEN 1 
+                                 WHEN Trunc(i.dateinvoiced) > TO_DATE(?) THEN 2 
+                                 WHEN Trunc(i.dateinvoiced) > TO_DATE(?) THEN 3 
+                                 WHEN Trunc(i.dateinvoiced) > TO_DATE(?) THEN 4 
+                                 ELSE 5 
+                                END                                                        AS scope
+                         FROM  fin_payment_scheduledetail psd 
+                               INNER JOIN fin_payment_schedule ps ON psd.fin_payment_schedule_invoice = ps.fin_payment_schedule_id 
+                               INNER JOIN c_invoice            i  ON ps.c_invoice_id = i.c_invoice_id 
+                         WHERE psd.isactive = 'Y' 
+                           AND psd.iscanceled = 'N' 
+                           AND (psd.AD_Org_ID in ('1')) 
+                           AND (i.AD_Org_ID in ('1')) 
+                           AND 2=2
+                           AND i.issotrx = ? 
+                           AND 1=1
+                           AND Trunc(i.dateacct) <= TO_DATE(?)
+                           AND (   psd.fin_payment_detail_id IS NULL 
+                                OR psd.isinvoicepaid = 'N' 
+                                OR (psd.isinvoicepaid = 'Y' 
+                                    AND EXISTS (SELECT 1 
+                                              FROM  fin_payment_detail pd 
+                                                    INNER JOIN fin_payment p ON pd.fin_payment_id = p.fin_payment_id 
+                                              WHERE Trunc(p.paymentdate) > TO_DATE(?)
+                                                AND pd.fin_payment_detail_id = psd.fin_payment_detail_id) ) ) 
+                      ) A       
+                GROUP BY A.c_invoice_id, A.c_currency_id, A.bpId, A.documentNo, A.dateacct, A.scope
+               ) B
+          INNER JOIN c_bpartner bp on (B.bpId = bp.c_bpartner_id)     
+          ) C		  
+      ]]></Sql>
+    <Field name="rownum" value="count"/>
+    <Parameter name="currencyId"/>
+    <Parameter name="currencyId"/>
+    <Parameter name="showDoubtfulDebt"/>
+    <Parameter name="asOfDate"/>
+    <Parameter name="asOfDate"/>
+    <Parameter name="asOfDate"/>
+    <Parameter name="firstRangeBucket"/>
+    <Parameter name="secondRangeBucket"/>
+    <Parameter name="thirdRangeBucket"/>
+    <Parameter name="fourthRangeBucket"/>
+    <Parameter name="org" type="replace" optional="true" after="AND (psd.AD_Org_ID in (" text="'1'"/>
+    <Parameter name="org" type="replace" optional="true" after="AND (i.AD_Org_ID in (" text="'1'"/>
+    <Parameter name="cbPartnerId" optional="true" type="argument" after="AND 2=2"><![CDATA[ AND i.C_BPARTNER_ID IN]]></Parameter>
+    <Parameter name="recOrPay"/>
+    <Parameter name="excludeVoids" type="none" optional="true" after="AND 1=1" text="AND i.DOCSTATUS NOT IN ('VO')"/>
+    <Parameter name="asOfDate"/>
+    <Parameter name="asOfDate"/>
+    <Parameter name="pgLimit" type="argument" optional="true" after=") C"><![CDATA[LIMIT ]]></Parameter>
+    <Parameter name="oraLimit1" type="argument" optional="true" after=") C"><![CDATA[WHERE ROWNUM <= ]]></Parameter>
+  </SqlMethod>
+
   <SqlMethod name="selectbycurrency" type="preparedStatement" return="scrollable">
     <SqlMethodComment></SqlMethodComment>
     <Sql>
@@ -88,7 +388,7 @@
     <Parameter name="asOfDate"/>
     <Parameter name="pgLimit" type="argument" optional="true" after=") B"><![CDATA[LIMIT ]]></Parameter>
     <Parameter name="oraLimit1" type="argument" optional="true" after=") B"><![CDATA[WHERE ROWNUM <= ]]></Parameter>
-   </SqlMethod>
+  </SqlMethod>
 
   <SqlMethod name="selectCreditByCurrency" type="preparedStatement" return="scrollable">
     <SqlMethodComment></SqlMethodComment>

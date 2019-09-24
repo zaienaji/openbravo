@@ -92,6 +92,7 @@ public class AgingBalanceReportActionHandler extends BaseReportActionHandler {
   private static final String PARAM_WARNING = "warning";
   private static final String PARAM_ISFILTERBYCURRENCY = "skfin_isfilterbycurrency";
   private static final String PARAM_FILTERBYCURRENCY = "skfin_filterbycurrency_id";
+  private static final String PARAM_ISCALCULATEAGINGBYINVOICEDATE = "skfin_iscalculateagingbyinvoicedate";
   private static final String TRUE = "true";
   private static final String FALSE = "false";
   private static final String BLANK = "";
@@ -205,6 +206,7 @@ public class AgingBalanceReportActionHandler extends BaseReportActionHandler {
     boolean excludeVoid = FALSE.equals(getParameter(PARAM_SHOWVOID, content));
     boolean isFilterByCurrency = TRUE.equals(getParameter(PARAM_ISFILTERBYCURRENCY, content));
     String filterCurrencyId = getParameter(PARAM_FILTERBYCURRENCY, content);
+    boolean isCalculateAgingByInvoiceDate = TRUE.equals(getParameter(PARAM_ISCALCULATEAGINGBYINVOICEDATE, content));
     Currency convCurrency = null;
     String dateFormatString = OBPropertiesProvider.getInstance()
         .getOpenbravoProperties()
@@ -231,7 +233,8 @@ public class AgingBalanceReportActionHandler extends BaseReportActionHandler {
         getParameter(PARAM_RECORPAY, content), getParameter(PARAM_COLUMN1, content),
         getParameter(PARAM_COLUMN2, content), getParameter(PARAM_COLUMN3, content),
         getParameter(PARAM_COLUMN4, content), getParameter(PARAM_BP, content), showDoubtful,
-        excludeVoid, isFilterByCurrency, filterCurrencyId);
+        excludeVoid, isFilterByCurrency, filterCurrencyId,
+        isCalculateAgingByInvoiceDate);
     return data;
   }
 
@@ -277,6 +280,7 @@ public class AgingBalanceReportActionHandler extends BaseReportActionHandler {
     boolean excludeVoid = FALSE.equals(getParameter(PARAM_SHOWVOID, content));
     boolean isFilterByCurrency = TRUE.equals(getParameter(PARAM_ISFILTERBYCURRENCY, content));
     String filterCurrencyId = getParameter(PARAM_FILTERBYCURRENCY, content);
+    boolean isCalculateAgingByInvoiceDate = TRUE.equals(getParameter(PARAM_ISCALCULATEAGINGBYINVOICEDATE, content));
 
     // Save in session report limit
     RequestContext.get()
@@ -289,7 +293,7 @@ public class AgingBalanceReportActionHandler extends BaseReportActionHandler {
         getParameter(PARAM_ORGANIZATION, content), new OrganizationStructureProvider()
             .getChildTree(getParameter(PARAM_ORGANIZATION, content), true),
         getParameter(PARAM_RECORPAY, content), showDoubtful, excludeVoid,
-        isFilterByCurrency, filterCurrencyId);
+        isFilterByCurrency, filterCurrencyId, isCalculateAgingByInvoiceDate);
     return data;
   }
 
