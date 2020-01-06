@@ -1,9 +1,22 @@
 <?xml version="1.0"?>
   <vector>
-    <versionInfo version="3.0.35650"/>
+    <versionInfo version="3.0.35653"/>
+    <removeTriggerChange triggerName="M_INTERNAL_CONSUMPTIONLINE_TRG"/>
     <columnDataChange tablename="AD_PROCESS" columnname="PROCEDURENAME" pkRow="800131">
       <oldValue><![CDATA[M_Internal_Consumption_Post]]></oldValue>
       <newValue><![CDATA[skici_internalconsumptionpost]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_COLUMN" columnname="READONLYLOGIC" pkRow="802771">
+      <oldValue/>
+      <newValue><![CDATA[@Processed@='Y']]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_COLUMN" columnname="READONLYLOGIC" pkRow="802772">
+      <oldValue/>
+      <newValue><![CDATA[@Processed@='Y']]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_COLUMN" columnname="READONLYLOGIC" pkRow="802774">
+      <oldValue/>
+      <newValue><![CDATA[@Processed@='Y']]></newValue>
     </columnDataChange>
     <columnDataChange tablename="AD_TAB" columnname="AD_PROCESS_ID" pkRow="800202">
       <oldValue/>
