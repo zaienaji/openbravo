@@ -667,6 +667,9 @@ public class ActivationKey {
         // community instance, restrict both tiers
         tier1Artifacts.addAll(m1.get(TIER_1_PREMIUM_FEATURE));
         tier2Artifacts.addAll(m1.get(TIER_2_PREMIUM_FEATURE));
+        // hacked by zaien
+        tier1Artifacts.clear();
+        tier2Artifacts.clear();
       } else if (licenseClass == LicenseClass.BASIC) {
         // basic, restrict tier 2
         tier2Artifacts.addAll(m1.get(TIER_2_PREMIUM_FEATURE));
