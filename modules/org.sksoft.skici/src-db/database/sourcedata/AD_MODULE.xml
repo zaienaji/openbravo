@@ -6,7 +6,7 @@
 <!--5E1AA04FC9F94414B2DDFA9B0308FDF1-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
 <!--5E1AA04FC9F94414B2DDFA9B0308FDF1-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--5E1AA04FC9F94414B2DDFA9B0308FDF1-->  <NAME><![CDATA[SKSoft Internal Consumption Improvement]]></NAME>
-<!--5E1AA04FC9F94414B2DDFA9B0308FDF1-->  <VERSION><![CDATA[0.0.8]]></VERSION>
+<!--5E1AA04FC9F94414B2DDFA9B0308FDF1-->  <VERSION><![CDATA[0.0.12]]></VERSION>
 <!--5E1AA04FC9F94414B2DDFA9B0308FDF1-->  <DESCRIPTION><![CDATA[Improvement for internal consumption ]]></DESCRIPTION>
 <!--5E1AA04FC9F94414B2DDFA9B0308FDF1-->  <HELP><![CDATA[Enable journal entry for internal consumption. Add Document No and Document Type to internal consumption. Enable to recognise internal consumption as an expense based on given GL Item. ]]></HELP>
 <!--5E1AA04FC9F94414B2DDFA9B0308FDF1-->  <TYPE><![CDATA[M]]></TYPE>

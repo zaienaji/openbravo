@@ -46,7 +46,7 @@ BEGIN
   WHERE M_Internal_Consumption_ID=v_ID
     AND(Posted='Y') ;
   IF(v_RO > 0) THEN
-    RAISE EXCEPTION 'v_ID % %', v_ID, '@20501@' ; --OBTG:-20000--
+    RAISE_APPLICATION_ERROR(-20000, '@20501@') ;
   END IF;
   -- Updating inventory
   IF UPDATING OR DELETING THEN
