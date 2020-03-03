@@ -6,6 +6,10 @@
       <oldValue><![CDATA[M_Internal_Consumption_Post]]></oldValue>
       <newValue><![CDATA[skici_internalconsumptionpost]]></newValue>
     </columnDataChange>
+    <columnDataChange tablename="AD_COLUMN" columnname="AD_PROCESS_ID" pkRow="802761">
+      <oldValue><![CDATA[800131]]></oldValue>
+      <newValue><![CDATA[7D8BC192A7D3423FA55D2C546D3B9EDE]]></newValue>
+    </columnDataChange>
     <columnDataChange tablename="AD_COLUMN" columnname="READONLYLOGIC" pkRow="802771">
       <oldValue/>
       <newValue><![CDATA[@Processed@='Y']]></newValue>
