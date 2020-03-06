@@ -9,13 +9,11 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openbravo.base.provider.OBProvider;
+import org.openbravo.base.exception.OBException;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.AccDefUtility;
 import org.openbravo.erpCommon.utility.OBError;
-import org.openbravo.model.ad.process.ProcessInstance;
-import org.openbravo.model.ad.ui.Process;
 import org.openbravo.model.financialmgmt.calendar.Calendar;
 import org.openbravo.model.financialmgmt.calendar.Period;
 import org.openbravo.model.financialmgmt.calendar.PeriodControl;
@@ -32,6 +30,8 @@ public class InternalConsumptionPost extends DalBaseProcess {
 
   @Override
   protected void doExecute(ProcessBundle bundle) throws Exception {
+    String procedureName = "SKICI_INTERNALCONSUMPTIONPOST1";
+    
     OBError result = new OBError();
     result.setType("Success");
     result.setTitle("Success");
@@ -39,7 +39,6 @@ public class InternalConsumptionPost extends DalBaseProcess {
     bundle.setResult(result);
     
     // skici post internal consumption stored procedure related to ad_process_id 800131
-    final Process sqlProcess = OBDal.getInstance().get(Process.class, "800131");
     String recordId = (String)bundle.getParams().get("M_Internal_Consumption_ID");
     logger.debug("processing record id "+recordId);
     InternalConsumption ic = OBDal.getInstance().get(InternalConsumption.class, recordId);
@@ -55,52 +54,54 @@ public class InternalConsumptionPost extends DalBaseProcess {
       return;
     }
     
-    OBContext.setAdminMode();
+    String docStatus = ic.getStatus();
+    String action = null;
+    switch (docStatus) {
+      case "DR":
+        action="CO";
+        break;
+        
+      case "CO":
+        action="VO";
+        break;
+        
+      case "VO":
+        throw new OBException("cannot proceed internal consumption, it's already voided.");
+        
+      case "CL":
+        throw new OBException("cannot proceed internal consumption, it's already closed.");
+
+      default:
+        break;
+    }
     
-    final ProcessInstance pInstance = OBProvider.getInstance().get(ProcessInstance.class);
-    pInstance.setProcess(sqlProcess);
-    pInstance.setActive(true);
-    pInstance.setRecordID(recordId);
-    pInstance.setUserContact(OBContext.getOBContext().getUser());
-    
-    OBDal.getInstance().save(pInstance);
-    OBDal.getInstance().flush();
-    
-    OBContext.restorePreviousMode();
-    
-    logger.debug("pInstance id "+pInstance.getId());
+    if (Strings.isNullOrEmpty(action))
+      throw new OBException("cannot proceed internal consumption, invalid document status: "+docStatus);
     
     try {
       final Connection connection = OBDal.getInstance().getConnection();
       
       OBContext.setAdminMode();
-      String sql = "select * from "+sqlProcess.getProcedure()+"(?)";
+      String sql = "select * from "+procedureName+"(null, ?, ?)";
       OBContext.restorePreviousMode();
       
       final PreparedStatement preparedStatement = connection.prepareStatement(sql);
-      preparedStatement.setString(1, pInstance.getId());
+      preparedStatement.setString(1, ic.getId());
+      preparedStatement.setString(2, action);
       preparedStatement.execute();
+      
+    } catch (SQLException e) {
+      result.setType("Error");
+      result.setTitle("Error");
+      result.setMessage(e.getMessage());
+      
+      logger.error("failed to call stored procedure. error message: "+e.getMessage());
+      
     } catch (Exception e) {
       logger.error("failed to call stored procedure. error message: "+e.getMessage());
       throw new SQLException(e.getMessage());
+      
     }
-    
-    OBDal.getInstance().getSession().refresh(pInstance);
-    
-    OBContext.setAdminMode();
-    
-    if (pInstance.getResult()==0)
-    {
-      result.setType("Error");
-      result.setTitle("Error");
-      logger.debug("some error when call stored procedure. error message: "+pInstance.getErrorMsg());
-    }
-    
-    String errormessage = pInstance.getErrorMsg();
-    if (!Strings.isNullOrEmpty(errormessage))
-      result.setMessage(pInstance.getErrorMsg());
-    
-    OBContext.restorePreviousMode();
   }
 
   private String getInternalConsumptionPeriodStatus(InternalConsumption ic) {

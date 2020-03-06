@@ -2,10 +2,6 @@
   <vector>
     <versionInfo version="3.0.35650"/>
     <removeTriggerChange triggerName="M_INTERNAL_CONSUMPTIONLINE_TRG"/>
-    <columnDataChange tablename="AD_PROCESS" columnname="PROCEDURENAME" pkRow="800131">
-      <oldValue><![CDATA[M_Internal_Consumption_Post]]></oldValue>
-      <newValue><![CDATA[skici_internalconsumptionpost]]></newValue>
-    </columnDataChange>
     <columnDataChange tablename="AD_COLUMN" columnname="AD_PROCESS_ID" pkRow="802761">
       <oldValue><![CDATA[800131]]></oldValue>
       <newValue><![CDATA[7D8BC192A7D3423FA55D2C546D3B9EDE]]></newValue>
