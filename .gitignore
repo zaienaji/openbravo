@@ -23,3 +23,8 @@
 /log/
 /src-db/database/formalChangesScript.xml
 /lib/openbravo.war
+/backup_install/
+/.settings/
+/legal/
+*.keep
+*.obx
