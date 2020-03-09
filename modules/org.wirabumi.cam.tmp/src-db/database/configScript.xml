@@ -1,0 +1,246 @@
+<?xml version="1.0"?>
+  <vector>
+    <versionInfo version="3.0.30469"/>
+    <columnSizeChange tablename="A_AMORTIZATION" columnname="PROCESSED" newSize="1" oldSize="60"/>
+    <columnSizeChange tablename="A_ASSET" columnname="NAME" newSize="255" oldSize="60"/>
+    <columnDataChange tablename="AD_PROCESS" columnname="PROCEDURENAME" pkRow="800134">
+      <oldValue><![CDATA[A_Amortization_Process]]></oldValue>
+      <newValue><![CDATA[cam_amortization_process]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_MENU" columnname="ISACTIVE" pkRow="800114">
+      <oldValue><![CDATA[Y]]></oldValue>
+      <newValue><![CDATA[N]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_COLUMN" columnname="AD_REFERENCE_ID" pkRow="8057">
+      <oldValue><![CDATA[10]]></oldValue>
+      <newValue><![CDATA[14]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_COLUMN" columnname="AD_CALLOUT_ID" pkRow="801064">
+      <oldValue/>
+      <newValue><![CDATA[614176C03AA14593A86EA130CCC5A795]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_COLUMN" columnname="AD_REFERENCE_ID" pkRow="801083">
+      <oldValue><![CDATA[28]]></oldValue>
+      <newValue><![CDATA[20]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_COLUMN" columnname="AD_REFERENCE_VALUE_ID" pkRow="801083">
+      <oldValue><![CDATA[800024]]></oldValue>
+      <newValue/>
+    </columnDataChange>
+    <columnDataChange tablename="AD_COLUMN" columnname="FIELDLENGTH" pkRow="801083">
+      <oldValue><![CDATA[60]]></oldValue>
+      <newValue><![CDATA[1]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_COLUMN" columnname="AD_PROCESS_ID" pkRow="801083">
+      <oldValue><![CDATA[800134]]></oldValue>
+      <newValue/>
+    </columnDataChange>
+    <columnDataChange tablename="AD_COLUMN" columnname="AD_CALLOUT_ID" pkRow="801172">
+      <oldValue/>
+      <newValue><![CDATA[189998FD0DD44D2CBD7E972A6BCABD7C]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_COLUMN" columnname="DEFAULTVALUE" pkRow="802758">
+      <oldValue/>
+      <newValue><![CDATA[@#DATE@]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_COLUMN" columnname="READONLYLOGIC" pkRow="802876">
+      <oldValue/>
+      <newValue><![CDATA[@Amortizationtype@='CAM_DOUBLEDECLINING']]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_COLUMN" columnname="AD_PROCESS_ID" pkRow="123ECC9DA80E47D6BBE8D3C8E9ACC59C">
+      <oldValue><![CDATA[85601427EAEE401FA0250FF0A6DD62EF]]></oldValue>
+      <newValue><![CDATA[8C6B905EDA8742A0ABF4092902D54090]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELDGROUP" columnname="ISCOLLAPSED" pkRow="113">
+      <oldValue/>
+      <newValue><![CDATA[Y]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_TAB" columnname="HASTREE" pkRow="452">
+      <oldValue><![CDATA[N]]></oldValue>
+      <newValue><![CDATA[Y]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_TAB" columnname="AD_TABLE_TREE_ID" pkRow="452">
+      <oldValue/>
+      <newValue><![CDATA[71A9BF3F29554D1A9E0B0893BB502A1B]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_TAB" columnname="HASTREE" pkRow="800184">
+      <oldValue><![CDATA[N]]></oldValue>
+      <newValue><![CDATA[Y]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_TAB" columnname="AD_TABLE_TREE_ID" pkRow="800184">
+      <oldValue/>
+      <newValue><![CDATA[71901475DF9E4BA6AA37059F74D5F19A]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="NAME" pkRow="801364">
+      <oldValue><![CDATA[Post Amortization]]></oldValue>
+      <newValue><![CDATA[Processed]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="ISREADONLY" pkRow="801364">
+      <oldValue><![CDATA[N]]></oldValue>
+      <newValue><![CDATA[Y]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="SHOWINRELATION" pkRow="801364">
+      <oldValue><![CDATA[N]]></oldValue>
+      <newValue><![CDATA[Y]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="ISSHOWNINSTATUSBAR" pkRow="801364">
+      <oldValue><![CDATA[N]]></oldValue>
+      <newValue><![CDATA[Y]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="SEQNO" pkRow="801427">
+      <oldValue><![CDATA[270]]></oldValue>
+      <newValue><![CDATA[820]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="ISSHOWNINSTATUSBAR" pkRow="801427">
+      <oldValue><![CDATA[Y]]></oldValue>
+      <newValue><![CDATA[N]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="ISREADONLY" pkRow="801428">
+      <oldValue><![CDATA[N]]></oldValue>
+      <newValue><![CDATA[Y]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="SEQNO" pkRow="801428">
+      <oldValue/>
+      <newValue><![CDATA[120]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="DISPLAYLOGIC" pkRow="801439">
+      <oldValue><![CDATA[@IsDepreciated@='Y' & @Amortizationcalctype@='TI' & @Assetschedule@!'YE']]></oldValue>
+      <newValue><![CDATA[@IsDepreciated@='Y' & ((@Amortizationtype@='LI' & @Amortizationcalctype@='TI' & @Assetschedule@='MO') | (@Amortizationtype@='CAM_DOUBLEDECLINING' & @Assetschedule@='MO'))]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="SEQNO" pkRow="801439">
+      <oldValue><![CDATA[150]]></oldValue>
+      <newValue><![CDATA[670]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="DISPLAYLOGIC" pkRow="801441">
+      <oldValue><![CDATA[@IsDepreciated@='Y'  & @Amortizationcalctype@ = 'TI' & @Assetschedule@='YE']]></oldValue>
+      <newValue><![CDATA[@IsDepreciated@='Y' & ((@Amortizationtype@='LI' & @Amortizationcalctype@='TI' & @Assetschedule@='YE') | (@Amortizationtype@='CAM_DOUBLEDECLINING' & @Assetschedule@='YE'))]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="SEQNO" pkRow="801441">
+      <oldValue><![CDATA[140]]></oldValue>
+      <newValue><![CDATA[660]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="SEQNO" pkRow="801447">
+      <oldValue><![CDATA[90]]></oldValue>
+      <newValue><![CDATA[610]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="DISPLAYLENGTH" pkRow="801449">
+      <oldValue><![CDATA[60]]></oldValue>
+      <newValue><![CDATA[255]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="SEQNO" pkRow="801453">
+      <oldValue><![CDATA[160]]></oldValue>
+      <newValue><![CDATA[505]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="SEQNO" pkRow="801454">
+      <oldValue><![CDATA[170]]></oldValue>
+      <newValue><![CDATA[690]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="SEQNO" pkRow="801455">
+      <oldValue><![CDATA[180]]></oldValue>
+      <newValue><![CDATA[700]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="SEQNO" pkRow="801456">
+      <oldValue><![CDATA[190]]></oldValue>
+      <newValue><![CDATA[710]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="DISPLAYLOGIC" pkRow="801457">
+      <oldValue><![CDATA[@IsDepreciated@='Y' & @Amortizationcalctype@!'TI']]></oldValue>
+      <newValue><![CDATA[@IsDepreciated@='Y' & (@Amortizationcalctype@!'TI' | @Amortizationtype@='CAM_DOUBLEDECLINING')]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="SEQNO" pkRow="801457">
+      <oldValue><![CDATA[120]]></oldValue>
+      <newValue><![CDATA[640]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="SEQNO" pkRow="801458">
+      <oldValue><![CDATA[69]]></oldValue>
+      <newValue><![CDATA[59]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="SEQNO" pkRow="801459">
+      <oldValue><![CDATA[200]]></oldValue>
+      <newValue><![CDATA[720]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="SEQNO" pkRow="801460">
+      <oldValue><![CDATA[210]]></oldValue>
+      <newValue><![CDATA[730]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="SEQNO" pkRow="801537">
+      <oldValue><![CDATA[100]]></oldValue>
+      <newValue><![CDATA[620]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="SEQNO" pkRow="801538">
+      <oldValue><![CDATA[220]]></oldValue>
+      <newValue><![CDATA[740]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="DISPLAYLOGIC" pkRow="801539">
+      <oldValue><![CDATA[@IsDepreciated@='Y' & @Amortizationcalctype@='TI']]></oldValue>
+      <newValue><![CDATA[(@IsDepreciated@='Y' & @Amortizationtype@='CAM_DOUBLEDECLINING') | (@IsDepreciated@='Y' & @Amortizationtype@='LI' & @Amortizationcalctype@='TI')]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="SEQNO" pkRow="801539">
+      <oldValue><![CDATA[130]]></oldValue>
+      <newValue><![CDATA[650]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="SEQNO" pkRow="801542">
+      <oldValue><![CDATA[240]]></oldValue>
+      <newValue><![CDATA[760]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="STARTNEWLINE" pkRow="802922">
+      <oldValue><![CDATA[N]]></oldValue>
+      <newValue><![CDATA[Y]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="ISDISPLAYED" pkRow="803150">
+      <oldValue><![CDATA[N]]></oldValue>
+      <newValue><![CDATA[Y]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="SEQNO" pkRow="803150">
+      <oldValue><![CDATA[250]]></oldValue>
+      <newValue><![CDATA[800]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="ISSHOWNINSTATUSBAR" pkRow="803150">
+      <oldValue><![CDATA[Y]]></oldValue>
+      <newValue><![CDATA[N]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="ISDISPLAYED" pkRow="803151">
+      <oldValue><![CDATA[N]]></oldValue>
+      <newValue><![CDATA[Y]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="SEQNO" pkRow="803151">
+      <oldValue><![CDATA[260]]></oldValue>
+      <newValue><![CDATA[790]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="ISSHOWNINSTATUSBAR" pkRow="803151">
+      <oldValue><![CDATA[Y]]></oldValue>
+      <newValue><![CDATA[N]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="SEQNO" pkRow="803194">
+      <oldValue><![CDATA[110]]></oldValue>
+      <newValue><![CDATA[630]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="SEQNO" pkRow="803195">
+      <oldValue><![CDATA[230]]></oldValue>
+      <newValue><![CDATA[750]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="SEQNO" pkRow="1FDBA66A997C4CA68B43A69C18DD2F55">
+      <oldValue><![CDATA[155]]></oldValue>
+      <newValue><![CDATA[680]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="SEQNO" pkRow="70F292B4C2DF4493B0DCD6CCF4FCBDC6">
+      <oldValue><![CDATA[310]]></oldValue>
+      <newValue><![CDATA[80]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_FIELD" columnname="SEQNO" pkRow="8391231E7A9F4E6294D8B5853185EB83">
+      <oldValue><![CDATA[320]]></oldValue>
+      <newValue><![CDATA[830]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_TABLE" columnname="AD_WINDOW_ID" pkRow="539">
+      <oldValue><![CDATA[800027]]></oldValue>
+      <newValue><![CDATA[77401DB343E74C2798568510FCE22D4A]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_TABLE" columnname="ISTREE" pkRow="800158">
+      <oldValue><![CDATA[N]]></oldValue>
+      <newValue><![CDATA[Y]]></newValue>
+    </columnDataChange>
+    <columnDataChange tablename="AD_WINDOW" columnname="ISACTIVE" pkRow="800027">
+      <oldValue><![CDATA[Y]]></oldValue>
+      <newValue><![CDATA[N]]></newValue>
+    </columnDataChange>
+  </vector>
