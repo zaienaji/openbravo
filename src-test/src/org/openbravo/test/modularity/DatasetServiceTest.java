@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2008-2014 Openbravo SLU 
+ * All portions are Copyright (C) 2008-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -106,7 +106,7 @@ public class DatasetServiceTest extends OBBaseTest {
    */
   @Test
   public void testDataSetTable() {
-    setTestAdminContext();
+    setSystemAdministratorContext();
     final DataSetTable dst = OBProvider.getInstance().get(DataSetTable.class);
     final Table t = OBProvider.getInstance().get(Table.class);
     t.setName("ADTable");
@@ -124,7 +124,7 @@ public class DatasetServiceTest extends OBBaseTest {
    */
   @Test
   public void testReadAll() {
-    setTestAdminContext();
+    setSystemAdministratorContext();
 
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put("ClientID", "0");

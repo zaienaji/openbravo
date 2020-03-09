@@ -260,20 +260,6 @@ isc.OBRelativeDateItem.changeDefaults('quantityFieldDefaults', {
 });
 
 isc.OBRelativeDateItem.changeDefaults('valueFieldDefaults', {
-  keyPress: function(item, form, keyName, characterValue) {
-    if (
-      keyName === 'Enter' &&
-      !isc.EventHandler.ctrlKeyDown() &&
-      !isc.EventHandler.altKeyDown() &&
-      !isc.EventHandler.shiftKeyDown()
-    ) {
-      // canvasItem is the rangeItem
-      form.canvasItem.showPicker();
-      return false;
-    }
-    return true;
-  },
-
   init: function() {
     this.icons = [
       {
@@ -533,6 +519,7 @@ isc.OBMiniDateRangeItem.addProperties({}, OB.DateItemProperties, {
       return;
     }
 
+    delete this.previousLazyFilterValue;
     if (this.expandSingleValue()) {
       this.form.grid.performAction();
     }
@@ -837,12 +824,35 @@ isc.OBMiniDateRangeItem.addProperties({}, OB.DateItemProperties, {
   },
 
   keyPress: function(item, form, keyName, characterValue) {
-    var enterOnEmptyItem;
+    var enterOnEmptyItem,
+      sourceGrid = this.getSourceGrid();
     if (keyName === 'Enter') {
       if (this.singleDateMode) {
         enterOnEmptyItem = !item.getValue() && !item.getEnteredValue();
         this.expandSingleValue();
-        this.form.grid.performAction();
+        if (sourceGrid && sourceGrid.lazyFiltering && sourceGrid.sorter) {
+          if (item.previousLazyFilterValue === undefined && enterOnEmptyItem) {
+            // pressing enter without having edited the filter
+            item.previousLazyFilterValue = item.mapValueToDisplay();
+          } else if (
+            item.previousLazyFilterValue !== item.mapValueToDisplay()
+          ) {
+            // filter has changed
+            sourceGrid.filterHasChanged = true;
+            sourceGrid.sorter.enable();
+            item.previousLazyFilterValue = item.mapValueToDisplay();
+            return false;
+          } else if (!enterOnEmptyItem || item.previousLazyFilterValue !== '') {
+            // filter has not changed: let grid decide if filtering should be performed
+            if (enterOnEmptyItem) {
+              item.previousLazyFilterValue = '';
+            }
+            this.form.grid.performAction();
+            return false;
+          }
+        } else {
+          this.form.grid.performAction();
+        }
         if (!enterOnEmptyItem) {
           return false;
         }

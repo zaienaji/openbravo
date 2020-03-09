@@ -11,7 +11,7 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU
- * All portions are Copyright (C) 2014-2018 Openbravo SLU
+ * All portions are Copyright (C) 2014-2019 Openbravo SLU
  * All Rights Reserved.
  * Contributor(s):  ______________________________________.
  *************************************************************************
@@ -27,11 +27,16 @@ import javax.servlet.ServletException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openbravo.advpaymentmngt.utility.FIN_Utility;
 import org.openbravo.base.secureApp.VariablesSecureApp;
+import org.openbravo.dal.service.OBDal;
+import org.openbravo.dal.service.OBQuery;
 import org.openbravo.data.FieldProvider;
 import org.openbravo.database.ConnectionProvider;
+import org.openbravo.erpCommon.utility.OBDateUtils;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
 import org.openbravo.erpCommon.utility.SequenceIdData;
+import org.openbravo.model.materialmgmt.cost.CostAdjustmentLine;
 
 public class DocCostAdjustment extends AcctServer {
 
@@ -509,6 +514,37 @@ public class DocCostAdjustment extends AcctServer {
     }
     return acct;
 
+  }
+
+  /**
+   * Set the period for the Cost Adjustment considering if all the periods matching accounting dates
+   * in Cost Adjustment Lines are opened
+   */
+  @Override
+  public void setC_Period_ID() {
+    if (C_Period_ID != null) {
+      return;
+    }
+    if (areAllPeriodsOpened(Record_ID, DocumentType)) {
+      super.setC_Period_ID();
+    } else {
+      C_Period_ID = "";
+    }
+  }
+
+  private boolean areAllPeriodsOpened(final String record_ID, final String documentType) {
+    String whereClause = "costAdjustment.id = :record_ID";
+    OBQuery<CostAdjustmentLine> costAdjLineQry = OBDal.getInstance()
+        .createQuery(CostAdjustmentLine.class, whereClause);
+    costAdjLineQry.setNamedParameter("record_ID", record_ID);
+    for (CostAdjustmentLine costAdjustmentLine : costAdjLineQry.list()) {
+      if (!FIN_Utility.isPeriodOpen(costAdjustmentLine.getClient().getId(), documentType,
+          costAdjustmentLine.getOrganization().getId(),
+          OBDateUtils.formatDate(costAdjustmentLine.getAccountingDate()))) {
+        return false;
+      }
+    }
+    return true;
   }
 
   @Override

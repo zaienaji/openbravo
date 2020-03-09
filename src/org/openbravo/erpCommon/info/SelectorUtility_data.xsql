@@ -12,7 +12,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2009-2014 Openbravo SLU 
+ * All portions are Copyright (C) 2009-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -93,6 +93,19 @@
      <Parameter name="adOrgClient" type="replace" optional="true" after="AD_ORG_ID IN (" text="'1'"/>
      <Parameter name="adUserClient" type="replace" optional="true" after="AD_CLIENT_ID IN (" text="'1'"/>
      <Parameter name="mLocatorId" optional="true" type="argument" after="(1=2" text=" OR C_DOCTYPE_ID IN"/>
+  </SqlMethod>
+  
+  <SqlMethod name="selectAllOrganizations" type="preparedStatement" return="multiple">
+    <Sql>
+    <![CDATA[
+      SELECT AD_ORG.AD_ORG_ID AS ID, AD_ORG.NAME
+      FROM AD_ORG
+      WHERE AD_ORG.AD_ORG_ID IN ('1') 
+      AND AD_ORG.AD_CLIENT_ID IN ('1')
+      ORDER BY 2
+     ]]></Sql>
+     <Parameter name="adOrgClient" type="replace" optional="true" after="AD_ORG_ID IN (" text="'1'"/>
+     <Parameter name="adUserClient" type="replace" optional="true" after="AD_ORG.AD_CLIENT_ID IN (" text="'1'"/>
   </SqlMethod>
 
 </SqlClass>

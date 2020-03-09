@@ -73,7 +73,7 @@
         <default/>
         <onCreateDefault/>
       </column>
-      <foreign-key foreignTable="AD_ALERTRULE" name="AD_ALERT_AD_ALERTRULE">
+      <foreign-key foreignTable="AD_ALERTRULE" name="AD_ALERT_AD_ALERTRULE" onDelete="cascade">
         <reference local="AD_ALERTRULE_ID" foreign="AD_ALERTRULE_ID"/>
       </foreign-key>
       <foreign-key foreignTable="AD_CLIENT" name="AD_ALERT_AD_CLIENT">

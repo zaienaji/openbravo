@@ -64,8 +64,7 @@ Copyright © 2003-2004 Softcomplex Inc.
 Eclipse Public License 1.0 (license available at
 http://www.eclipse.org/legal/epl-v10.html) or in the file EPL-1.0.txt in this folder
 
-# Eclipse icons 
-# wsdl4j-1.5.1.jar
+# Eclipse icons
 Icons and files under the Eclipse Public License (license available at
 http://www.eclipse.org/legal/epl-v10.html)
 
@@ -124,9 +123,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 # postgresql-42.2.2.jre7.jar
 Under the BSD license, also available at http://jdbc.postgresql.org/license.html  
 
-# xstream-1.3.1.jar
-Under a modified BSD license available at http://xstream.codehaus.org/license.html
-
 # Dojo Foundation javascripts in web/js/dojo/
 All files under the Academic Free License 2.1 (license available at
 http://opensource.org/licenses/afl-2.1.php)
@@ -157,28 +153,28 @@ All files under the LGPL 2.1 (available at http://www.gnu.org/licenses/old-licen
 # poi-3.10.1.jar
 Under the Apache 2.0 license (included as Apache_poi_license.txt in this folder)
 
-# hibernate-core-5.3.2.Final.jar
-# hibernate-commons-annotations-5.0.4.Final.jar
+# hibernate-core-5.4.2.Final.jar
+# hibernate-commons-annotations-5.1.0.Final.jar
 All files under the LGPL 2.1 (available at www.gnu.org/licenses/lgpl.html)
-
-# dom4j-1.6.1.jar
-Under a BSD style license  (available at http://www.dom4j.org/license.html) 
 
 # antlr-2.7.7.jar
 Under the ANTLR license (available at http://www.antlr.org/license.html)
 
-# junit.jar
+# junit-4.12.jar
 Under the Eclipse Public License - v 1.0 (available at https://www.eclipse.org/legal/epl-v10.html)
 
+# dom4j-2.1.1.jar
+Provided by DOM4J Project - https://dom4j.github.io, under the BSD 3-Clause license (available at https://github.com/dom4j/dom4j/blob/master/LICENSE)
+
 # hamcrest-all-1.3.jar
-Under the BSD 3-Clause license (avaliable at http://opensource.org/licenses/BSD-3-Clause)
+Under the BSD 3-Clause license (available at http://opensource.org/licenses/BSD-3-Clause)
 
 # js.jar
 # ob-rhino-1.6R7.jar
 Under MPL/GPL License (available at https://developer.mozilla.org/en/Rhino_License)
 ob-rhino-1.6R7.jar is the same code as js.jar repackaged to be available under org.openbravo
 
-# javassist-3.22.0-GA.jar
+# javassist-3.24.0-GA.jar
 Under MPL License (included as MPL-1.1.txt in this folder)
 
 # slf4j-api-1.7.25.jar
@@ -196,49 +192,45 @@ In addition, the distribution includes
 All files under the corresponding Sun Binary Code License. This is not free
 software, but provided under license from Sun Microsystems.
 
-# ejb-api-3.0.jar
-# jboss-interceptor-api-3.1.0-CR3.jar
 # jboss-ejb3-api-3.1.0.jar
-# jboss-el-api_2.2_spec-1.0.0.Final.jar
 Under the LGPL license (included as LGPL-2.1.txt in this folder)
 
-# cal10n-api-0.7.7.jar
-# slf4j-ext-1.7.25.jar
-Under the MIT license (available at http://www.slf4j.org/license.html)
-
-# cdi-api.jar
-# guava-18.0.jar
-# javax.inject.jar
-# jboss-interceptor-core-2.0.0.CR1.jar
-# jboss-interceptor-spi-2.0.0.CR1.jar
+# cdi-api-2.0.SP1.jar
+# guava-21.0.jar
+# javax.inject-1.jar
 # jboss-logging-3.3.2.Final.jar
-# weld-api.jar
-# weld-core-1.1.24.Final.jar
-# weld-servlet-core-1.1.24.Final.jar
-# weld-spi.jar
-# arquillian-config-api-1.1.8.Final.jar
-# arquillian-config-impl-base-1.1.8.Final.jar
-# arquillian-container-impl-base-1.1.8.Final.jar
-# arquillian-container-spi-1.1.8.Final.jar
-# arquillian-container-test-api-1.1.8.Final.jar
-# arquillian-container-test-impl-base-1.1.8.Final.jar
-# arquillian-container-test-spi-1.1.8.Final.jar
-# arquillian-core-api-1.1.8.Final.jar
-# arquillian-core-impl-base-1.1.8.Final.jar
-# arquillian-core-spi-1.1.8.Final.jar
-# arquillian-junit-container-1.1.8.Final.jar
-# arquillian-junit-core-1.1.8.Final.jar
-# arquillian-suite-extension-1.1.2.jar
-# arquillian-test-api-1.1.8.Final.jar
-# arquillian-testenricher-cdi-1.0.2.Final.jar
-# arquillian-test-impl-base-1.1.8.Final.jar
-# arquillian-test-spi-1.1.8.Final.jar
-# arquillian-weld-ee-embedded-1.1-1.0.0.CR8.jar
-# shrinkwrap-api-1.2.2.jar
-# shrinkwrap-descriptors-api-base-2.0.0-alpha-7.jar
-# shrinkwrap-descriptors-spi-2.0.0-alpha-7.jar
-# shrinkwrap-impl-base-1.2.2.jar
-# shrinkwrap-spi-1.2.2.jar
+# jboss-classfilewriter-1.2.4.Final.jar
+# weld-api-3.1.Final.jar
+# weld-core-impl-3.1.1.Final.jar
+# weld-environment-common-3.1.1.Final.jar
+# weld-jsf-3.1.1.Final.jar
+# weld-servlet-core-3.1.1.Final.jar
+# weld-spi-3.1.Final.jar
+# weld-web-3.1.1.Final.jar
+# arquillian-config-api-1.4.1.Final.jar
+# arquillian-config-impl-base-1.4.1.Final.jar
+# arquillian-config-spi-1.4.1.Final.jar
+# arquillian-container-impl-base-1.4.1.Final.jar
+# arquillian-container-spi-1.4.1.Final.jar
+# arquillian-container-test-api-1.4.1.Final.jar
+# arquillian-container-test-impl-base-1.4.1.Final.jar
+# arquillian-container-test-spi-1.4.1.Final.jar
+# arquillian-core-api-1.4.1.Final.jar
+# arquillian-core-impl-base-1.4.1.Final.jar
+# arquillian-core-spi-1.4.1.Final.jar
+# arquillian-junit-container-1.4.1.Final.jar
+# arquillian-junit-core-1.4.1.Final.jar
+# arquillian-suite-extension-1.2.0.jar
+# arquillian-test-api-1.4.1.Final.jar
+# arquillian-testenricher-cdi-1.4.1.Final.jar
+# arquillian-test-impl-base-1.4.1.Final.jar
+# arquillian-test-spi-1.4.1.Final.jar
+# arquillian-weld-embedded-2.0.1.Final.jar
+# shrinkwrap-api-1.2.6.jar
+# shrinkwrap-descriptors-api-base-2.0.0.jar
+# shrinkwrap-descriptors-spi-2.0.0.jar
+# shrinkwrap-impl-base-1.2.6.jar
+# shrinkwrap-spi-1.2.6.jar
 # validation-api-1.0.0.GA.jar
 # jsmin.0.2.4.jar
 # httpcore-4.4.9.jar
@@ -248,30 +240,38 @@ Under the MIT license (available at http://www.slf4j.org/license.html)
 # tomcat-jdbc.jar
 # classmate-1.3.4.jar
 # jandex-2.0.5.Final.jar
+# FastInfoset-1.2.15.jar
 Under the Apache 2.0 license (included as Apache_license-2.0.txt in this folder)
 
-# reflections-0.9.8.jar
+# reflections-0.9.11.jar
 Under the WTFPL license (included as WTFPL_license.txt in this folder)
 
-# byte-buddy-1.8.12.jar
+# byte-buddy-1.9.10.jar
 Under the Apache 2.0 license (included as Apache_license-2.0.txt in this folder),
 note that Byte Buddy depends on the ASM library which is distributed under a BSD license (included as ASM_BSD_license.txt in this folder)
 
-# jslint4java-1.4.7.jar
-Under the New BSD license (available at http://www.opensource.org/licenses/bsd-license.php)
 
-# javax.annotation-api-1.2.jar
 # javax.xml.soap-api-1.3.7.jar
+# jboss-interceptors-api_1.2_spec-1.0.0.Final.jar
 # jboss-transaction-api_1.2_spec-1.1.1.Final.jar
 Under the CDDL license version 1.0 (license available at https://spdx.org/licenses/CDDL-1.0.html 
 or in the file CDDL-1.0.txt in this folder)
 
+# istack-commons-runtime-3.0.7.jar
 # javax.activation-1.2.0.jar
-# jaxb-api-2.2.12.jar
-# jaxb-impl-2.2.6.jar
+# jaxb-api-2.3.1.jar
+# jaxb-runtime-2.3.1.jar
 # javax.mail-1.6.1.jar
+# jboss-annotations-api_1.3_spec-1.0.0.Final.jar
+# jboss-el-api_3.0_spec-1.0.13.Final.jar
+# stax-ex-1.8.jar
+# txw2-2.3.1.jar
 Under the CDDL license version 1.1 (license available at https://spdx.org/licenses/CDDL-1.1.html 
 or in the file CDDL-1.1.txt in this folder)
+
+# wsdl4j-1.6.3.jar
+Under the CPL license version 1.0 (license available at https://spdx.org/licenses/CPL-1.0.html
+or in the file CPL-1.0.txt in this folder)
 
 # CSSMinimizer.java
 CSSMin Copyright License Agreement (BSD License), Copyright (c) 2011, Barry van Oudtshoorn

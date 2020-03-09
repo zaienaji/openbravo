@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2010-2018 Openbravo SLU
+ * All portions are Copyright (C) 2010-2019 Openbravo SLU
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -20,6 +20,7 @@
 package org.openbravo.erpCommon.businessUtility;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,6 @@ import org.openbravo.dal.service.OBQuery;
 import org.openbravo.erpCommon.utility.PropertyConflictException;
 import org.openbravo.erpCommon.utility.PropertyException;
 import org.openbravo.erpCommon.utility.PropertyNotFoundException;
-import org.openbravo.erpCommon.utility.StringCollectionUtils;
 import org.openbravo.erpCommon.utility.Utility;
 import org.openbravo.model.ad.access.Role;
 import org.openbravo.model.ad.access.User;
@@ -430,15 +430,17 @@ public class Preferences {
       }
       hql.append("        p.visibleAtRole is null) ");
 
+      List<String> parentOrgs;
       if (org == null) {
-        hql.append("     and coalesce(p.visibleAtOrganization, '0')='0'");
+        parentOrgs = Arrays.asList("0");
       } else {
-        List<String> parentTree = OBContext.getOBContext()
+        parentOrgs = OBContext.getOBContext()
             .getOrganizationStructureProvider(client)
             .getParentList(org, true);
-        String parentOrgs = "(" + StringCollectionUtils.commaSeparated(parentTree) + ")";
-        hql.append("     and coalesce(p.visibleAtOrganization, '0') in " + parentOrgs);
       }
+
+      hql.append("     and coalesce(p.visibleAtOrganization.id, '0') in :parentOrgs");
+      parameters.put("parentOrgs", parentOrgs);
 
       if (user != null) {
         hql.append("  and (p.userContact.id = :userId or ");
@@ -459,7 +461,8 @@ public class Preferences {
     }
 
     if (property != null) {
-      hql.append(" and p.propertyList = '" + (isListProperty ? "Y" : "N") + "'");
+      hql.append(" and p.propertyList = :isListProperty");
+      parameters.put("isListProperty", isListProperty);
       if (isListProperty) {
         hql.append(" and p.property = :property ");
       } else {

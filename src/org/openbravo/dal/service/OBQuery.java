@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2008-2018 Openbravo SLU 
+ * All portions are Copyright (C) 2008-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -97,7 +97,7 @@ public class OBQuery<E extends BaseOBObject> {
    * @see OBQuery#uniqueResultObject() uniqueResultObject for a version returning an Object
    */
   public E uniqueResult() {
-    return (E) createQuery().uniqueResult();
+    return createQuery().uniqueResult();
   }
 
   /**
@@ -328,7 +328,7 @@ public class OBQuery<E extends BaseOBObject> {
       // strip the as
       final String strippedWhereClause = whereClause.toLowerCase().trim().substring(2).trim();
       // get the next space
-      final int index = strippedWhereClause.trim().indexOf(" ");
+      final int index = strippedWhereClause.trim().indexOf(' ');
       if (index == -1) {
         alias = strippedWhereClause;
       } else {
@@ -505,9 +505,12 @@ public class OBQuery<E extends BaseOBObject> {
    * 
    * @param filterOnReadableOrganizations
    *          if set to false then readable organizations are not added as a filter to the query
+   * 
+   * @return this OBQuery instance, for method chaining.
    */
-  public void setFilterOnReadableOrganization(boolean filterOnReadableOrganizations) {
+  public OBQuery<E> setFilterOnReadableOrganization(boolean filterOnReadableOrganizations) {
     this.filterOnReadableOrganizations = filterOnReadableOrganizations;
+    return this;
   }
 
   /**
@@ -525,9 +528,12 @@ public class OBQuery<E extends BaseOBObject> {
    * @param filterOnActive
    *          if false then isActive is not used as a filter for the query, if true (the default)
    *          then isActive='Y' is added as a filter to the query
+   * 
+   * @return this OBQuery instance, for method chaining.
    */
-  public void setFilterOnActive(boolean filterOnActive) {
+  public OBQuery<E> setFilterOnActive(boolean filterOnActive) {
     this.filterOnActive = filterOnActive;
+    return this;
   }
 
   /**
@@ -544,13 +550,16 @@ public class OBQuery<E extends BaseOBObject> {
    * 
    * @param queryString
    *          the where and order by parts of the query
+   * 
+   * @return this OBQuery instance, for method chaining.
    */
-  public void setWhereAndOrderBy(String queryString) {
+  public OBQuery<E> setWhereAndOrderBy(String queryString) {
     if (queryString == null) {
       this.whereAndOrderBy = "";
     } else {
       this.whereAndOrderBy = queryString;
     }
+    return this;
   }
 
   private Session getSession() {
@@ -612,9 +621,12 @@ public class OBQuery<E extends BaseOBObject> {
    * @param filterOnReadableClients
    *          if true then only objects from readable clients are returned by this Query, if false
    *          then objects from all clients are returned
+   * 
+   * @return this OBQuery instance, for method chaining.
    */
-  public void setFilterOnReadableClients(boolean filterOnReadableClients) {
+  public OBQuery<E> setFilterOnReadableClients(boolean filterOnReadableClients) {
     this.filterOnReadableClients = filterOnReadableClients;
+    return this;
   }
 
   /**
@@ -631,9 +643,12 @@ public class OBQuery<E extends BaseOBObject> {
    * 
    * @param namedParameters
    *          the list of named parameters (string, value pair)
+   * 
+   * @return this OBQuery instance, for method chaining.
    */
-  public void setNamedParameters(Map<String, Object> namedParameters) {
+  public OBQuery<E> setNamedParameters(Map<String, Object> namedParameters) {
     this.namedParameters = namedParameters;
+    return this;
   }
 
   /**
@@ -643,12 +658,15 @@ public class OBQuery<E extends BaseOBObject> {
    *          name of the parameter
    * @param value
    *          value which should be used for this parameter
+   * 
+   * @return this OBQuery instance, for method chaining.
    */
-  public void setNamedParameter(String paramName, Object value) {
+  public OBQuery<E> setNamedParameter(String paramName, Object value) {
     if (this.namedParameters == null) {
       this.namedParameters = new HashMap<>();
     }
     this.namedParameters.put(paramName, value);
+    return this;
   }
 
   /**
@@ -665,9 +683,12 @@ public class OBQuery<E extends BaseOBObject> {
    * 
    * @param firstResult
    *          the position of the first row to retrieve
+   *
+   * @return this OBQuery instance, for method chaining.
    */
-  public void setFirstResult(int firstResult) {
+  public OBQuery<E> setFirstResult(int firstResult) {
     this.firstResult = firstResult;
+    return this;
   }
 
   /**
@@ -684,9 +705,12 @@ public class OBQuery<E extends BaseOBObject> {
    * 
    * @param maxResult
    *          the maximum number of rows to retrieve
+   * 
+   * @return this OBQuery instance, for method chaining.
    */
-  public void setMaxResult(int maxResult) {
+  public OBQuery<E> setMaxResult(int maxResult) {
     this.maxResult = maxResult;
+    return this;
   }
 
   /**
@@ -703,9 +727,12 @@ public class OBQuery<E extends BaseOBObject> {
    * 
    * @param fetchSize
    *          the fetch size for the underlying query
+   *
+   * @return this OBQuery instance, for method chaining.
    */
-  public void setFetchSize(int fetchSize) {
+  public OBQuery<E> setFetchSize(int fetchSize) {
     this.fetchSize = fetchSize;
+    return this;
   }
 
   /**
@@ -724,9 +751,12 @@ public class OBQuery<E extends BaseOBObject> {
    * 
    * @param selectClause
    *          the select clause to be used by the underlying query.
+   * 
+   * @return this OBQuery instance, for method chaining.
    */
-  public void setSelectClause(String selectClause) {
+  public OBQuery<E> setSelectClause(String selectClause) {
     this.selectClause = selectClause;
+    return this;
   }
 
   /**
@@ -734,9 +764,12 @@ public class OBQuery<E extends BaseOBObject> {
    * 
    * @param queryType
    *          the type of the underlying query
+   * 
+   * @return this OBQuery instance, for method chaining.
    */
-  public void setQueryType(String queryType) {
+  public OBQuery<E> setQueryType(String queryType) {
     this.queryType = queryType;
+    return this;
   }
 
   /**

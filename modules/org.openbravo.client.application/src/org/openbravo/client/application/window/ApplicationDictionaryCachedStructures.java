@@ -395,6 +395,8 @@ public class ApplicationDictionaryCachedStructures {
         initializeDALObject(refTreeField);
       }
     }
+
+    initializeDALObject(reference.getOBCLKERREFMASKList());
   }
 
   public List<AuxiliaryInput> getAuxiliarInputList(String tabId) {

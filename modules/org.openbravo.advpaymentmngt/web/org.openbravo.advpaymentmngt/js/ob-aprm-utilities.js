@@ -73,16 +73,15 @@ OB.APRM.validateModifyPaymentPlanAmounts = function(
     totalReceived = new BigDecimal('0'),
     totalOutstanding = new BigDecimal('0'),
     isNumber = isc.isA.Number,
-    invoiceOutstanding = new BigDecimal(
-      String(
-        item.grid.view.parentWindow.activeView.getContextInfo(
-          false,
-          true,
-          true,
-          false
-        ).inpoutstandingamt
-      )
-    );
+    contextInfo = item.grid.view.parentWindow.activeView.getContextInfo(
+      false,
+      true,
+      true,
+      false
+    ),
+    invoiceOutstanding = new BigDecimal(String(contextInfo.inpoutstandingamt)),
+    invoiceGrandTotal = new BigDecimal(String(contextInfo.inpgrandtotal)),
+    invoicePaidTotal = new BigDecimal(String(contextInfo.inptotalpaid));
 
   if (
     new BigDecimal(String(value)).compareTo(new BigDecimal('0')) !== 0 &&
@@ -116,7 +115,7 @@ OB.APRM.validateModifyPaymentPlanAmounts = function(
   if (
     totalOutstanding
       .abs()
-      .compareTo(totalExpected.subtract(totalReceived).abs()) !== 0
+      .compareTo(invoiceGrandTotal.subtract(invoicePaidTotal).abs()) !== 0
   ) {
     return false;
   }

@@ -42,7 +42,6 @@ import org.openbravo.erpCommon.businessUtility.TreeData;
 import org.openbravo.erpCommon.businessUtility.WindowTabs;
 import org.openbravo.erpCommon.info.SelectorUtilityData;
 import org.openbravo.erpCommon.utility.AbstractScrollableFieldProviderFilter;
-import org.openbravo.erpCommon.utility.ComboTableData;
 import org.openbravo.erpCommon.utility.DateTimeData;
 import org.openbravo.erpCommon.utility.LeftTabsBar;
 import org.openbravo.erpCommon.utility.LimitRowsScrollableFieldProviderFilter;
@@ -511,15 +510,11 @@ public class ReportGeneralLedger extends HttpSecureAppServlet {
 
     xmlDocument.setParameter("calendar", vars.getLanguage().substring(0, 2));
 
-    try {
-      ComboTableData comboTableData = new ComboTableData(vars, readOnlyCP, "TABLEDIR", "AD_ORG_ID",
-          "", "", Utility.getContext(readOnlyCP, vars, "#User_Org", "ReportGeneralLedger"),
-          Utility.getContext(readOnlyCP, vars, "#User_Client", "ReportGeneralLedger"), '*');
-      comboTableData.fillParameters(null, "ReportGeneralLedger", "");
-      xmlDocument.setData("reportAD_ORGID", "liststructure", comboTableData.select(false));
-    } catch (Exception ex) {
-      throw new ServletException(ex);
-    }
+    
+    xmlDocument.setData("reportAD_ORGID", "liststructure",
+        SelectorUtilityData.selectAllOrganizations(readOnlyCP,
+            Utility.getContext(readOnlyCP, vars, "#User_Org", "ReportGeneralLedger"),
+            Utility.getContext(readOnlyCP, vars, "#User_Client", "ReportGeneralLedger")));
 
     xmlDocument.setParameter("directory", "var baseDirectory = \"" + strReplaceWith + "/\";\n");
     xmlDocument.setParameter("paramLanguage", "defaultLang=\"" + vars.getLanguage() + "\";");

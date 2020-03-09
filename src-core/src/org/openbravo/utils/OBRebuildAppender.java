@@ -65,7 +65,7 @@ public class OBRebuildAppender extends AbstractAppender {
         return;
       }
 
-      String message = event.getMessage().toString();
+      String message = event.getMessage().getFormattedMessage();
       if (message.length() > 3000) {
         message = message.substring(0, 2997) + "...";
       }

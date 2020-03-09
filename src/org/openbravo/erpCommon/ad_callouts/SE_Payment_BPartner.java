@@ -20,6 +20,7 @@ package org.openbravo.erpCommon.ad_callouts;
 
 import javax.servlet.ServletException;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.criterion.Restrictions;
 import org.openbravo.advpaymentmngt.utility.FIN_Utility;
 import org.openbravo.base.secureApp.VariablesSecureApp;
@@ -40,60 +41,61 @@ public class SE_Payment_BPartner extends SimpleCallout {
     VariablesSecureApp vars = info.vars;
     String strcBpartnerId = vars.getStringParameter("inpcBpartnerId");
     String strisreceipt = vars.getStringParameter("inpisreceipt");
-    BusinessPartner bpartner = OBDal.getInstance().get(BusinessPartner.class, strcBpartnerId);
     boolean isReceipt = "Y".equals(strisreceipt);
 
     // Get the Payment Method and the Financial Acoount
-    FIN_PaymentMethod paymentMethod;
-    FIN_FinancialAccount financialAccount;
+    FIN_PaymentMethod paymentMethod = null;
+    FIN_FinancialAccount financialAccount = null;
 
-    if (isReceipt) {
-      paymentMethod = bpartner.getPaymentMethod();
-      financialAccount = bpartner.getAccount();
-    } else {
-      paymentMethod = bpartner.getPOPaymentMethod();
-      financialAccount = bpartner.getPOFinancialAccount();
-    }
+    if (StringUtils.isNotEmpty(strcBpartnerId)) {
+      BusinessPartner bpartner = OBDal.getInstance().get(BusinessPartner.class, strcBpartnerId);
+      if (FIN_Utility.isBlockedBusinessPartner(strcBpartnerId, "Y".equals(strisreceipt), 4)) {
+        // If the Business Partner is blocked for this document, show an information message.
+        info.addResult("MESSAGE", OBMessageUtils.messageBD("ThebusinessPartner") + " "
+            + bpartner.getIdentifier() + " " + OBMessageUtils.messageBD("BusinessPartnerBlocked"));
+      }
+      if (isReceipt) {
+        paymentMethod = bpartner.getPaymentMethod();
+        financialAccount = bpartner.getAccount();
+      } else {
+        paymentMethod = bpartner.getPOPaymentMethod();
+        financialAccount = bpartner.getPOFinancialAccount();
+      }
 
-    if (paymentMethod != null && financialAccount != null) {
-      final OBCriteria<FinAccPaymentMethod> apmCriteria = OBDal.getInstance()
-          .createCriteria(FinAccPaymentMethod.class);
-      apmCriteria.add(Restrictions.eq(FinAccPaymentMethod.PROPERTY_PAYMENTMETHOD, paymentMethod));
-      apmCriteria.add(Restrictions.eq(FinAccPaymentMethod.PROPERTY_ACCOUNT, financialAccount));
-      apmCriteria.setFilterOnActive(false);
-      FinAccPaymentMethod accPaymentMethod = (FinAccPaymentMethod) apmCriteria.uniqueResult();
-      if (accPaymentMethod != null) {
-        if (financialAccount.isActive() && accPaymentMethod.isActive()) {
-          info.addResult("inpfinPaymentmethodId", paymentMethod.getId());
-          info.addResult("inpfinFinancialAccountId", financialAccount.getId());
-        } else if (!financialAccount.isActive() && !accPaymentMethod.isActive()) {
-          info.addResult("WARNING",
-              String.format(
-                  Utility.messageBD(new DalConnectionProvider(), "finnac_paymet_inact",
-                      vars.getLanguage()),
-                  financialAccount.getIdentifier(), paymentMethod.getIdentifier()));
-        } else if (!financialAccount.isActive()) {
-          info.addResult("WARNING", String.format(
-              Utility.messageBD(new DalConnectionProvider(), "finnac_inact", vars.getLanguage()),
-              financialAccount.getIdentifier()));
-        } else if (!accPaymentMethod.isActive()) {
-          info.addResult("WARNING",
-              String.format(
-                  Utility.messageBD(new DalConnectionProvider(), "paymet_inact",
-                      vars.getLanguage()),
-                  paymentMethod.getIdentifier(), financialAccount.getIdentifier()));
+      if (paymentMethod != null && financialAccount != null) {
+        final OBCriteria<FinAccPaymentMethod> apmCriteria = OBDal.getInstance()
+            .createCriteria(FinAccPaymentMethod.class);
+        apmCriteria.add(Restrictions.eq(FinAccPaymentMethod.PROPERTY_PAYMENTMETHOD, paymentMethod));
+        apmCriteria.add(Restrictions.eq(FinAccPaymentMethod.PROPERTY_ACCOUNT, financialAccount));
+        apmCriteria.setFilterOnActive(false);
+        FinAccPaymentMethod accPaymentMethod = (FinAccPaymentMethod) apmCriteria.uniqueResult();
+        if (accPaymentMethod != null) {
+          if (financialAccount.isActive() && accPaymentMethod.isActive()) {
+            info.addResult("inpfinPaymentmethodId", paymentMethod.getId());
+            info.addResult("inpfinFinancialAccountId", financialAccount.getId());
+          } else if (!financialAccount.isActive() && !accPaymentMethod.isActive()) {
+            info.addResult("WARNING",
+                String.format(
+                    Utility.messageBD(new DalConnectionProvider(), "finnac_paymet_inact",
+                        vars.getLanguage()),
+                    financialAccount.getIdentifier(), paymentMethod.getIdentifier()));
+          } else if (!financialAccount.isActive()) {
+            info.addResult("WARNING", String.format(
+                Utility.messageBD(new DalConnectionProvider(), "finnac_inact", vars.getLanguage()),
+                financialAccount.getIdentifier()));
+          } else if (!accPaymentMethod.isActive()) {
+            info.addResult("WARNING",
+                String.format(
+                    Utility.messageBD(new DalConnectionProvider(), "paymet_inact",
+                        vars.getLanguage()),
+                    paymentMethod.getIdentifier(), financialAccount.getIdentifier()));
+          }
+        } else {
+          log4j.info("No default info for the selected business partner {}", bpartner);
         }
       } else {
         log4j.info("No default info for the selected business partner {}", bpartner);
       }
-    } else {
-      log4j.info("No default info for the selected business partner {}", bpartner);
-    }
-    if ((!strcBpartnerId.equals(""))
-        && (FIN_Utility.isBlockedBusinessPartner(strcBpartnerId, "Y".equals(strisreceipt), 4))) {
-      // If the Business Partner is blocked for this document, show an information message.
-      info.addResult("MESSAGE", OBMessageUtils.messageBD("ThebusinessPartner") + " "
-          + bpartner.getIdentifier() + " " + OBMessageUtils.messageBD("BusinessPartnerBlocked"));
     }
   }
 }

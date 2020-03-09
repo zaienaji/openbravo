@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2001-2012 Openbravo SLU 
+ * All portions are Copyright (C) 2001-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -85,8 +85,7 @@ function getKeyField() {
         if (strText == "") {
           showJSMessage(22);
         } else {
-          //Expecting msg in JSON format
-          var msg = eval("("+strText+")");;
+          var msg = JSON.parse(strText);
           initialize_MessageBox('messageBoxID');
           setValues_MessageBox('messageBoxID',msg.OBError.type, msg.OBError.title, msg.OBError.message);
         }

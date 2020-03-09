@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
   <database name="FUNCTION M_BOM_PRICELIST">
-    <function name="M_BOM_PRICELIST" type="NUMERIC">
+    <function name="M_BOM_PRICELIST" type="NUMERIC" volatility="STABLE">
       <parameter name="product_id" type="VARCHAR" mode="in">
         <default/>
       </parameter>
@@ -19,7 +19,7 @@
 * Portions created by Jorg Janke are Copyright (C) 1999-2001 Jorg Janke, parts
 * created by ComPiere are Copyright (C) ComPiere, Inc.;   All Rights Reserved.
 * Contributor(s): Openbravo SLU
-* Contributions are Copyright (C) 2001-2012 Openbravo S.L.U.
+* Contributions are Copyright (C) 2001-2019 Openbravo S.L.U.
 ******************************************************************************/
   v_Price        NUMBER;
   v_ProductPrice NUMBER;

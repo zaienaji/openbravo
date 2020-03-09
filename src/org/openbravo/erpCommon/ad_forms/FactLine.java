@@ -19,6 +19,7 @@ package org.openbravo.erpCommon.ad_forms;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Connection;
+import java.util.List;
 
 import javax.servlet.ServletException;
 
@@ -1132,16 +1133,18 @@ public class FactLine {
         strSql = strSql.replaceAll("@RecordId@", ":paramRecordId")
             .replaceAll("@Line@", ":paramLineId");
 
-        @SuppressWarnings("rawtypes")
-        NativeQuery query = OBDal.getInstance().getSession().createSQLQuery(strSql);
+        @SuppressWarnings("unchecked")
+        NativeQuery<String> query = OBDal.getInstance().getSession().createSQLQuery(strSql);
         if (strSql.contains(":paramRecordId")) {
           query.setParameter("paramRecordId", strRecord_ID);
         }
         if (strSql.contains(":paramLineId")) {
           query.setParameter("paramLineId", StringUtils.isBlank(strLine) ? "NULL" : strLine);
         }
-        final String result = (String) query.uniqueResult();
-        description.append(StringUtils.defaultIfBlank(result, StringUtils.EMPTY));
+        List<String> descriptions = query.getResultList();
+        for (String desc : descriptions) {
+          description.append(StringUtils.defaultIfBlank(desc, StringUtils.EMPTY));
+        }
       }
       if (description.length() == 0) {
         description.append((m_docVO.DocumentNo == null) ? "" : m_docVO.DocumentNo);

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
   <database name="FUNCTION M_WAREHOUSE_DEFAULT_RULE_PARAM">
-    <function name="M_WAREHOUSE_DEFAULT_RULE_PARAM" type="NULL">
+    <function name="M_WAREHOUSE_DEFAULT_RULE_PARAM" type="NULL" volatility="IMMUTABLE">
       <parameter name="pinstance_id" type="VARCHAR" mode="in">
         <default/>
       </parameter>
@@ -76,7 +76,7 @@
 * under the License.
 * The Original Code is Openbravo ERP.
 * The Initial Developer of the Original Code is Openbravo SLU
-* All portions are Copyright (C) 2017-2018 Openbravo SLU
+* All portions are Copyright (C) 2017-2019 Openbravo SLU
 * All Rights Reserved.
 * Contributor(s):  ______________________________________.
 ************************************************************************/

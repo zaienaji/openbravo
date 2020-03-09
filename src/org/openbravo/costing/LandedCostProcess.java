@@ -80,7 +80,7 @@ public class LandedCostProcess {
   public JSONObject processLandedCost(LandedCost _landedCost) {
     LandedCost landedCost = _landedCost;
     JSONObject message = new JSONObject();
-    OBContext.setAdminMode(true);
+    OBContext.setAdminMode(false);
     try {
       message.put("severity", "success");
       message.put("title", "");

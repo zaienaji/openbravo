@@ -235,28 +235,36 @@ function browserVersionTrim(versionNum) {
   return versionNum;
 }
 
+function isValidBrowser(browser){
+	return browser in validBrowserVersions;
+}
+
+function isRecBrowser(browser){
+	return browser in recBrowserVersions;
+}
+
 function checkBrowserCompatibility() {
   var browserName = getBrowserInfo('name');
   var browserVersion = getBrowserInfo('version');
   var isValid = false;
   if (browserName.toUpperCase().indexOf('FIREFOX') != -1 || browserName.toUpperCase().indexOf('ICEWEASEL') != -1) {
-    if (browserVersionToFloat(browserVersion) >= browserVersionToFloat(validBrowserFirefox)) {
+    if (isValidBrowser('firefox') && browserVersionToFloat(browserVersion) >= browserVersionToFloat(validBrowserVersions.firefox)) {
       isValid = true;
     }
   } else if (browserName.toUpperCase().indexOf('INTERNET EXPLORER') != -1) {
-    if (browserVersionToFloat(browserVersion) >= browserVersionToFloat(validBrowserExplorer)) {
+    if (isValidBrowser('explorer') && browserVersionToFloat(browserVersion) >= browserVersionToFloat(validBrowserVersions.explorer)) {
       isValid = true;
     }
   } else if (browserName.toUpperCase().indexOf('GOOGLE CHROME') != -1) {
-    if (browserVersionToFloat(browserVersion) >= browserVersionToFloat(validBrowserChrome)) {
+    if (isValidBrowser('chrome') && browserVersionToFloat(browserVersion) >= browserVersionToFloat(validBrowserVersions.chrome)) {
       isValid = true;
     }
   } else if (browserName.toUpperCase().indexOf('APPLE SAFARI') != -1) {
-    if (browserVersionToFloat(browserVersion) >= browserVersionToFloat(validBrowserSafari)) {
+    if (isValidBrowser('safari') && browserVersionToFloat(browserVersion) >= browserVersionToFloat(validBrowserVersions.safari)) {
       isValid = true;
     }
   } else if (browserName.toUpperCase().indexOf('MICROSOFT EDGE') != -1) {
-    if (browserVersionToFloat(browserVersion) >= browserVersionToFloat(validBrowserEdge)) {
+    if (isValidBrowser('edge') && browserVersionToFloat(browserVersion) >= browserVersionToFloat(validBrowserVersions.edge)) {
       isValid = true;
     }
   }
@@ -268,23 +276,23 @@ function checkRecommendedBrowser() {
   var browserVersion = getBrowserInfo('version');
   var isRecommended = false;
   if (browserName.toUpperCase().indexOf('FIREFOX') != -1 || browserName.toUpperCase().indexOf('ICEWEASEL') != -1) {
-    if (browserVersionToFloat(browserVersion) >= browserVersionToFloat(recBrowserFirefox)) {
+    if (isRecBrowser('firefox') && browserVersionToFloat(browserVersion) >= browserVersionToFloat(recBrowserVersions.firefox)) {
       isRecommended = true;
     }
   } else if (browserName.toUpperCase().indexOf('INTERNET EXPLORER') != -1) {
-    if (browserVersionToFloat(browserVersion) >= browserVersionToFloat(recBrowserExplorer)) {
+    if (isRecBrowser('explorer') && browserVersionToFloat(browserVersion) >= browserVersionToFloat(recBrowserVersions.explorer)) {
       isRecommended = true;
     }
   } else if (browserName.toUpperCase().indexOf('GOOGLE CHROME') != -1) {
-    if (browserVersionToFloat(browserVersion) >= browserVersionToFloat(recBrowserChrome)) {
+    if (isRecBrowser('chrome') && browserVersionToFloat(browserVersion) >= browserVersionToFloat(recBrowserVersions.chrome)) {
       isRecommended = true;
     }
   } else if (browserName.toUpperCase().indexOf('APPLE SAFARI') != -1) {
-    if (browserVersionToFloat(browserVersion) >= browserVersionToFloat(recBrowserSafari)) {
+    if (isRecBrowser('safari') && browserVersionToFloat(browserVersion) >= browserVersionToFloat(recBrowserVersions.safari)) {
       isRecommended = true;
     }
   } else if (browserName.toUpperCase().indexOf('MICROSOFT EDGE') != -1) {
-    if (browserVersionToFloat(browserVersion) >= browserVersionToFloat(recBrowserEdge)) {
+    if (isRecBrowser('edge') && browserVersionToFloat(browserVersion) >= browserVersionToFloat(recBrowserVersions.edge)) {
       isRecommended = true;
     }
   }
@@ -293,14 +301,46 @@ function checkRecommendedBrowser() {
 
 function buildValidBrowserMsg() {
   var displayValidBrowserMsg = validBrowserMsg;
-  displayValidBrowserMsg = displayValidBrowserMsg + '<br>' + ' * Mozilla Firefox ' + browserVersionTrim(validBrowserFirefox) + ' ' + validBrowserMsgOrHigher + '<br>' + ' * Google Chrome ' + browserVersionTrim(validBrowserChrome) + ' ' + validBrowserMsgOrHigher + '<br>' + ' * Microsoft Internet Explorer ' + browserVersionTrim(validBrowserExplorer) + ' ' + validBrowserMsgOrHigher + '<br>' + ' * Microsoft Edge ' + browserVersionTrim(validBrowserEdge) + ' ' + validBrowserMsgOrHigher + '<br>' + ' * Apple Safari ' + browserVersionTrim(validBrowserSafari) + ' ' + validBrowserMsgOrHigher;
+  if (isValidBrowser('firefox')){
+	  displayValidBrowserMsg += '<br>' + ' * Mozilla Firefox ' + browserVersionTrim(validBrowserVersions.firefox) + ' ' + validBrowserMsgOrHigher;
+  }
+  if (isValidBrowser('chrome')){
+	  displayValidBrowserMsg += '<br>' + ' * Google Chrome ' + browserVersionTrim(validBrowserVersions.chrome) + ' ' + validBrowserMsgOrHigher;
+  }
+  if (isValidBrowser('explorer')){
+	  displayValidBrowserMsg += '<br>' + ' * Microsoft Internet Explorer ' + browserVersionTrim(validBrowserVersions.explorer) + ' ' + validBrowserMsgOrHigher;
+  }
+  if (isValidBrowser('edge')){
+	  displayValidBrowserMsg += '<br>' + ' * Microsoft Edge ' + browserVersionTrim(validBrowserVersions.edge) + ' ' + validBrowserMsgOrHigher;
+  }
+  if (isValidBrowser('safari')){
+	  displayValidBrowserMsg += '<br>' + ' * Apple Safari ' + browserVersionTrim(validBrowserVersions.safari) + ' ' + validBrowserMsgOrHigher;
+  }
+  
   return displayValidBrowserMsg;
 }
 
 function buildRecBrowserMsgText() {
   var displayRecBrowserMsgText = recBrowserMsgText;
-  displayRecBrowserMsgText = displayRecBrowserMsgText.replace('XX', 'Google Chrome ' + browserVersionTrim(recBrowserChrome) + ', Mozilla Firefox ' + browserVersionTrim(recBrowserFirefox) + ', Internet Explorer ' + browserVersionTrim(recBrowserExplorer) + ', Microsoft Edge ' + browserVersionTrim(recBrowserEdge));
-  displayRecBrowserMsgText = displayRecBrowserMsgText.replace('YY', 'Apple Safari ' + browserVersionTrim(recBrowserSafari) + '');
+  xxReplaceMsg = '';
+  yyReplaceMsg = '';
+  if (isRecBrowser('chrome')){
+	  xxReplaceMsg += 'Google Chrome ' + browserVersionTrim(recBrowserVersions.chrome) + ', ';
+  }
+  if (isRecBrowser('firefox')){
+	  xxReplaceMsg += 'Mozilla Firefox ' + browserVersionTrim(recBrowserVersions.firefox) + ', ';
+  }
+  if (isRecBrowser('explorer')){
+	  xxReplaceMsg += 'Internet Explorer ' + browserVersionTrim(recBrowserVersions.explorer) + ', ';
+  }
+  if (isRecBrowser('edge')){
+	  xxReplaceMsg += 'Microsoft Edge ' + browserVersionTrim(recBrowserVersions.edge) + ', ';
+  }
+  if (isRecBrowser('safari')){
+	  yyReplaceMsg += 'Apple Safari ' + browserVersionTrim(recBrowserVersions.safari);
+  }
+  displayRecBrowserMsgText = displayRecBrowserMsgText.replace('XX', xxReplaceMsg);
+  displayRecBrowserMsgText = displayRecBrowserMsgText.replace('YY', yyReplaceMsg);
   return displayRecBrowserMsgText;
 }
 

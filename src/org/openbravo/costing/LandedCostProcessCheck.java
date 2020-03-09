@@ -11,20 +11,21 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU
- * All portions are Copyright (C) 2014 Openbravo SLU
+ * All portions are Copyright (C) 2014-2019 Openbravo SLU
  * All Rights Reserved.
  * Contributor(s):  ______________________________________.
  *************************************************************************
  */
 package org.openbravo.costing;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.codehaus.jettison.json.JSONObject;
 import org.openbravo.base.exception.OBException;
 import org.openbravo.model.materialmgmt.cost.LandedCost;
 
-@ApplicationScoped
+/**
+ * Define needed checks for Landed Cost process. Note that classes implementing this interface
+ * should be annotated as {@code @ApplicationScoped}.
+ */
 public interface LandedCostProcessCheck {
   /**
    * This method executes the needed checks to the landed cost when the process starts.

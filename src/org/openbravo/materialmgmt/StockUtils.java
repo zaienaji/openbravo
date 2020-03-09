@@ -22,8 +22,17 @@ import java.math.BigDecimal;
 
 import javax.servlet.ServletException;
 
+import org.hibernate.ScrollMode;
+import org.hibernate.ScrollableResults;
+import org.hibernate.criterion.Restrictions;
+import org.openbravo.base.exception.OBException;
+import org.openbravo.dal.core.OBContext;
+import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.exception.NoConnectionAvailableException;
+import org.openbravo.model.common.enterprise.Warehouse;
+import org.openbravo.model.common.order.OrderLine;
+import org.openbravo.model.materialmgmt.onhandquantity.StockProposed;
 import org.openbravo.service.db.DalConnectionProvider;
 
 public class StockUtils {
@@ -59,5 +68,29 @@ public class StockUtils {
         warehouseRuleId, cUomId, productUomId, adTableId, auxId,
         lineNo != null ? lineNo.toString() : null, processId, mReservationId, calledFromApp,
         available, nettable, overIssue);
+  }
+
+  /*
+   * Gets the StockProposed as an ScrollableResults for the order line product, the given warehouse
+   * and quantity
+   */
+  public static ScrollableResults getStockProposed(OrderLine orderLine, BigDecimal quantity,
+      final Warehouse warehouse) {
+    try {
+      getStock(orderLine.getId(), orderLine.getId(), quantity, orderLine.getProduct().getId(), null,
+          null, warehouse.getId(), orderLine.getOrganization().getId(),
+          orderLine.getAttributeSetValue() != null ? orderLine.getAttributeSetValue().getId()
+              : null,
+          OBContext.getOBContext().getUser().getId(), orderLine.getClient().getId(),
+          orderLine.getWarehouseRule() != null ? orderLine.getWarehouseRule().getId() : null,
+          orderLine.getUOM().getId(), null, null, null, null, null, null, "N");
+    } catch (ServletException | NoConnectionAvailableException e) {
+      throw new OBException("Error getting stock: OrderlineID: " + orderLine.getId(), e);
+    }
+    OBCriteria<StockProposed> stockProposed = OBDal.getInstance()
+        .createCriteria(StockProposed.class);
+    stockProposed.add(Restrictions.eq(StockProposed.PROPERTY_PROCESSINSTANCE, orderLine.getId()));
+    stockProposed.addOrderBy(StockProposed.PROPERTY_PRIORITY, true);
+    return stockProposed.scroll(ScrollMode.FORWARD_ONLY);
   }
 }

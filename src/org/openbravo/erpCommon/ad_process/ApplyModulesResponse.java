@@ -10,65 +10,68 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2008-2010 Openbravo SLU 
+ * All portions are Copyright (C) 2008-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************/
 package org.openbravo.erpCommon.ad_process;
 
-public class ApplyModulesResponse {
+import java.util.List;
+
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
+class ApplyModulesResponse {
   private int state;
   private String statusofstate;
-  private String[] warnings;
-  private String[] errors;
+  private List<String> warnings;
+  private List<String> errors;
   private String lastmessage;
   private String processFinished;
 
-  public int getState() {
-    return state;
-  }
-
   public void setState(int state) {
     this.state = state;
-  }
-
-  public String getStatusofstate() {
-    return statusofstate;
   }
 
   public void setStatusofstate(String statusofstate) {
     this.statusofstate = statusofstate;
   }
 
-  public String[] getWarnings() {
-    return warnings;
-  }
-
-  public void setWarnings(String[] warnings) {
+  public void setWarnings(List<String> warnings) {
     this.warnings = warnings;
   }
 
-  public String[] getErrors() {
-    return errors;
-  }
-
-  public void setErrors(String[] errors) {
+  public void setErrors(List<String> errors) {
     this.errors = errors;
-  }
-
-  public String getLastmessage() {
-    return lastmessage;
   }
 
   public void setLastmessage(String lastmessage) {
     this.lastmessage = lastmessage;
   }
 
-  public String getProcessFinished() {
-    return processFinished;
-  }
-
   public void setProcessFinished(String processFinished) {
     this.processFinished = processFinished;
+  }
+
+  String toJSON() {
+    JSONObject jsonObject = new JSONObject();
+    try {
+      JSONObject properties = new JSONObject();
+      properties.put("state", state);
+      properties.put("statusofstate", statusofstate);
+      if (warnings != null && !warnings.isEmpty()) {
+        properties.put("warnings", new JSONArray(warnings));
+      }
+      if (errors != null && !errors.isEmpty()) {
+        properties.put("errors", new JSONArray(errors));
+      }
+      properties.put("lastmessage", lastmessage);
+      properties.put("processFinished", processFinished);
+
+      jsonObject.put("Response", properties);
+    } catch (JSONException ex) {
+    }
+    return jsonObject.toString();
   }
 }

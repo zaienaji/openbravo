@@ -11,7 +11,7 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2008-2018 Openbravo SLU
+ * All portions are Copyright (C) 2008-2019 Openbravo SLU
  * All Rights Reserved.
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -153,7 +153,7 @@ public class OBScheduler {
 
     ProcessRequestData.insert(getConnection(), context.getOrganization(), context.getClient(),
         context.getUser(), context.getUser(), requestId, processId, context.getUser(), SCHEDULED,
-        channel.toString(), context.toString(), bundle.getParamsDeflated(), null, null, null, null);
+        channel, context.toString(), bundle.getParamsDeflated(), null, null, null, null);
 
     if (bundle.getGroupInfo() != null) {
       // Is Part of a Group, update the info
@@ -293,16 +293,20 @@ public class OBScheduler {
           continue;
         }
 
-        try {
-          final ProcessBundle bundle = ProcessBundle.request(requestId, vars, getConnection());
-          schedule(requestId, bundle);
-
-        } catch (final ServletException e) {
-          log.error("Error scheduling process: " + e.getMessage(), e);
-        }
+        scheduleProcess(requestId, vars);
       }
     } catch (final ServletException e) {
       log.error("An error occurred retrieving scheduled process data: " + e.getMessage(), e);
+    }
+  }
+
+  private void scheduleProcess(String requestId, VariablesSecureApp vars)
+      throws SchedulerException {
+    try {
+      final ProcessBundle bundle = ProcessBundle.request(requestId, vars, getConnection());
+      schedule(requestId, bundle);
+    } catch (final ServletException | ParameterSerializationException e) {
+      log.error("Error scheduling process request: " + requestId, e);
     }
   }
 
@@ -390,7 +394,7 @@ public class OBScheduler {
     private static Trigger newInstance(String name, ProcessBundle bundle, ConnectionProvider conn)
         throws ServletException {
 
-      TriggerData data = new TriggerData();
+      TriggerData data;
 
       if (bundle.isGroup()) {
         data = TriggerData.selectGroup(conn, name, GroupInfo.processGroupId);
@@ -611,7 +615,7 @@ public class OBScheduler {
       }
 
       if (time != null && !time.equals("")) {
-        final int hour = Integer.parseInt(time.substring(time.indexOf(" ") + 1, time.indexOf(':')));
+        final int hour = Integer.parseInt(time.substring(time.indexOf(' ') + 1, time.indexOf(':')));
         final int minute = Integer
             .parseInt(time.substring(time.indexOf(':') + 1, time.lastIndexOf(':')));
         final int second = Integer

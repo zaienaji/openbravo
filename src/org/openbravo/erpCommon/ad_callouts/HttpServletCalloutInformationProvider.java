@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2016 Openbravo SLU 
+ * All portions are Copyright (C) 2016-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -27,32 +27,51 @@ import org.apache.logging.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.mozilla.javascript.NativeArray;
+import org.openbravo.base.expression.OBScriptEngine;
 import org.openbravo.client.kernel.RequestContext;
 import org.openbravo.client.kernel.reference.UIDefinition;
 import org.openbravo.client.kernel.reference.UIDefinitionController;
 import org.openbravo.model.ad.datamodel.Column;
 import org.openbravo.service.json.JsonConstants;
 
+import jdk.nashorn.api.scripting.JSObject;
+
 /**
  * HttpServletCalloutInformationProvider provides the information that is used to populate the
  * messages, comboEntries,etc in the FIC. This information is updated by a HttpServlet Callout.
  * 
+ * Evaluates response assuming it is an HTML with a JavaScript script. It assumes JavaScript engine
+ * is nashorn.
+ * 
  * @author inigo.sanchez
  *
  */
-public class HttpServletCalloutInformationProvider implements CalloutInformationProvider {
 
-  private ArrayList<NativeArray> calloutResult;
+// Since JDK11 Nashorn is deprecated for removal. Suppressing all warnings to prevent removal
+// warning when compiling with JDK11+, as we still support JDK8+ we cannot suppress just removal
+// warning because when compiling with lower versions an unnecessary suppress warnings warning would
+// appear.
+@SuppressWarnings({ "all", "removal" })
+public class HttpServletCalloutInformationProvider implements CalloutInformationProvider {
+  private static final Logger log = LogManager.getLogger();
+
+  private List<JSObject> responseElements;
+  private String rawResponse;
+  private String calloutName;
+
   private int current;
   private String currentElementName;
 
-  private final Logger log = LogManager.getLogger();
+  // @formatter:off
+  private static final String JS_EVALUATOR = 
+        "(function () {\n"
+      + "  %s\n"
+      + "  return { calloutName: calloutName, response: respuesta };\n"
+      + " }());";
+  // @formatter:on
 
-  public HttpServletCalloutInformationProvider(ArrayList<NativeArray> calloutResult) {
-    this.calloutResult = calloutResult;
-    this.current = 0;
-    this.currentElementName = "";
+  public HttpServletCalloutInformationProvider(String rawResponse) {
+    this.rawResponse = rawResponse;
   }
 
   @Override
@@ -66,38 +85,44 @@ public class HttpServletCalloutInformationProvider implements CalloutInformation
   }
 
   private Object getValue(Object element, int position) {
-    NativeArray nativeArrayElement = (NativeArray) element;
-    return nativeArrayElement.get(position, null);
+    return ((JSObject) element).getSlot(position);
   }
 
   @Override
   public Object getNextElement() {
-    NativeArray element = null;
-    if (current < calloutResult.size()) {
-      element = (NativeArray) calloutResult.get(current);
-      current++;
-      // Update current element name
-      currentElementName = (String) element.get(0, null);
+    if (current >= responseElements.size()) {
+      return null;
     }
+    JSObject element = responseElements.get(current);
+    current++;
+    currentElementName = (String) element.getSlot(0);
+
     return element;
   }
 
   @Override
   public Boolean isComboData(Object element) {
-    if (element instanceof NativeArray) {
-      NativeArray nativeArrayElement = (NativeArray) element;
-      return nativeArrayElement.get(1, null) instanceof NativeArray;
+    if (!(element instanceof JSObject)) {
+      return false;
     }
-    return false;
+
+    JSObject e = (JSObject) element;
+    if (!e.isArray() || !e.hasSlot(1)) {
+      return false;
+    }
+
+    Object ae = e.getSlot(1);
+    return ae instanceof JSObject && ((JSObject) ae).isArray();
   }
 
   @Override
   public void manageComboData(Map<String, JSONObject> columnValues, List<String> dynamicCols,
       List<String> changedCols, RequestContext request, Object element, Column col, String colIdent)
       throws JSONException {
-    NativeArray subelements = (NativeArray) this.getCurrentElementValue(element);
+    JSObject subelements = (JSObject) getCurrentElementValue(element);
+
     JSONObject jsonobject = new JSONObject();
-    ArrayList<JSONObject> comboEntries = new ArrayList<JSONObject>();
+    ArrayList<JSONObject> comboEntries = new ArrayList<>();
     // If column is not mandatory, we add an initial blank element
     if (!col.isMandatory()) {
       JSONObject entry = new JSONObject();
@@ -105,27 +130,36 @@ public class HttpServletCalloutInformationProvider implements CalloutInformation
       entry.put(JsonConstants.IDENTIFIER, (String) null);
       comboEntries.add(entry);
     }
-    for (int j = 0; j < subelements.getLength(); j++) {
-      NativeArray subelement = (NativeArray) getValue(subelements, j);
-      if (subelement != null && getValue(subelement, 2) != null) {
-        JSONObject entry = new JSONObject();
-        entry.put(JsonConstants.ID, this.getElementName(subelement));
-        entry.put(JsonConstants.IDENTIFIER, this.getCurrentElementValue(subelement));
-        comboEntries.add(entry);
-        if ((j == 0 && col.isMandatory())
-            || getValue(subelement, 2).toString().equalsIgnoreCase("True")) {
-          // If the column is mandatory, we choose the first value as selected
-          // In any case, we select the one which is marked as selected "true"
-          UIDefinition uiDef = UIDefinitionController.getInstance().getUIDefinition(col.getId());
-          String newValue = this.getElementName(subelement).toString();
 
-          jsonobject.put(CalloutConstants.VALUE, newValue);
-          jsonobject.put(CalloutConstants.CLASSIC_VALUE, uiDef.convertToClassicString(newValue));
+    for (int i = 0; subelements.hasSlot(i); i++) {
+      JSObject subelement = (JSObject) getValue(subelements, i);
+      if (subelement == null || !subelement.hasSlot(2) || getValue(subelement, 2) == null) {
+        continue;
+      }
+
+      JSONObject entry = new JSONObject();
+      entry.put(JsonConstants.ID, getElementName(subelement));
+      entry.put(JsonConstants.IDENTIFIER, getCurrentElementValue(subelement));
+      comboEntries.add(entry);
+
+      // If the column is mandatory, we choose the first value as selected
+      // In any case, we select the one which is marked as selected "true"
+      boolean selected = (i == 0 && col.isMandatory())
+          || Boolean.parseBoolean(getValue(subelement, 2).toString());
+
+      if (selected) {
+        UIDefinition uiDef = UIDefinitionController.getInstance().getUIDefinition(col.getId());
+        String newValue = getElementName(subelement).toString();
+
+        jsonobject.put(CalloutConstants.VALUE, newValue);
+        jsonobject.put(CalloutConstants.CLASSIC_VALUE, uiDef.convertToClassicString(newValue));
+        if (request != null) {
           request.setRequestParameter(colIdent, uiDef.convertToClassicString(newValue));
-          log.debug("Column: {} Value: {}", col.getDBColumnName(), newValue);
         }
+        log.debug("Column: {} Value: {}", col.getDBColumnName(), newValue);
       }
     }
+
     // If the callout returns a combo, we in any case set the new value with what
     // the callout returned
     columnValues.put(colIdent, jsonobject);
@@ -137,7 +171,33 @@ public class HttpServletCalloutInformationProvider implements CalloutInformation
   }
 
   private Object getElementName(Object element) {
-    NativeArray nativeArrayElement = (NativeArray) element;
-    return nativeArrayElement.get(0, null);
+    JSObject e = (JSObject) element;
+    return e.getSlot(0);
+  }
+
+  /** Parses HTML response to extract callout values from its script */
+  public void parseResponse() {
+    String initS = "id=\"paramArray\">";
+    String resp = rawResponse.substring(rawResponse.indexOf(initS) + initS.length());
+    resp = resp.substring(0, resp.indexOf("</SCRIPT")).trim();
+    if (!resp.contains("new Array(") && !resp.contains("[[")) {
+      log.error("Couldn't evaluate callout response {}", rawResponse);
+      return;
+    }
+    try {
+      JSObject o = (JSObject) OBScriptEngine.getInstance().eval(String.format(JS_EVALUATOR, resp));
+      calloutName = (String) o.getMember("calloutName");
+      JSObject response = (JSObject) o.getMember("response");
+      responseElements = new ArrayList<>();
+      for (int i = 0; response.hasSlot(i); i++) {
+        responseElements.add((JSObject) response.getSlot(i));
+      }
+    } catch (Exception e) {
+      log.error("Couldn't parse callout response. The parsed response was: " + resp, e);
+    }
+  }
+
+  public String getCalloutName() {
+    return calloutName;
   }
 }

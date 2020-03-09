@@ -125,6 +125,114 @@
         <default><![CDATA[Y]]></default>
         <onCreateDefault><![CDATA['Y']]></onCreateDefault>
       </column>
+      <column name="MONDAY" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false">
+        <default><![CDATA[N]]></default>
+        <onCreateDefault><![CDATA['N']]></onCreateDefault>
+      </column>
+      <column name="TUESDAY" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false">
+        <default><![CDATA[N]]></default>
+        <onCreateDefault><![CDATA['N']]></onCreateDefault>
+      </column>
+      <column name="WEDNESDAY" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false">
+        <default><![CDATA[N]]></default>
+        <onCreateDefault><![CDATA['N']]></onCreateDefault>
+      </column>
+      <column name="THURSDAY" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false">
+        <default><![CDATA[N]]></default>
+        <onCreateDefault><![CDATA['N']]></onCreateDefault>
+      </column>
+      <column name="FRIDAY" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false">
+        <default><![CDATA[N]]></default>
+        <onCreateDefault><![CDATA['N']]></onCreateDefault>
+      </column>
+      <column name="SATURDAY" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false">
+        <default><![CDATA[N]]></default>
+        <onCreateDefault><![CDATA['N']]></onCreateDefault>
+      </column>
+      <column name="SUNDAY" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false">
+        <default><![CDATA[N]]></default>
+        <onCreateDefault><![CDATA['N']]></onCreateDefault>
+      </column>
+      <column name="ALLWEEKDAYS" primaryKey="false" required="true" type="CHAR" size="1" autoIncrement="false">
+        <default><![CDATA[Y]]></default>
+        <onCreateDefault><![CDATA['Y']]></onCreateDefault>
+      </column>
+      <column name="STARTINGTIME" primaryKey="false" required="false" type="TIMESTAMP" size="7" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <column name="ENDINGTIME" primaryKey="false" required="false" type="TIMESTAMP" size="7" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <column name="STARTINGTIMEMONDAY" primaryKey="false" required="false" type="TIMESTAMP" size="7" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <column name="STARTINGTIMETUESDAY" primaryKey="false" required="false" type="TIMESTAMP" size="7" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <column name="STARTINGTIMEWEDNESDAY" primaryKey="false" required="false" type="TIMESTAMP" size="7" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <column name="STARTINGTIMETHURSDAY" primaryKey="false" required="false" type="TIMESTAMP" size="7" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <column name="STARTINGTIMEFRIDAY" primaryKey="false" required="false" type="TIMESTAMP" size="7" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <column name="STARTINGTIMESATURDAY" primaryKey="false" required="false" type="TIMESTAMP" size="7" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <column name="STARTINGTIMESUNDAY" primaryKey="false" required="false" type="TIMESTAMP" size="7" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <column name="ENDINGTIMEMONDAY" primaryKey="false" required="false" type="TIMESTAMP" size="7" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <column name="ENDINGTIMETUESDAY" primaryKey="false" required="false" type="TIMESTAMP" size="7" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <column name="ENDINGTIMEWEDNESDAY" primaryKey="false" required="false" type="TIMESTAMP" size="7" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <column name="ENDINGTIMETHURSDAY" primaryKey="false" required="false" type="TIMESTAMP" size="7" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <column name="ENDINGTIMEFRIDAY" primaryKey="false" required="false" type="TIMESTAMP" size="7" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <column name="ENDINGTIMESATURDAY" primaryKey="false" required="false" type="TIMESTAMP" size="7" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <column name="ENDINGTIMESUNDAY" primaryKey="false" required="false" type="TIMESTAMP" size="7" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <column name="CONFORGPROCESS" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false">
+        <default><![CDATA[N]]></default>
+        <onCreateDefault/>
+      </column>
+      <column name="CONFPRODCATPROCESS" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false">
+        <default><![CDATA[N]]></default>
+        <onCreateDefault/>
+      </column>
+      <column name="CONFPRODPROCESS" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false">
+        <default><![CDATA[N]]></default>
+        <onCreateDefault/>
+      </column>
       <foreign-key foreignTable="AD_CLIENT" name="M_OFFER_AD_CLIENT">
         <reference local="AD_CLIENT_ID" foreign="AD_CLIENT_ID"/>
       </foreign-key>
@@ -134,7 +242,26 @@
       <foreign-key foreignTable="M_OFFER_TYPE" name="M_OFFER_OFFERTYPE">
         <reference local="M_OFFER_TYPE_ID" foreign="M_OFFER_TYPE_ID"/>
       </foreign-key>
+      <check name="M_OFFER_ALL_WEEK_TIME_CHK"><![CDATA[STARTINGTIME < ENDINGTIME]]></check>
+      <check name="M_OFFER_FRIDAY_CHK"><![CDATA[FRIDAY IN ('Y', 'N')]]></check>
+      <check name="M_OFFER_FRIDAY_TIME_CHK"><![CDATA[STARTINGTIMEFRIDAY < ENDINGTIMEFRIDAY]]></check>
       <check name="M_OFFER_ISACTIVE_CHECK"><![CDATA[ISACTIVE IN ('Y', 'N')]]></check>
+      <check name="M_OFFER_MONDAY_CHK"><![CDATA[MONDAY IN ('Y', 'N')]]></check>
+      <check name="M_OFFER_MONDAY_TIME_CHK"><![CDATA[STARTINGTIMEMONDAY < ENDINGTIMEMONDAY]]></check>
       <check name="M_OFFER_NEXT_CHECK"><![CDATA[APPLY_NEXT IN ('Y', 'N')]]></check>
+      <check name="M_OFFER_ORG_CHK"><![CDATA[CONFORGPROCESS IN ('Y', 'N')]]></check>
+      <check name="M_OFFER_ORG_PROD_CHK"><![CDATA[CONFPRODPROCESS IN ('Y', 'N')]]></check>
+      <check name="M_OFFER_ORG_PRODCAT_CHK"><![CDATA[CONFPRODCATPROCESS IN ('Y', 'N')]]></check>
+      <check name="M_OFFER_SATURDAY_CHK"><![CDATA[SATURDAY IN ('Y', 'N')]]></check>
+      <check name="M_OFFER_SATURDAY_TIME_CHK"><![CDATA[STARTINGTIMESATURDAY < ENDINGTIMESATURDAY]]></check>
+      <check name="M_OFFER_SUNDAY_CHK"><![CDATA[SUNDAY IN ('Y', 'N')]]></check>
+      <check name="M_OFFER_SUNDAY_TIME_CHK"><![CDATA[STARTINGTIMESUNDAY < ENDINGTIMESUNDAY]]></check>
+      <check name="M_OFFER_THURSDAY_CHK"><![CDATA[THURSDAY IN ('Y', 'N')]]></check>
+      <check name="M_OFFER_THURSDAY_TIME_CHK"><![CDATA[STARTINGTIMETHURSDAY < ENDINGTIMETHURSDAY]]></check>
+      <check name="M_OFFER_TUESDAY_CHK"><![CDATA[TUESDAY IN ('Y', 'N')]]></check>
+      <check name="M_OFFER_TUESDAY_TIME_CHK"><![CDATA[STARTINGTIMETUESDAY < ENDINGTIMETUESDAY]]></check>
+      <check name="M_OFFER_WEDNESDAY_CHK"><![CDATA[WEDNESDAY IN ('Y', 'N')]]></check>
+      <check name="M_OFFER_WEDNESDAY_TIME_CHK"><![CDATA[STARTINGTIMEWEDNESDAY < ENDINGTIMEWEDNESDAY]]></check>
+      <check name="M_OFFER_WHOLE_WEEK_CHK"><![CDATA[ALLWEEKDAYS IN ('Y', 'N')]]></check>
     </table>
   </database>

@@ -102,7 +102,7 @@ public class UniqueConstraintImportTest extends XMLBaseTest {
    */
   @Test
   public void testBCountryTrlImport() {
-    setTestAdminContext();
+    setSystemAdministratorContext();
 
     // read countrytrl
     String xml = exportClass(CountryTrl.class, "country", getCountryByCode("NO"));

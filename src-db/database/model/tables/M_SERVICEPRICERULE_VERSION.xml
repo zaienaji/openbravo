@@ -45,6 +45,14 @@
         <default/>
         <onCreateDefault/>
       </column>
+      <column name="M_RELATEDPRODUCT_ID" primaryKey="false" required="false" type="VARCHAR" size="32" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <column name="M_RELATEDPRODUCTCATEGORY_ID" primaryKey="false" required="false" type="VARCHAR" size="32" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
       <foreign-key foreignTable="AD_CLIENT" name="M_SERVPRRULVERSION_AD_CLIENT">
         <reference local="AD_CLIENT_ID" foreign="AD_CLIENT_ID"/>
       </foreign-key>
@@ -54,9 +62,21 @@
       <foreign-key foreignTable="M_PRODUCT" name="M_SERVPRRULVERSION_PRODUCT">
         <reference local="M_PRODUCT_ID" foreign="M_PRODUCT_ID"/>
       </foreign-key>
+      <foreign-key foreignTable="M_PRODUCT_SERVICE" name="M_SERVPRRULVERSION_RELPRODUCT">
+        <reference local="M_RELATEDPRODUCT_ID" foreign="M_PRODUCT_SERVICE_ID"/>
+      </foreign-key>
       <foreign-key foreignTable="M_SERVICEPRICERULE" name="M_SERVPRRULVERSION_RULE">
         <reference local="M_SERVICEPRICERULE_ID" foreign="M_SERVICEPRICERULE_ID"/>
       </foreign-key>
+      <foreign-key foreignTable="M_PRODUCT_CATEGORY_SERVICE" name="M_SERVPRRULVERSION_SERVPRODCAT">
+        <reference local="M_RELATEDPRODUCTCATEGORY_ID" foreign="M_PRODUCT_CATEGORY_SERVICE_ID"/>
+      </foreign-key>
+      <index name="M_SERVICEP_PR_VERSION_RELCAT" unique="false">
+        <index-column name="M_RELATEDPRODUCTCATEGORY_ID"/>
+      </index>
+      <index name="M_SERVICEP_PR_VERSION_RELPROD" unique="false">
+        <index-column name="M_RELATEDPRODUCT_ID"/>
+      </index>
       <index name="M_SERVICEPRICERULEVERSION_PROD" unique="false">
         <index-column name="M_PRODUCT_ID"/>
       </index>

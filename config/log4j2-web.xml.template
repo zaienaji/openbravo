@@ -12,7 +12,7 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU
- * All portions are Copyright (C) 2018 Openbravo SLU
+ * All portions are Copyright (C) 2018-2019 Openbravo SLU
  * All Rights Reserved.
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -46,7 +46,13 @@
         <SizeBasedTriggeringPolicy size="100MB" />
         <TimeBasedTriggeringPolicy />
       </Policies>
-      <DefaultRolloverStrategy max="30"/>
+      <DefaultRolloverStrategy max="30">
+        <Delete basePath="${logDir}">
+          <IfFileName glob="openbravo-*.log.gz">
+            <IfAccumulatedFileCount exceeds="30"/>
+          </IfFileName>
+        </Delete>
+      </DefaultRolloverStrategy>
     </RollingFile>
 
     <Console name="Console" target="SYSTEM_OUT">

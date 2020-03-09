@@ -12,7 +12,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2001-2017 Openbravo SLU 
+ * All portions are Copyright (C) 2001-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -30,7 +30,8 @@
   <SqlMethod name="deactivate" type="preparedStatement" return="rowCount">
     <Sql><![CDATA[
         UPDATE AD_Session
-        SET SESSION_ACTIVE = 'N'  
+        SET SESSION_ACTIVE = 'N',
+            UPDATED = NOW()
         WHERE AD_Session.AD_Session_ID = ? 
     ]]></Sql>
     <Parameter name="adSessionId"/>
@@ -39,7 +40,8 @@
   <SqlMethod name="deactivateExpiredSessions" type="preparedStatement" return="rowCount">
     <Sql><![CDATA[
         UPDATE AD_Session
-           SET Session_Active = 'N'
+           SET Session_Active = 'N',
+               updated = now()
          WHERE Session_Active = 'Y'
            AND (Last_Session_Ping < to_timestamp(?, 'YYYY-MM-DD HH24:MI:SS')
              or (Last_Session_Ping is null and created < now() - 1))

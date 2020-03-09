@@ -37,7 +37,6 @@ public class ToolBar {
   private boolean debug = false;
   private boolean isSrcWindow = false;
   private boolean isFrame = false;
-  private boolean isRelation = false;
   private boolean email = false;
   private Map<String, HTMLElement> buttons = new HashMap<>();
 
@@ -157,15 +156,10 @@ public class ToolBar {
               : "dijit.byId('" + grid_id + "').getSelectedRows()")
           + ", " + ((grid_id == null || grid_id.equals("")) ? "true" : "null") + ");";
     } else if (name.equals("GRID_VIEW")) {
-      return !isRelation
-          ? "submitCommandForm('RELATION', isUserChanges, null, '" + servlet_action
-              + (isSrcWindow ? "" : "_Relation") + ".html', '_self', null, true);"
-          : "";
+      return "submitCommandForm('RELATION', isUserChanges, null, '" + servlet_action
+              + (isSrcWindow ? "" : "_Relation") + ".html', '_self', null, true);";
     } else if (name.equals("FORM_VIEW")) {
-      return isRelation
-          ? "submitCommandForm('EDIT', true, null, '" + servlet_action
-              + (isSrcWindow ? "" : "_Relation") + ".html', '_self', null, false);"
-          : "";
+      return "";
     } else {
       return "submitCommandForm('" + (name.equals("REFRESH") ? "DEFAULT" : name) + "', "
           + (name.equals("NEW") && (this.grid_id.equals("")) ? "true" : "false") + ", null, '"
@@ -211,10 +205,6 @@ public class ToolBar {
 
     buttons.put("SEPARATOR7", new ToolBar_Space(base_direction));
     buttons.put("HR1", new ToolBar_HR());
-  }
-
-  public void prepareRelationTemplateNoSearch() {
-    isRelation = true;
   }
 
   public void prepareSimpleToolBarTemplate() {
@@ -340,11 +330,11 @@ public class ToolBar {
       buttons.put("FORM_VIEW",
           new ToolBar_Button(base_direction, "Edition",
               Utility.messageBD(conn, "Form View", language), getButtonScript("FORM_VIEW"),
-              !isRelation, "Edition" + (isNew ? "_new" : "")));
+              true, "Edition" + (isNew ? "_new" : "")));
       buttons.put("GRID_VIEW",
           new ToolBar_Button(base_direction, "Relation",
               Utility.messageBD(conn, "Grid View", language), getButtonScript("GRID_VIEW"),
-              isRelation));
+              false));
       buttons.put("SEPARATOR_NEWUI", new ToolBar_Space(base_direction));
       toolbar.append(transformElementsToString(buttons.get("FORM_VIEW"), lastType));
       toolbar.append(transformElementsToString(buttons.get("GRID_VIEW"), lastType));
@@ -360,24 +350,6 @@ public class ToolBar {
     toolbar.append(transformElementsToString(buttons.get("PRINT"), lastType));
     toolbar.append(transformElementsToString(buttons.get("EMAIL"), lastType));
     toolbar.append(transformElementsToString(buttons.get("SEPARATOR5"), lastType));
-
-    if (isRelation) {
-      toolbar.append("<td width=\"1\"><img src=\"")
-          .append(base_direction)
-          .append("/images/blank.gif\" style=\"width: 7px;\" border=\"0\">");
-      toolbar.append("<td width=\"1\"><img src=\"")
-          .append(base_direction)
-          .append("/images/blank.gif\" class=\"Main_ToolBar_textlabel_bg_left\" border=\"0\">");
-      toolbar.append("</td>\n");
-      toolbar.append("<td class=\"Main_ToolBar_textlabel_bg_body\">\n");
-      toolbar.append("<div id=\"bookmark\">\n");
-      toolbar.append("</div>\n");
-      toolbar.append("</td>\n");
-      toolbar.append("<td width=\"1\" class=\"Main_ToolBar_textlabel_bg_right\">");
-      toolbar.append("<div style=\"padding: 0; margin: 0; border: 0; width: 9px;\" />");
-      toolbar.append("</td>\n");
-    }
-
     toolbar.append(transformElementsToString(buttons.get("SEPARATOR6"), lastType));
     toolbar.append(transformElementsToString(buttons.get("PREVIOUS_RELATION"), lastType));
     toolbar.append(transformElementsToString(buttons.get("PREVIOUS_RELATION_DISABLED"), lastType));

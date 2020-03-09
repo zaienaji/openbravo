@@ -19,6 +19,7 @@
 package org.openbravo.costing;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
@@ -95,10 +96,11 @@ public class FixBackdatedTransactionsProcess extends BaseProcessActionHandler {
             rule.getEndingDate());
         int i = 0;
         try {
+          SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+          Date lastMovementDate = dateFormat.parse("01-01-1900");
           while (transactions.next()) {
             MaterialTransaction trx = (MaterialTransaction) transactions.get()[0];
-            if (CostAdjustmentUtils.isNeededBackdatedCostAdjustment(trx,
-                rule.isWarehouseDimension(), CostingUtils.getCostingRuleStartingDate(rule))) {
+            if (trx.getMovementDate().compareTo(lastMovementDate) < 0) {
               createCostAdjustmenHeader(rule.getOrganization());
               final CostAdjustmentLineParameters lineParameters = new CostAdjustmentLineParameters(
                   trx, null, costAdjHeader);
@@ -112,6 +114,8 @@ public class FixBackdatedTransactionsProcess extends BaseProcessActionHandler {
                 // Reload rule after clear session.
                 rule = OBDal.getInstance().get(CostingRule.class, ruleId);
               }
+            } else {
+              lastMovementDate = trx.getMovementDate();
             }
           }
         } finally {
@@ -192,7 +196,7 @@ public class FixBackdatedTransactionsProcess extends BaseProcessActionHandler {
       select.append(
           " and trx." + MaterialTransaction.PROPERTY_TRANSACTIONPROCESSDATE + " < (:endDate)");
     }
-    select.append(" order by trx." + MaterialTransaction.PROPERTY_MOVEMENTDATE);
+    select.append(" order by trx." + MaterialTransaction.PROPERTY_TRANSACTIONPROCESSDATE);
 
     Query<MaterialTransaction> stockLinesQry = OBDal.getInstance()
         .getSession()

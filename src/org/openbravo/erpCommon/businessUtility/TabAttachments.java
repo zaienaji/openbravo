@@ -11,7 +11,7 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU
- * All portions are Copyright (C) 2001-2017 Openbravo SLU
+ * All portions are Copyright (C) 2001-2019 Openbravo SLU
  * All Rights Reserved.
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -38,6 +38,8 @@ import org.apache.logging.log4j.Logger;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.openbravo.base.exception.OBException;
+import org.openbravo.base.exception.OBSecurityException;
+import org.openbravo.base.filter.IsIDFilter;
 import org.openbravo.base.secureApp.HttpSecureAppServlet;
 import org.openbravo.base.secureApp.VariablesSecureApp;
 import org.openbravo.base.weld.WeldUtils;
@@ -95,6 +97,10 @@ public class TabAttachments extends HttpSecureAppServlet {
         final String strTab = paramValues.getString("inpTabId");
         tab = adcs.getTab(strTab);
         key = paramValues.getString("inpKey");
+        if (!IsIDFilter.instance.accept(key)) {
+          throw new OBSecurityException("Invalid key for attachement in tab " + tab + " ID:" + key);
+        }
+
         final String strDocumentOrganization = paramValues.getString("inpDocumentOrg");
         final FileItem file = vars.getMultiFile("inpname");
         if (file == null) {

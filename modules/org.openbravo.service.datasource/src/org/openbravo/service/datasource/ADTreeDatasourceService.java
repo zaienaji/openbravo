@@ -11,7 +11,7 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU
- * All portions are Copyright (C) 2013-2018 Openbravo SLU
+ * All portions are Copyright (C) 2013-2019 Openbravo SLU
  * All Rights Reserved.
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -328,12 +328,12 @@ public class ADTreeDatasourceService extends TreeDatasourceService {
     // Selects the relevant properties from ADTreeNode and all the properties from the referenced
     // table
     String selectClause = " tn.id as treeNodeId, tn.reportSet as parentId, tn.sequenceNumber as seqNo, tn.node as nodeId, e as entity";
-    OBQuery<BaseOBObject> obq = OBDal.getInstance().createQuery(TreeNode.ENTITY_NAME, joinClause);
-    obq.setFilterOnActive(false);
-    obq.setSelectClause(selectClause);
-    obq.setFilterOnReadableOrganization(false);
-    obq.setNamedParameters(params);
-    return obq;
+    return OBDal.getInstance()
+        .createQuery(TreeNode.ENTITY_NAME, joinClause)
+        .setFilterOnActive(false)
+        .setSelectClause(selectClause)
+        .setFilterOnReadableOrganization(false)
+        .setNamedParameters(params);
   }
 
   @Override
@@ -361,11 +361,12 @@ public class ADTreeDatasourceService extends TreeDatasourceService {
 
     joinClause += " order by tn.sequenceNumber ";
 
-    OBQuery<BaseOBObject> obq = OBDal.getInstance().createQuery("ADTreeNode", joinClause);
-    obq.setFilterOnActive(false);
-    obq.setFilterOnReadableOrganization(entity.getMappingClass() != Organization.class);
-    obq.setNamedParameter("nodeId", nodeId);
-    return obq.count() > 0;
+    return OBDal.getInstance()
+        .createQuery("ADTreeNode", joinClause)
+        .setFilterOnActive(false)
+        .setFilterOnReadableOrganization(entity.getMappingClass() != Organization.class)
+        .setNamedParameter("nodeId", nodeId)
+        .count() > 0;
   }
 
   /**
@@ -702,10 +703,11 @@ public class ADTreeDatasourceService extends TreeDatasourceService {
       joinClause += " and (" + hqlWhereClause + ")";
     }
 
-    OBQuery<BaseOBObject> obq = OBDal.getInstance().createQuery("ADTreeNode", joinClause);
-    obq.setFilterOnActive(false);
-    obq.setNamedParameter("nodeId", nodeId);
-    return obq.count() > 0;
+    return OBDal.getInstance()
+        .createQuery("ADTreeNode", joinClause)
+        .setFilterOnActive(false)
+        .setNamedParameter("nodeId", nodeId)
+        .count() > 0;
   }
 
   @Override

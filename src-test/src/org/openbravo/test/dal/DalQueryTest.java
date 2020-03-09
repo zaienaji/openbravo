@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2008-2018 Openbravo SLU 
+ * All portions are Copyright (C) 2008-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):
  *   Martin Taal <martin.taal@openbravo.com>,
@@ -68,7 +68,7 @@ public class DalQueryTest extends OBBaseTest {
    */
   @Test
   public void testADalFirstWhereLeftJoinClause() {
-    setTestAdminContext();
+    setSystemAdministratorContext();
     final String where = "as mo left join mo.callout moc left join mo.reference mor left join mo.specialForm mof left join mo.process mop left join mo.tab mot where moc.module.id='0' or mor.module.id='0' or mof.module.id='0' or mop.module.id='0' or mot.module.id='0'";
     final OBQuery<ModelImplementation> obq = OBDal.getInstance()
         .createQuery(ModelImplementation.class, where);
@@ -80,7 +80,7 @@ public class DalQueryTest extends OBBaseTest {
    */
   @Test
   public void testBDalExtraJoinWhereLeftJoinClause() {
-    setTestAdminContext();
+    setSystemAdministratorContext();
     final String where = "as mom left join mom." + ModelImplementationMapping.PROPERTY_MODELOBJECT
         + " as mo left join mo." + ModelImplementation.PROPERTY_CALLOUT + " moc left join mo."
         + ModelImplementation.PROPERTY_REFERENCE + " mor left join mo."
@@ -98,7 +98,7 @@ public class DalQueryTest extends OBBaseTest {
    */
   @Test
   public void testCDalWhereLeftJoinClause() {
-    setTestAdminContext();
+    setSystemAdministratorContext();
     final String where = "as mo left join mo.callout moc left join mo.reference mor where moc.module.id='0' or mor.module.id='0'";
     final OBQuery<ModelImplementation> obq = OBDal.getInstance()
         .createQuery(ModelImplementation.class, where);
@@ -110,7 +110,7 @@ public class DalQueryTest extends OBBaseTest {
    */
   @Test
   public void testDDalOtherWhereLeftJoinClause() {
-    setTestAdminContext();
+    setSystemAdministratorContext();
     final String where = "as mo left join mo.callout moc left join mo.reference mor where (moc.module.id='0' or mor.module.id='0') and exists(from ADUser where id<>'0')";
     final OBQuery<ModelImplementation> obq = OBDal.getInstance()
         .createQuery(ModelImplementation.class, where);
@@ -122,7 +122,7 @@ public class DalQueryTest extends OBBaseTest {
    */
   @Test
   public void testEDalAnOtherWhereLeftJoinClause() {
-    setTestAdminContext();
+    setSystemAdministratorContext();
     final String where = "exists(from ADUser where id<>'0')";
     final OBQuery<ModelImplementation> obq = OBDal.getInstance()
         .createQuery(ModelImplementation.class, where);

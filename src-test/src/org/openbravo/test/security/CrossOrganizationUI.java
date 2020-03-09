@@ -163,7 +163,7 @@ public class CrossOrganizationUI extends OBBaseTest {
         put(JsonConstants.STARTROW_PARAMETER, "0");
         put(JsonConstants.ENDROW_PARAMETER, "75");
         put(JsonConstants.NOCOUNT_PARAMETER, "true");
-        put(SelectorConstants.DS_REQUEST_SELECTOR_ID_PARAMETER, "862F54CB1B074513BD791C6789F4AA42");
+        put(SelectorConstants.DS_REQUEST_SELECTOR_ID_PARAMETER, "F132874BE0954A9B8C1301BE20704730");
         put(JsonConstants.ORG_PARAMETER, TEST_ORG_ID);
         put("inpTableId", "259");
         put("targetProperty", "businessPartner");

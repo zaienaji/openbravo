@@ -196,7 +196,7 @@ public class ReportValuationStock extends HttpSecureAppServlet {
       String strDateNext = DateTimeData.nDaysAfter(readOnlyCP, strDate, "1");
       String strMaxAggDate = ReportValuationStockData.selectMaxAggregatedDate(readOnlyCP,
           OBDal.getReadOnlyInstance().get(Organization.class, strLegalEntity).getClient().getId(),
-          orgIds);
+          strDateNext, orgIds);
       if (StringUtils.isEmpty(strMaxAggDate)) {
         DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
         Date maxAggDate = formatter.parse("01-01-0000");

@@ -148,7 +148,7 @@ OB.ProductServices.doRelateOrderLinesSelectionChanged = function (record, state,
 OB.ProductServices.updateServicePrice = function (view, record, state) {
   var callback, totalServiceAmount = view.theForm.getItem('totalserviceamount'),
       orderLinesGrid = view.theForm.getItem('grid').canvas.viewGrid,
-      recordId, contextInfo;
+      recordId, contextInfo, parameters;
   if (record) {
     recordId = record.id;
   } else {
@@ -174,7 +174,7 @@ OB.ProductServices.updateServicePrice = function (view, record, state) {
     }
   };
 
-  OB.RemoteCallManager.call('org.openbravo.common.actionhandler.ServiceRelatedLinePriceActionHandler', {
+  parameters = {
     orderlineId: view.theForm.getItem('orderlineId').getValue(),
     amount: view.theForm.getItem('totallinesamount').getValue(),
     discounts: view.theForm.getItem('totaldiscountsamount').getValue(),
@@ -183,6 +183,25 @@ OB.ProductServices.updateServicePrice = function (view, record, state) {
     unitdiscountsamt: view.theForm.getItem('totalUnitDiscountsAmt').getValue(),
     orderLineToRelateId: recordId,
     tabId: contextInfo.inpTabId,
-    state: state
-  }, {}, callback);
+    state: state,
+    relatedLinesInfo: {
+      lineAmount: [],
+      lineDiscounts: [],
+      linePriceamount: [],
+      lineRelatedqty: [],
+      lineUnitdiscountsamt: [],
+      relatedLines: []
+    }
+  }
+
+  orderLinesGrid.getSelectedRecords().forEach(function (selectedRecord) {
+    parameters.relatedLinesInfo.lineAmount.push(orderLinesGrid.getEditedCell(selectedRecord, orderLinesGrid.getFieldByColumnName('amount')));
+    parameters.relatedLinesInfo.lineDiscounts.push(orderLinesGrid.getEditedCell(selectedRecord, orderLinesGrid.getFieldByColumnName('discountsAmt')));
+    parameters.relatedLinesInfo.linePriceamount.push(orderLinesGrid.getEditedCell(selectedRecord, orderLinesGrid.getFieldByColumnName('price')));
+    parameters.relatedLinesInfo.lineRelatedqty.push(orderLinesGrid.getEditedCell(selectedRecord, orderLinesGrid.getFieldByColumnName('relatedQuantity')));
+    parameters.relatedLinesInfo.lineUnitdiscountsamt.push(orderLinesGrid.getEditedCell(selectedRecord, orderLinesGrid.getFieldByColumnName('unitDiscountsAmt')));
+    parameters.relatedLinesInfo.relatedLines.push(selectedRecord.id);
+  });
+
+  OB.RemoteCallManager.call('org.openbravo.common.actionhandler.ServiceRelatedLinePriceActionHandler', parameters, {}, callback);
 };

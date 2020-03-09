@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2008-2017 Openbravo SLU 
+ * All portions are Copyright (C) 2008-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -146,7 +146,6 @@ public class XMLEntityConverter extends BaseXMLEntityConverter {
   }
 
   // processes a xml tag which denotes an instance of a business object
-  @SuppressWarnings("unchecked")
   private BaseOBObject processEntityElement(String entityName, Element obElement,
       boolean theReferenced, boolean filterOrganizations) {
     // note: referenced is true for both childs and many-to-one references
@@ -205,7 +204,7 @@ public class XMLEntityConverter extends BaseXMLEntityConverter {
       if (bob instanceof OrganizationEnabled) {
         Organization objectOrganization = null;
         if (bob.isNewOBObject()) {
-          for (final Element childElement : (List<Element>) obElement.elements()) {
+          for (final Element childElement : obElement.elements()) {
             if (childElement.getName().equals(Client.PROPERTY_ORGANIZATION)) {
               // found
               final String refId = childElement.attributeValue(XMLConstants.ID_ATTRIBUTE);
@@ -225,7 +224,7 @@ public class XMLEntityConverter extends BaseXMLEntityConverter {
 
       try {
         // now parse the property elements
-        for (final Element childElement : (List<Element>) obElement.elements()) {
+        for (final Element childElement : obElement.elements()) {
           final Property p = entity.getProperty(childElement.getName(), false);
           if (p == null) {
             log.warn("Trying to set property " + childElement.getName() + " in entity "

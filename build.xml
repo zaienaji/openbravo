@@ -108,10 +108,6 @@ export.database: exports database structure and data to xml files.
       </or>
     </not>
   </condition>
-  
-  <condition property="jvm.arg.line" value="" else="--add-opens java.base/java.lang=ALL-UNNAMED">
-    <equals arg1="${ant.java.version}" arg2="1.8"/>
-  </condition>
 
   <condition property="calculate.core.rev">
    <istrue value="${calculate.core.revision}"/>
@@ -772,7 +768,6 @@ export.database: exports database structure and data to xml files.
   <target name="apply.module" depends="compile.apply.module">
     <java classname="org.openbravo.erpCommon.modules.ApplyModuleTask" fork="true" maxmemory="${build.maxmemory}" failonerror="true">
       <arg line="'${base.src}' '${friendlyWarnings}' '${forceRefData}'" />
-      <jvmarg line="${jvm.arg.line}" />
       <classpath refid="apply.module.runtime.classpath" />
     </java>
    <delete includeEmptyDirs="true"  dir="${build.apply.module}" />
@@ -996,6 +991,7 @@ export.database: exports database structure and data to xml files.
     <java classname="org.openbravo.base.BuildTask" jvm="${env.JAVA_HOME}/bin/java" fork="yes" maxmemory="${build.maxmemory}">
       <arg line="'${base.config}/Openbravo.properties' ${logFileName}" />
       <classpath>
+        <pathelement path="${base.config}" />
         <pathelement path="${build.core.lib}/openbravo-core.jar" />
         <pathelement path="${base.lib}/runtime/log4j-1.2-api-2.11.1.jar" />
         <pathelement path="${base.lib}/runtime/log4j-api-2.11.1.jar" />

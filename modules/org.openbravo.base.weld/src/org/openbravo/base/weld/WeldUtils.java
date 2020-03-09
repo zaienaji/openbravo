@@ -75,9 +75,7 @@ public class WeldUtils {
     staticBeanManager = theBeanManager;
   }
 
-  @SuppressWarnings("serial")
-  public static final AnnotationLiteral<Any> ANY_LITERAL = new AnnotationLiteral<Any>() {
-  };
+  public static final AnnotationLiteral<Any> ANY_LITERAL = Any.Literal.INSTANCE;
 
   /**
    * Method which uses the static instance of the bean manager cached in this class. This method
@@ -131,7 +129,7 @@ public class WeldUtils {
     final BeanManager beanManager = WeldUtils.getStaticInstanceBeanManager();
     final Set<Bean<?>> beans = beanManager.getBeans(type, ANY_LITERAL);
 
-    final List<T> instances = new ArrayList<T>();
+    final List<T> instances = new ArrayList<>();
     for (Bean<?> bean : beans) {
       T instance = (T) beanManager.getReference(bean, type,
           beanManager.createCreationalContext(bean));

@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2008-2018 Openbravo SLU 
+ * All portions are Copyright (C) 2008-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):
  *   Martin Taal <martin.taal@openbravo.com>,
@@ -75,13 +75,12 @@ import org.openbravo.model.materialmgmt.transaction.MaterialTransaction;
 import org.openbravo.test.base.OBBaseTest;
 
 /**
- * Test different parts of the dal api: {@link OBDal} and {@link OBCriteria}.
+ * Test different parts of the DAL API: {@link OBDal}, {@link OBQuery} and {@link OBCriteria}.
  * 
- * Note the testcases assume that they are run in the order defined in this class.
+ * Note the test cases assume that they are run in the order defined in this class.
  * 
  * @author mtaal
  */
-
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DalTest extends OBBaseTest {
   private static final Logger log = LogManager.getLogger();
@@ -140,9 +139,10 @@ public class DalTest extends OBBaseTest {
     setTestUserContext();
     addReadWriteAccess(Category.class);
     addReadWriteAccess(CategoryAccounts.class);
-    final OBCriteria<Category> obCriteria = OBDal.getInstance().createCriteria(Category.class);
-    obCriteria.add(Restrictions.eq(Category.PROPERTY_NAME, "testname"));
-    final List<Category> bpgs = obCriteria.list();
+    final List<Category> bpgs = OBDal.getInstance()
+        .createCriteria(Category.class)
+        .add(Restrictions.eq(Category.PROPERTY_NAME, "testname"))
+        .list();
     assertEquals(1, bpgs.size());
     final Category bpg = bpgs.get(0);
     final OBContext obContext = OBContext.getOBContext();
@@ -150,10 +150,10 @@ public class DalTest extends OBBaseTest {
     assertEquals(obContext.getUser().getId(), bpg.getUpdatedBy().getId());
 
     // first delete the related accounts
-    final OBCriteria<CategoryAccounts> obc2 = OBDal.getInstance()
-        .createCriteria(CategoryAccounts.class);
-    obc2.add(Restrictions.eq(CategoryAccounts.PROPERTY_BUSINESSPARTNERCATEGORY, bpgs.get(0)));
-    final List<CategoryAccounts> bpgas = obc2.list();
+    final List<CategoryAccounts> bpgas = OBDal.getInstance()
+        .createCriteria(CategoryAccounts.class)
+        .add(Restrictions.eq(CategoryAccounts.PROPERTY_BUSINESSPARTNERCATEGORY, bpgs.get(0)))
+        .list();
     for (final CategoryAccounts bga : bpgas) {
       OBDal.getInstance().refresh(bga);
       OBDal.getInstance().remove(bga);
@@ -169,9 +169,10 @@ public class DalTest extends OBBaseTest {
   public void testECheckBPGroupRemoved() {
     setTestUserContext();
     addReadWriteAccess(Category.class);
-    final OBCriteria<Category> obc = OBDal.getInstance().createCriteria(Category.class);
-    obc.add(Restrictions.eq(Category.PROPERTY_NAME, "testname"));
-    final List<Category> bpgs = obc.list();
+    final List<Category> bpgs = OBDal.getInstance()
+        .createCriteria(Category.class)
+        .add(Restrictions.eq(Category.PROPERTY_NAME, "testname"))
+        .list();
     assertEquals(0, bpgs.size());
   }
 
@@ -180,9 +181,10 @@ public class DalTest extends OBBaseTest {
   @Test
   public void testFUpdateCurrencyByUser() {
     setUserContext("E12DC7B3FF8C4F64924A98195223B1F8");
-    final OBCriteria<Currency> obc = OBDal.getInstance().createCriteria(Currency.class);
-    obc.add(Restrictions.eq(Currency.PROPERTY_ISOCODE, DOLLAR));
-    final List<Currency> cs = obc.list();
+    final List<Currency> cs = OBDal.getInstance()
+        .createCriteria(Currency.class)
+        .add(Restrictions.eq(Currency.PROPERTY_ISOCODE, DOLLAR))
+        .list();
     assertEquals(1, cs.size());
     final Currency c = cs.get(0);
     // Call getValue and setValue directly to work around security checks on the description
@@ -204,14 +206,15 @@ public class DalTest extends OBBaseTest {
    */
   @Test
   public void testGUpdateCurrencyByAdmin() {
-    setTestAdminContext();
+    setSystemAdministratorContext();
     Currency c = null;
     String prevDescription = null;
     String newDescription = null;
     {
-      final OBCriteria<Currency> obc = OBDal.getInstance().createCriteria(Currency.class);
-      obc.add(Restrictions.eq(Currency.PROPERTY_ISOCODE, DOLLAR));
-      final List<Currency> cs = obc.list();
+      final List<Currency> cs = OBDal.getInstance()
+          .createCriteria(Currency.class)
+          .add(Restrictions.eq(Currency.PROPERTY_ISOCODE, DOLLAR))
+          .list();
       assertEquals(1, cs.size());
       c = cs.get(0);
       prevDescription = c.getDescription();
@@ -223,9 +226,10 @@ public class DalTest extends OBBaseTest {
 
     // roll back the change, while doing some checks
     {
-      final OBCriteria<Currency> obc = OBDal.getInstance().createCriteria(Currency.class);
-      obc.add(Restrictions.eq(Currency.PROPERTY_ISOCODE, DOLLAR));
-      final List<Currency> cs = obc.list();
+      final List<Currency> cs = OBDal.getInstance()
+          .createCriteria(Currency.class)
+          .add(Restrictions.eq(Currency.PROPERTY_ISOCODE, DOLLAR))
+          .list();
       assertEquals(1, cs.size());
       final Currency newC = cs.get(0);
       assertTrue(c != newC);
@@ -260,9 +264,7 @@ public class DalTest extends OBBaseTest {
   public void testITransaction25PageRead() {
     setTestUserContext();
     addReadWriteAccess(MaterialTransaction.class);
-    final OBCriteria<MaterialTransaction> countObc = OBDal.getInstance()
-        .createCriteria(MaterialTransaction.class);
-    final int count = countObc.count();
+    final int count = OBDal.getInstance().createCriteria(MaterialTransaction.class).count();
     final int pageSize = 25;
     int pageCount = 1 + (count / pageSize);
     if (pageCount > 25) {
@@ -271,10 +273,10 @@ public class DalTest extends OBBaseTest {
     final StringBuilder sb = new StringBuilder();
     for (int i = 0; i < pageCount; i++) {
       final OBCriteria<MaterialTransaction> obc = OBDal.getInstance()
-          .createCriteria(MaterialTransaction.class);
-      obc.addOrderBy(MaterialTransaction.PROPERTY_PRODUCT + "." + Product.PROPERTY_NAME, false);
-      obc.setMaxResults(pageSize);
-      obc.setFirstResult(i * pageSize);
+          .createCriteria(MaterialTransaction.class)
+          .addOrderBy(MaterialTransaction.PROPERTY_PRODUCT + "." + Product.PROPERTY_NAME, false)
+          .setMaxResults(pageSize)
+          .setFirstResult(i * pageSize);
 
       sb.append("\nPAGE>>> " + (1 + i));
       for (final MaterialTransaction t : obc.list()) {
@@ -291,9 +293,7 @@ public class DalTest extends OBBaseTest {
   @Test
   public void testJTransactionAllPagesTime() {
     setSystemAdministratorContext();
-    final OBCriteria<MaterialTransaction> countObc = OBDal.getInstance()
-        .createCriteria(MaterialTransaction.class);
-    final int count = countObc.count();
+    final int count = OBDal.getInstance().createCriteria(MaterialTransaction.class).count();
     long time = System.currentTimeMillis();
     final int pageSize = 25;
     int pageCount = 1 + (count / pageSize);
@@ -301,10 +301,10 @@ public class DalTest extends OBBaseTest {
     long avg = 0;
     for (int i = 0; i < pageCount; i++) {
       final OBCriteria<MaterialTransaction> obc = OBDal.getInstance()
-          .createCriteria(MaterialTransaction.class);
-      obc.addOrderBy(MaterialTransaction.PROPERTY_PRODUCT + "." + Product.PROPERTY_NAME, false);
-      obc.setMaxResults(pageSize);
-      obc.setFirstResult(i * pageSize);
+          .createCriteria(MaterialTransaction.class)
+          .addOrderBy(MaterialTransaction.PROPERTY_PRODUCT + "." + Product.PROPERTY_NAME, false)
+          .setMaxResults(pageSize)
+          .setFirstResult(i * pageSize);
       for (final MaterialTransaction t : obc.list()) {
         log.debug(t.getIdentifier());
         // System.err.println(t.getIdentifier() +
@@ -334,10 +334,11 @@ public class DalTest extends OBBaseTest {
     final int pageSize = 5;
     final int pageCount = 1 + (count / 5);
     for (int i = 0; i < pageCount; i++) {
-      final OBCriteria<Currency> obc = OBDal.getInstance().createCriteria(Currency.class);
-      obc.addOrderBy(Currency.PROPERTY_ISOCODE, false);
-      obc.setMaxResults(pageSize);
-      obc.setFirstResult(i * pageSize);
+      final OBCriteria<Currency> obc = OBDal.getInstance()
+          .createCriteria(Currency.class)
+          .addOrderBy(Currency.PROPERTY_ISOCODE, false)
+          .setMaxResults(pageSize)
+          .setFirstResult(i * pageSize);
 
       log.debug("PAGE>>> " + (1 + i));
       for (final Currency c : obc.list()) {
@@ -379,9 +380,10 @@ public class DalTest extends OBBaseTest {
     try {
       String cashBookId = "";
       {
-        final OBCriteria<Currency> cc = OBDal.getInstance().createCriteria(Currency.class);
-        cc.add(Restrictions.eq(Currency.PROPERTY_ISOCODE, DOLLAR));
-        final List<Currency> cs = cc.list();
+        final List<Currency> cs = OBDal.getInstance()
+            .createCriteria(Currency.class)
+            .add(Restrictions.eq(Currency.PROPERTY_ISOCODE, DOLLAR))
+            .list();
         final Currency currency = cs.get(0);
         final CashBook c = OBProvider.getInstance().get(CashBook.class);
         c.setName("c_" + System.currentTimeMillis());
@@ -396,11 +398,11 @@ public class DalTest extends OBBaseTest {
 
       // now check if the save indeed worked out by seeing if there is a
       // cashbook account
-      final OBCriteria<CashBookAccounts> cbc = OBDal.getInstance()
-          .createCriteria(CashBookAccounts.ENTITY_NAME);
-      cbc.add(Restrictions.eq(CashBookAccounts.PROPERTY_CASHBOOK + "." + CashBook.PROPERTY_ID,
-          cashBookId));
-      final List<?> cbas = cbc.list();
+      final List<?> cbas = OBDal.getInstance()
+          .createCriteria(CashBookAccounts.ENTITY_NAME)
+          .add(Restrictions.eq(CashBookAccounts.PROPERTY_CASHBOOK + "." + CashBook.PROPERTY_ID,
+              cashBookId))
+          .list();
       assertTrue(cbas.size() > 0);
       for (final Object co : cbas) {
         final CashBookAccounts cba = (CashBookAccounts) co;
@@ -469,9 +471,10 @@ public class DalTest extends OBBaseTest {
     setTestUserContext();
     setTestLogAppenderLevel(Level.WARN);
 
-    final OBCriteria<Currency> obc = OBDal.getInstance().createCriteria(Currency.class);
-    obc.add(Restrictions.eq(Currency.PROPERTY_ISOCODE, EURO));
-    obc.count();
+    OBDal.getInstance()
+        .createCriteria(Currency.class)
+        .add(Restrictions.eq(Currency.PROPERTY_ISOCODE, EURO))
+        .count();
 
     assertThat(getTestLogAppender().getMessages(Level.WARN), hasSize(0));
   }
@@ -481,8 +484,9 @@ public class DalTest extends OBBaseTest {
     setTestUserContext();
     setTestLogAppenderLevel(Level.WARN);
 
-    final OBCriteria<Currency> obc = OBDal.getInstance().createCriteria(Currency.class);
-    obc.add(Restrictions.eq(Currency.PROPERTY_ISOCODE, EURO));
+    final OBCriteria<Currency> obc = OBDal.getInstance()
+        .createCriteria(Currency.class)
+        .add(Restrictions.eq(Currency.PROPERTY_ISOCODE, EURO));
     if (obc.count() > 0) {
       obc.addOrderBy(Currency.PROPERTY_ISOCODE, false);
     }
@@ -495,11 +499,12 @@ public class DalTest extends OBBaseTest {
   public void orderByShouldBeAppliedAfterCount() {
     setTestUserContext();
 
-    final OBCriteria<Currency> obc = OBDal.getInstance().createCriteria(Currency.class);
-    obc.add(Restrictions.or(
-        //
-        Restrictions.eq(Currency.PROPERTY_ISOCODE, EURO),
-        Restrictions.eq(Currency.PROPERTY_ISOCODE, DOLLAR)));
+    final OBCriteria<Currency> obc = OBDal.getInstance()
+        .createCriteria(Currency.class)
+        .add(Restrictions.or(
+            //
+            Restrictions.eq(Currency.PROPERTY_ISOCODE, EURO),
+            Restrictions.eq(Currency.PROPERTY_ISOCODE, DOLLAR)));
     if (obc.count() > 0) {
       obc.addOrderBy(Currency.PROPERTY_ISOCODE, false);
     }
@@ -602,10 +607,10 @@ public class DalTest extends OBBaseTest {
       OBDal.getReadOnlyInstance().commitAndClose();
     } catch (Exception ignored) {
     }
-    final OBCriteria<Category> obCriteria = OBDal.getReadOnlyInstance()
-        .createCriteria(Category.class);
-    obCriteria.add(Restrictions.eq(Category.PROPERTY_NAME, "ro_testname"));
-    final List<Category> categories = obCriteria.list();
+    final List<Category> categories = OBDal.getReadOnlyInstance()
+        .createCriteria(Category.class)
+        .add(Restrictions.eq(Category.PROPERTY_NAME, "ro_testname"))
+        .list();
     assertEquals(0, categories.size());
   }
 
@@ -652,7 +657,7 @@ public class DalTest extends OBBaseTest {
   public void testOBQueryWithoutAlias() {
     setTestUserContext();
     String isoCode = getISOCodeFromCurrencyId(EURO_ID, false);
-    assertEquals(isoCode, EURO);
+    assertEquals(EURO, isoCode);
   }
 
   /**
@@ -663,7 +668,7 @@ public class DalTest extends OBBaseTest {
   public void testOBQueryWithAlias() {
     setTestUserContext();
     String isoCode = getISOCodeFromCurrencyId(EURO_ID, true);
-    assertEquals(isoCode, EURO);
+    assertEquals(EURO, isoCode);
   }
 
   /**
@@ -679,9 +684,11 @@ public class DalTest extends OBBaseTest {
       OBDal.getInstance().flush();
       // ...and now delete it using an OBQuery instance
       String hql = "id = :id";
-      OBQuery<User> query = OBDal.getInstance().createQuery(User.class, hql);
-      query.setNamedParameter("id", user.getId());
-      deletions = query.deleteQuery().executeUpdate();
+      deletions = OBDal.getInstance()
+          .createQuery(User.class, hql)
+          .setNamedParameter("id", user.getId())
+          .deleteQuery()
+          .executeUpdate();
     } finally {
       OBDal.getInstance().rollbackAndClose();
     }
@@ -699,10 +706,11 @@ public class DalTest extends OBBaseTest {
         hql.append(" where " + Currency.PROPERTY_ID);
       }
       hql.append(" = :currencyId");
-      OBQuery<Currency> query = OBDal.getInstance().createQuery(Currency.class, hql.toString());
-      query.setNamedParameter("currencyId", currencyId);
-      query.setSelectClause(Currency.PROPERTY_ISOCODE);
-      isoCode = (String) query.uniqueResultObject();
+      isoCode = (String) OBDal.getInstance()
+          .createQuery(Currency.class, hql.toString())
+          .setNamedParameter("currencyId", currencyId)
+          .setSelectClause(Currency.PROPERTY_ISOCODE)
+          .uniqueResultObject();
     } catch (Exception ignored) {
     }
     return isoCode;
@@ -765,8 +773,8 @@ public class DalTest extends OBBaseTest {
   public void canUseOBContextParamNotPresentInSession() {
     OBDal.getInstance().getSession().clear();
     OBQuery<BusinessPartner> q = OBDal.getInstance()
-        .createQuery(BusinessPartner.class, "as bp where bp.client = :client");
-    q.setNamedParameter("client", OBContext.getOBContext().getCurrentClient());
+        .createQuery(BusinessPartner.class, "as bp where bp.client = :client")
+        .setNamedParameter("client", OBContext.getOBContext().getCurrentClient());
     assertThat("Can use OBContext object as OBQuery parameter value", q.list(), notNullValue());
   }
 

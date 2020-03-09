@@ -125,10 +125,6 @@ public class ImportEntryManager {
 
   @Inject
   @Any
-  private Instance<ImportEntryPreProcessor> entryPreProcessors;
-
-  @Inject
-  @Any
   private Instance<ImportEntryProcessor> entryProcessors;
 
   @Inject
@@ -152,6 +148,10 @@ public class ImportEntryManager {
 
   // default to number of processors plus some additionals for the main threads
   private int numberOfThreads = Runtime.getRuntime().availableProcessors() + 3;
+
+  // used to determine the time to wait after each cycle before querying for new entries to be
+  // processed
+  private int processingCapacityPerSecond;
 
   // defines the batch size of reading and processing import entries by the
   // main thread, for each type of data the batch size is being read
@@ -178,9 +178,18 @@ public class ImportEntryManager {
     maxTaskQueueSize = ImportProcessUtils.getCheckIntProperty(log, "import.max.task.queue.size",
         maxTaskQueueSize, 50);
     managerWaitTime = ImportProcessUtils.getCheckIntProperty(log, "import.wait.time", 600, 1);
+    processingCapacityPerSecond = ImportProcessUtils.getCheckIntProperty(log,
+        "import.processing.capacity.per.second", numberOfThreads * 30, 10);
 
     // property defined in secs, convert to ms
     managerWaitTime = managerWaitTime * 1000;
+
+    log.info("Import entry manager settings");
+    log.info("  batch size: {}", importBatchSize);
+    log.info("  number of threads: {}", numberOfThreads);
+    log.info("  task queue size: {}", maxTaskQueueSize);
+    log.info("  wait time: {} sec", managerWaitTime);
+    log.info("  processing capacity per second: {} entries", processingCapacityPerSecond);
   }
 
   public synchronized void start() {
@@ -613,23 +622,25 @@ public class ImportEntryManager {
             if (entryCount > 0) {
               // if there was data then just wait some time
               // give the threads time to process it all before trying
-              // a next batch of entries
+              // a next batch of entries to prevent retrieving from DB the same records we have just
+              // handled in this cycle
               try {
-                // wait one second per 30 records, somewhat arbitrary
-                // but high enough for most cases, also always wait 300 millis additional to
-                // start up threads etc.
-                // note computation of timing ensures that int rounding is done on 1000* entrycount
-                if (isTest) {
-                  // in case of test don't wait minimal 2 seconds
-                  Thread.sleep(300 + ((1000 * entryCount) / 30));
-                } else {
-                  // wait minimal 2 seconds or based on entry count
-                  long t = Math.max(2000, 300 + ((1000 * entryCount) / 30));
-                  log.debug(
-                      "{} entries have been processed. Wait {} ms, and try again to capture new entries which have been added",
-                      entryCount, t);
-                  Thread.sleep(t);
-                }
+                // wait a time based on the number of processed entries and
+                // processingCapacityPerSecond (which is the expected number of entries that can be
+                // processed per second), it defaults to one second per 30 records per
+                // thread, somewhat arbitrary but high enough for most cases, also always wait 300
+                // milliseconds additional to start up threads etc. note computation of timing
+                // ensures that int rounding is done on 1000* entrycount
+
+                // wait minimal 2 seconds or based on entry count, no minimal wait in case of test
+                int minWait = isTest ? 0 : 2_000;
+                long t = Math.max(minWait,
+                    300 + ((1_000 * entryCount) / manager.processingCapacityPerSecond));
+
+                log.debug(
+                    "{} entries have been handled. Wait {} ms, and try again to capture new entries which have been added",
+                    entryCount, t);
+                Thread.sleep(t);
               } catch (Exception ignored) {
               }
             } else {
@@ -702,7 +713,9 @@ public class ImportEntryManager {
   private static class ImportStatistics {
     private String typeOfData;
     private long cnt;
+    private long cntPartial;
     private long totalTime;
+    private long totalTimePartial;
 
     public void setTypeOfData(String typeOfData) {
       this.typeOfData = typeOfData;
@@ -714,11 +727,16 @@ public class ImportEntryManager {
 
     public synchronized void addTiming(long timeForEntry) {
       cnt++;
+      cntPartial++;
       totalTime += timeForEntry;
+      totalTimePartial += timeForEntry;
     }
 
     public synchronized void log() {
-      log.info("Timings for " + typeOfData + " cnt: " + cnt + " avg millis: " + (totalTime / cnt));
+      log.info("Timings for {}. Partial [cnt: {}, avg: {} ms] - Total [cnt: {}, avg: {} ms]",
+          typeOfData, cntPartial, totalTimePartial / cntPartial, cnt, totalTime / cnt);
+      cntPartial = 0;
+      totalTimePartial = 0;
     }
   }
 

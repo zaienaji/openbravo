@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2018 Openbravo SLU 
+ * All portions are Copyright (C) 2018-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -35,10 +35,10 @@ import javax.servlet.http.HttpSessionEvent;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.MockHttpSession;
 import org.junit.Test;
 import org.openbravo.erpCommon.security.SessionListener;
 import org.openbravo.erpCommon.utility.SequenceIdData;
+import org.openbravo.test.base.mock.HttpSessionMock;
 
 /** Test cases covering Session management */
 public class Sessions {
@@ -82,7 +82,7 @@ public class Sessions {
       for (int i = 0; i < NUMBER_OF_SESSIONS_PER_THREAD; i++) {
         String sessionId = SequenceIdData.getUUID();
 
-        HttpSession s = new MockHttpSession();
+        HttpSessionMock s = new HttpSessionMock();
         s.setAttribute("#AD_SESSION_ID", sessionId);
         sl.sessionCreated(new HttpSessionEvent(s));
 

@@ -185,7 +185,8 @@
           C_BPartner bp
         WHERE m.M_InOut_ID=v_Record_ID
           AND m.C_BPARTNER_ID=bp.C_BPARTNER_ID
-          AND AD_IsOrgIncluded(m.AD_ORG_ID, bp.AD_ORG_ID, bp.AD_CLIENT_ID)=-1;
+          AND AD_IsOrgIncluded(m.AD_ORG_ID, bp.AD_ORG_ID, bp.AD_CLIENT_ID)=-1
+          AND AD_IsOrgIncluded(m.AD_ORGTRX_ID, bp.AD_ORG_ID, bp.AD_CLIENT_ID)=-1;
         IF v_Count>0 THEN
           RAISE_APPLICATION_ERROR(-20000, '@NotCorrectOrgBpartnerInout@') ;
         END IF;

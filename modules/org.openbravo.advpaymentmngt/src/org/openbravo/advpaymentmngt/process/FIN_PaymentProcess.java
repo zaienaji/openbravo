@@ -11,7 +11,7 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU
- * All portions are Copyright (C) 2010-2018 Openbravo SLU
+ * All portions are Copyright (C) 2010-2019 Openbravo SLU
  * All Rights Reserved.
  * Contributor(s):  ______________________________________.
  *************************************************************************
@@ -39,6 +39,7 @@ import org.openbravo.advpaymentmngt.exception.NoExecutionProcessFoundException;
 import org.openbravo.advpaymentmngt.utility.FIN_Utility;
 import org.openbravo.base.exception.OBException;
 import org.openbravo.base.provider.OBProvider;
+import org.openbravo.base.structure.BaseOBObject;
 import org.openbravo.base.weld.WeldUtils;
 import org.openbravo.client.kernel.RequestContext;
 import org.openbravo.dal.core.DalUtil;
@@ -72,6 +73,9 @@ public class FIN_PaymentProcess implements org.openbravo.scheduling.Process {
 
   public BigDecimal ZERO = BigDecimal.ZERO;
   static Logger log4j = LogManager.getLogger();
+
+  private static final String CREATED_BY_PROPERTY = "createdBy";
+  private static final String CREATION_DATE_PROPERTY = "creationDate";
 
   @Override
   public void execute(ProcessBundle bundle) throws Exception {
@@ -514,6 +518,8 @@ public class FIN_PaymentProcess implements org.openbravo.scheduling.Process {
         // ***********************
       } else if (strAction.equals("RV")) {
         FIN_Payment reversedPayment = (FIN_Payment) DalUtil.copy(payment, false);
+        final Date now = new Date();
+        updateAuditInformation(reversedPayment, now);
         OBContext.setAdminMode();
         try {
           if (BigDecimal.ZERO.compareTo(payment.getGeneratedCredit()) != 0
@@ -550,6 +556,7 @@ public class FIN_PaymentProcess implements org.openbravo.scheduling.Process {
 
           for (FIN_PaymentDetail pd : payment.getFINPaymentDetailList()) {
             FIN_PaymentDetail reversedPaymentDetail = (FIN_PaymentDetail) DalUtil.copy(pd, false);
+            updateAuditInformation(reversedPaymentDetail, now);
             reversedPaymentDetail.setFinPayment(reversedPayment);
             reversedPaymentDetail.setAmount(pd.getAmount().negate());
             reversedPaymentDetail.setWriteoffAmount(pd.getWriteoffAmount().negate());
@@ -605,6 +612,7 @@ public class FIN_PaymentProcess implements org.openbravo.scheduling.Process {
                   // If invoice is fully paid create a new schedule detail.
                   FIN_PaymentScheduleDetail openPSD = (FIN_PaymentScheduleDetail) DalUtil.copy(psd,
                       false);
+                  updateAuditInformation(openPSD, now);
                   openPSD.setPaymentDetails(null);
                   // Amounts
                   openPSD.setWriteoffAmount(BigDecimal.ZERO);
@@ -617,6 +625,7 @@ public class FIN_PaymentProcess implements org.openbravo.scheduling.Process {
 
               FIN_PaymentScheduleDetail reversedPaymentSchedDetail = (FIN_PaymentScheduleDetail) DalUtil
                   .copy(psd, false);
+              updateAuditInformation(reversedPaymentSchedDetail, now);
               reversedPaymentSchedDetail.setPaymentDetails(reversedPaymentDetail);
               // Amounts
               reversedPaymentSchedDetail.setWriteoffAmount(psd.getWriteoffAmount().negate());
@@ -647,6 +656,7 @@ public class FIN_PaymentProcess implements org.openbravo.scheduling.Process {
           List<FIN_Payment_Credit> reversedCredits = new ArrayList<FIN_Payment_Credit>();
           for (FIN_Payment_Credit pc : credits) {
             FIN_Payment_Credit reversedPaymentCredit = (FIN_Payment_Credit) DalUtil.copy(pc, false);
+            updateAuditInformation(reversedPaymentCredit, now);
             reversedPaymentCredit.setAmount(pc.getAmount().negate());
             reversedPaymentCredit.setCreditPaymentUsed(pc.getCreditPaymentUsed());
             pc.getCreditPaymentUsed()
@@ -664,6 +674,7 @@ public class FIN_PaymentProcess implements org.openbravo.scheduling.Process {
           List<ConversionRateDoc> conversions = new ArrayList<ConversionRateDoc>();
           for (ConversionRateDoc cr : payment.getCurrencyConversionRateDocList()) {
             ConversionRateDoc reversedCR = (ConversionRateDoc) DalUtil.copy(cr, false);
+            updateAuditInformation(reversedCR, now);
             reversedCR.setForeignAmount(cr.getForeignAmount().negate());
             reversedCR.setPayment(reversedPayment);
             OBDal.getInstance().save(reversedCR);
@@ -1187,6 +1198,11 @@ public class FIN_PaymentProcess implements org.openbravo.scheduling.Process {
           .getMessage();
       throw new OBException(msg);
     }
+  }
+
+  private void updateAuditInformation(BaseOBObject baseOBject, final Date now) {
+    baseOBject.set(CREATION_DATE_PROPERTY, now);
+    baseOBject.set(CREATED_BY_PROPERTY, OBContext.getOBContext().getUser());
   }
 
   /**

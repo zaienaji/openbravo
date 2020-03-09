@@ -11,7 +11,7 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU
- * All portions are Copyright (C) 2013-2018 Openbravo SLU
+ * All portions are Copyright (C) 2013-2019 Openbravo SLU
  * All Rights Reserved.
  * Contributor(s):  ______________________________________.
  *************************************************************************
@@ -20,12 +20,15 @@
 package org.openbravo.materialmgmt;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.apache.commons.lang.StringUtils;
@@ -41,6 +44,7 @@ import org.openbravo.base.exception.OBSecurityException;
 import org.openbravo.base.model.Entity;
 import org.openbravo.base.model.ModelProvider;
 import org.openbravo.base.provider.OBProvider;
+import org.openbravo.client.kernel.ComponentProvider;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.security.OrganizationStructureProvider;
 import org.openbravo.dal.service.OBDal;
@@ -83,6 +87,10 @@ public class ProductCharacteristicsDS extends DefaultDataSourceService {
 
   @Inject
   private DataSourceServiceProvider dataSourceServiceProvider;
+
+  @Inject
+  @Any
+  private Instance<ProductCharacteristicCustomWhereClause> productCharacteristicCustomQueries;
 
   @Override
   public String fetch(Map<String, String> parameters) {
@@ -138,6 +146,7 @@ public class ProductCharacteristicsDS extends DefaultDataSourceService {
     int initialNumOfMissingNodes = 0;
     Entity parentGridEntity = null;
     final List<Object> selectorParameters = new ArrayList<Object>();
+    Map<String, Object> customQueryParameters = new HashMap<>();
     if (!addMissingNodes && dsIdentifier != null) {
       parentGridEntity = ModelProvider.getInstance().getEntity(dsIdentifier, false);
       if (parentGridEntity != null) {
@@ -215,6 +224,16 @@ public class ProductCharacteristicsDS extends DefaultDataSourceService {
     } else if (parentGridEntity != null) {
       hqlBuilder.append(" and exists (from ProductCharacteristicValue pcv, " + parentGridEntity
           + " as e where pcv.characteristicValue = v and pcv.product = " + productPath + ")");
+    } else {
+      // check if there is a custom where clause defined for the process that triggered the request
+      String processId = parameters.get("_processId");
+      if (!StringUtils.isBlank(processId)) {
+        for (ProductCharacteristicCustomWhereClause customQuery : productCharacteristicCustomQueries
+            .select(new ComponentProvider.Selector(processId))) {
+          hqlBuilder.append(
+              " and " + customQuery.getCustomWhereClause(parameters, customQueryParameters));
+        }
+      }
     }
 
     hqlBuilder.append(" order by c.name, ");
@@ -239,6 +258,9 @@ public class ProductCharacteristicsDS extends DefaultDataSourceService {
       } else {
         throw new OBException(e);
       }
+    }
+    for (Entry<String, Object> param : customQueryParameters.entrySet()) {
+      qTree.setParameter(param.getKey(), param.getValue());
     }
     if (StringUtils.isNotBlank(gridWhereClause)) {
       for (Entry<String, Object> param : qb.getNamedParameters().entrySet()) {

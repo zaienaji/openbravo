@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2009-2018 Openbravo SLU 
+ * All portions are Copyright (C) 2009-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -20,11 +20,8 @@ package org.openbravo.client.application;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
-import static org.openbravo.erpCommon.utility.StringCollectionUtils.commaSeparated;
 
 import java.io.IOException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -113,47 +110,60 @@ public class AlertActionHandler extends BaseActionHandler implements PortalAcces
       return 0L;
     }
 
-    final String hql = "select distinct(e.alertRule)" + " from ADAlertRecipient"
-        + " e where e.alertRule.active = true and (e.userContact.id= :userId "
-        + " or (e.userContact.id = null and e.role.id = :roleId))"
+    // @formatter:off
+    final String hql =
+          "select distinct(e.alertRule)"
+        + " from ADAlertRecipient e "
+        + "where e.alertRule.active = true"
+        + "  and (e.userContact.id= :userId"
+        + "      or (e.userContact.id = null and e.role.id = :roleId))"
 
         // select only those rules that are client/org visible from current role
-        + " and e.alertRule.client.id " + OBDal.getInstance().getReadableClientsInClause()
-        + " and e.alertRule.organization.id "
-        + OBDal.getInstance().getReadableOrganizationsInClause();
+        + " and e.alertRule.client.id in :clients" 
+        + " and e.alertRule.organization.id in :orgs";
+    // @formatter:on
 
     final Query<AlertRule> qry = OBDal.getInstance()
         .getSession()
         .createQuery(hql, AlertRule.class)
         .setParameter("userId", OBContext.getOBContext().getUser().getId())
-        .setParameter("roleId", OBContext.getOBContext().getRole().getId());
+        .setParameter("roleId", OBContext.getOBContext().getRole().getId())
+        .setParameterList("clients", OBContext.getOBContext().getReadableClients())
+        .setParameterList("orgs", OBContext.getOBContext().getReadableClients());
 
-    long total = qry.stream()
+    return qry.stream()
         .collect(groupingBy(rule -> Objects.toString(rule.getFilterClause(), ""))) // null can't be
                                                                                    // key
         .values()
         .stream()
         .mapToLong(rulesByFilterClause -> countActiveAlertsForRules(rulesByFilterClause, vars))
         .sum();
-
-    return total;
   }
 
   private long countActiveAlertsForRules(List<AlertRule> rules, VariablesSecureApp vars) {
     String commonFilterClause = rules.get(0).getFilterClause();
     List<String> ruleIds = rules.stream().map(AlertRule::getId).collect(toList());
-    final String sql = "select count(*) from AD_ALERT where COALESCE(STATUS, 'NEW')='NEW'"
-        + " AND AD_CLIENT_ID " + OBDal.getInstance().getReadableClientsInClause()
-        + " AND AD_ORG_ID " + OBDal.getInstance().getReadableOrganizationsInClause()
-        + " AND AD_ALERTRULE_ID IN   (" + commaSeparated(ruleIds) + ")" //
-        + getFilterSQL(commonFilterClause, vars);
 
-    try (PreparedStatement sqlQuery = new DalConnectionProvider(false).getPreparedStatement(sql)) {
-      sqlQuery.execute();
-      try (ResultSet rs = sqlQuery.getResultSet()) {
-        rs.next();
-        return rs.getLong(1);
-      }
+    // @formatter:off
+    final String sql = 
+        " select count(*) "
+        + " from AD_ALERT "
+        + "where COALESCE(STATUS, 'NEW') = 'NEW'"
+        + " AND AD_CLIENT_ID IN :clients"
+        + " AND AD_ORG_ID IN :orgs"
+        + " AND AD_ALERTRULE_ID IN :rules"
+        + getFilterSQL(commonFilterClause, vars);
+    // @formatter:on
+
+    try {
+      Number cnt = (Number) OBDal.getInstance()
+          .getSession()
+          .createNativeQuery(sql)
+          .setParameterList("clients", OBContext.getOBContext().getReadableClients())
+          .setParameterList("orgs", OBContext.getOBContext().getReadableOrganizations())
+          .setParameterList("rules", ruleIds)
+          .uniqueResult();
+      return cnt.longValue();
     } catch (Exception e) {
       log4j.error("An error has ocurred when trying to process the alerts: " + e.getMessage(), e);
       return 0L;

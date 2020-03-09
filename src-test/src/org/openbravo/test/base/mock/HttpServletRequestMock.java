@@ -11,7 +11,7 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU
- * All portions are Copyright (C) 2017 Openbravo SLU 
+ * All portions are Copyright (C) 2017-2019 Openbravo SLU 
  * All Rights Reserved.
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -50,7 +50,9 @@ import org.openbravo.base.session.OBPropertiesProvider;
 import org.openbravo.client.kernel.RequestContext;
 import org.openbravo.test.base.HiddenObjectHelper;
 
-/** HttpServletRequest mock to be used to test components requiring requests */
+/**
+ * HttpServletRequest mock to be used to test components requiring requests
+ */
 public class HttpServletRequestMock implements HttpServletRequest {
   private static final Logger log = LogManager.getLogger();
 

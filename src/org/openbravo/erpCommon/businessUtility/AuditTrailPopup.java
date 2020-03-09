@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2009-2016 Openbravo SLU 
+ * All portions are Copyright (C) 2009-2019 Openbravo SLU
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -58,6 +58,7 @@ import org.openbravo.erpCommon.obps.ActivationKey;
 import org.openbravo.erpCommon.obps.ActivationKey.FeatureRestriction;
 import org.openbravo.erpCommon.utility.ComboTableData;
 import org.openbravo.erpCommon.utility.OBError;
+import org.openbravo.erpCommon.utility.PropertyException;
 import org.openbravo.erpCommon.utility.SQLReturnObject;
 import org.openbravo.erpCommon.utility.Utility;
 import org.openbravo.erpCommon.utility.UtilityData;
@@ -253,8 +254,17 @@ public class AuditTrailPopup extends HttpSecureAppServlet {
     log4j.debug(
         "POPUP-HISTORY - tabId: " + tabId + ", tableId: " + tableId + ", inpRecordId: " + recordId);
 
+    List<String> discards = new ArrayList<>();
+
+    if (!shouldShowUserFilter(vars)) {
+      discards.add("userSelect");
+    }
+
+    String[] discard = new String[discards.size()];
+    discards.toArray(discard);
+
     XmlDocument xmlDocument = xmlEngine
-        .readXmlTemplate("org/openbravo/erpCommon/businessUtility/AuditTrailPopupHistory")
+        .readXmlTemplate("org/openbravo/erpCommon/businessUtility/AuditTrailPopupHistory", discard)
         .createXmlDocument();
 
     xmlDocument.setParameter("directory", "var baseDirectory = \"" + strReplaceWith + "/\";\n");
@@ -279,16 +289,7 @@ public class AuditTrailPopup extends HttpSecureAppServlet {
     xmlDocument.setParameter("dateTosaveFormat", vars.getJavaDataTimeFormat());
 
     // user combobox (restricted to login users only)
-    try {
-      ComboTableData cmd = new ComboTableData(vars, this, "19", "AD_User_ID", "",
-          "C48E4CAE3C2A4C5DBC2E011D8AD2C428",
-          Utility.getContext(this, vars, "#AccessibleOrgTree", "AuditTrailPopup"),
-          Utility.getContext(this, vars, "#User_Client", "AuditTrailPopup"), 0);
-      cmd.fillParameters(null, "AuditTrailPopup", "");
-      xmlDocument.setData("reportAD_User_ID", "liststructure", cmd.select(false));
-    } catch (Exception e) {
-      log4j.error("Error getting adUser combo content", e);
-    }
+    fillUserComboData(vars, xmlDocument);
 
     // fields combobox (filtered to be in same tab)
     try {
@@ -360,6 +361,30 @@ public class AuditTrailPopup extends HttpSecureAppServlet {
     out.close();
   }
 
+  private void fillUserComboData(VariablesSecureApp vars, XmlDocument xmlDocument) {
+    if (shouldShowUserFilter(vars)) {
+      try {
+        ComboTableData cmd = new ComboTableData(vars, this, "19", "AD_User_ID", "",
+            "C48E4CAE3C2A4C5DBC2E011D8AD2C428",
+            Utility.getContext(this, vars, "#AccessibleOrgTree", "AuditTrailPopup"),
+            Utility.getContext(this, vars, "#User_Client", "AuditTrailPopup"), 0);
+        cmd.fillParameters(null, "AuditTrailPopup", "");
+        xmlDocument.setData("reportAD_User_ID", "liststructure", cmd.select(false));
+      } catch (Exception e) {
+        log4j.error("Error getting adUser combo content", e);
+      }
+    }
+  }
+
+  private boolean shouldShowUserFilter(VariablesSecureApp vars) {
+    try {
+      return !"N".equals(Preferences.getPreferenceValue("ShowAuditTrailUserFilter", true,
+          vars.getClient(), vars.getOrg(), vars.getUser(), vars.getRole(), null));
+    } catch (PropertyException e) {
+      return true;
+    }
+  }
+
   /**
    * Gets the translated name of the business element stored in a table.
    * 
@@ -402,7 +427,7 @@ public class AuditTrailPopup extends HttpSecureAppServlet {
     // tab link from the deleted records view
     String parentLinkFilter = vars.getStringParameter("inpParentLinkFilter", IsIDFilter.instance);
     boolean haveParentLink = (parentLinkFilter != null && !parentLinkFilter.isEmpty());
-    List<String> discards = new ArrayList<String>();
+    List<String> discards = new ArrayList<>();
     if (haveParentLink) {
       discards.add("discardLinkBack");
     }
@@ -426,6 +451,11 @@ public class AuditTrailPopup extends HttpSecureAppServlet {
       }
       links.setLength(links.length() - 2);
     }
+
+    if (!shouldShowUserFilter(vars)) {
+      discards.add("userSelect");
+    }
+
     String[] discard = new String[discards.size()];
     discards.toArray(discard);
     XmlDocument xmlDocument = xmlEngine
@@ -455,17 +485,7 @@ public class AuditTrailPopup extends HttpSecureAppServlet {
     xmlDocument.setParameter("dateTodisplayFormat", vars.getSessionValue("#AD_SqlDateTimeFormat"));
     xmlDocument.setParameter("dateTosaveFormat", vars.getSessionValue("#AD_SqlDateTimeFormat"));
 
-    // user combobox (restricted to login users only)
-    try {
-      ComboTableData cmd = new ComboTableData(vars, this, "19", "AD_User_ID", "",
-          "C48E4CAE3C2A4C5DBC2E011D8AD2C428",
-          Utility.getContext(this, vars, "#AccessibleOrgTree", "AuditTrailPopup"),
-          Utility.getContext(this, vars, "#User_Client", "AuditTrailPopup"), 0);
-      cmd.fillParameters(null, "AuditTrailPopup", "");
-      xmlDocument.setData("reportAD_User_ID", "liststructure", cmd.select(false));
-    } catch (Exception e) {
-      log4j.error("Error getting adUser combo content", e);
-    }
+    fillUserComboData(vars, xmlDocument);
 
     // param for building 'Back to history' link
     xmlDocument.setParameter("recordId", recordId);

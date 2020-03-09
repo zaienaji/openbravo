@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
   <database name="FUNCTION C_ADD_MONTHS2">
-    <function name="C_ADD_MONTHS2" type="TIMESTAMP">
+    <function name="C_ADD_MONTHS2" type="TIMESTAMP" volatility="IMMUTABLE">
       <parameter name="pdate" type="TIMESTAMP" mode="in">
         <default/>
       </parameter>
@@ -19,7 +19,7 @@
 * under the License.
 * The Original Code is Openbravo ERP.
 * The Initial Developer of the Original Code is Openbravo SLU
-* All portions are Copyright (C) 2007 Openbravo SLU
+* All portions are Copyright (C) 2007-2019 Openbravo SLU
 * All Rights Reserved.
 * Contributor(s):  ______________________________________.
 ************************************************************************/

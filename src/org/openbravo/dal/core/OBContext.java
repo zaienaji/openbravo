@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2008-2018 Openbravo SLU 
+ * All portions are Copyright (C) 2008-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -920,14 +920,19 @@ public class OBContext implements OBNotSingleton, Serializable {
       // check that the current organization is actually writable!
       final Set<String> writableOrgs = getWritableOrganizations();
       if (!writableOrgs.contains(getCurrentOrganization().getId())) {
-        log.warn("The user " + userId
-            + " does not have write access to its current organization repairing that");
-        // take the first writableOrganization
         if (writableOrgs.isEmpty()) {
-          log.warn("The user " + userId + " does not have any write access to any organization");
+          log.warn(
+              "User {} with role {} (default organization {}) does not have write access to any organization",
+              getUser(), getRole(), getCurrentOrganization(), new Exception("stack trace"));
         } else {
-          setCurrentOrganization(SessionHandler.getInstance()
-              .find(Organization.class, writableOrgs.iterator().next()));
+          // take the first writableOrganization
+          Organization newDefaultOrg = SessionHandler.getInstance()
+              .find(Organization.class, writableOrgs.iterator().next());
+          log.warn(
+              "User {} with role {} does not have write access to its current organization {}. Setting current organization to {}",
+              getUser(), getRole(), getCurrentOrganization(), newDefaultOrg,
+              new Exception("stack trace"));
+          setCurrentOrganization(newDefaultOrg);
         }
       }
 

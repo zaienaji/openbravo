@@ -11,7 +11,7 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU
- * All portions are Copyright (C) 2015-2018 Openbravo SLU
+ * All portions are Copyright (C) 2015-2019 Openbravo SLU
  * All Rights Reserved.
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -46,6 +46,7 @@ import org.codehaus.jettison.json.JSONObject;
 import org.hibernate.HibernateException;
 import org.hibernate.criterion.Restrictions;
 import org.openbravo.base.exception.OBException;
+import org.openbravo.base.exception.OBSecurityException;
 import org.openbravo.base.model.Entity;
 import org.openbravo.base.model.ModelProvider;
 import org.openbravo.base.provider.OBProvider;
@@ -167,6 +168,8 @@ public class AttachImplementationManager {
       if (strDataType != null && strDataType.length() <= DATA_TYPE_MAX_LENGTH) {
         attachment.setDataType(strDataType);
       }
+
+      checkReadableAccess(attachment);
 
       OBDal.getInstance().save(attachment);
 
@@ -471,6 +474,10 @@ public class AttachImplementationManager {
       Object object = OBDal.getInstance().get(entity.getMappingClass(), attachment.getRecord());
       if (object instanceof OrganizationEnabled) {
         SecurityChecker.getInstance().checkReadableAccess((OrganizationEnabled) object);
+      } else if (object == null) {
+        throw new OBSecurityException(
+            "Trying to create an attachment in table " + attachment.getTable()
+                + " for a record with ID " + attachment.getRecord() + " that does not exists.");
       }
     }
   }

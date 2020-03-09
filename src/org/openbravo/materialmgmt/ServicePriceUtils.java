@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2015-2018 Openbravo SLU 
+ * All portions are Copyright (C) 2015-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -28,6 +28,7 @@ import java.util.HashMap;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.hibernate.query.Query;
@@ -39,6 +40,7 @@ import org.openbravo.dal.service.OBQuery;
 import org.openbravo.erpCommon.utility.OBDateUtils;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
 import org.openbravo.model.common.order.OrderLine;
+import org.openbravo.model.common.order.OrderlineServiceRelation;
 import org.openbravo.model.common.plm.Product;
 import org.openbravo.model.common.plm.ServicePriceRuleVersion;
 import org.openbravo.model.materialmgmt.transaction.ShipmentInOutLine;
@@ -58,15 +60,100 @@ public class ServicePriceUtils {
    * Method to obtain Service Amount to be added for a certain service order line based on selected
    * product lines amount
    */
-
   public static BigDecimal getServiceAmount(OrderLine orderline, BigDecimal linesTotalAmount,
       BigDecimal totalDiscounts, BigDecimal totalPrice, BigDecimal relatedQty,
       BigDecimal unitDiscountsAmt) {
+    JSONObject relatedInfo = new JSONObject();
+    JSONArray relatedLines = new JSONArray();
+    JSONArray relatedAmounts = new JSONArray();
+    JSONArray relatedDiscounts = new JSONArray();
+    JSONArray relatedPrices = new JSONArray();
+    JSONArray relatedQuantities = new JSONArray();
+    JSONArray relatedUnitDiscounts = new JSONArray();
+    try {
+      for (OrderlineServiceRelation olsr : orderline.getOrderlineServiceRelationList()) {
+        relatedLines.put(olsr.getOrderlineRelated().getId());
+        relatedAmounts.put(olsr.getAmount());
+        relatedDiscounts.put(JSONObject.NULL);
+        relatedPrices.put(olsr.getQuantity().compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO
+            : olsr.getAmount().divide(olsr.getQuantity()));
+        relatedQuantities.put(olsr.getQuantity());
+        relatedUnitDiscounts.put(JSONObject.NULL);
+      }
+
+      if (relatedLines.length() == 0) {
+        return getServiceAmount(orderline, linesTotalAmount, totalDiscounts, totalPrice, relatedQty,
+            unitDiscountsAmt, null);
+
+      } else {
+        relatedInfo.put("relatedLines", relatedLines);
+        relatedInfo.put("lineAmount", relatedAmounts);
+        relatedInfo.put("lineDiscounts", relatedDiscounts);
+        relatedInfo.put("linePriceamount", relatedPrices);
+        relatedInfo.put("lineRelatedqty", relatedQuantities);
+        relatedInfo.put("lineUnitdiscountsamt", relatedUnitDiscounts);
+
+        return getServiceAmount(orderline, linesTotalAmount, totalDiscounts, totalPrice, relatedQty,
+            unitDiscountsAmt, relatedInfo);
+      }
+    } catch (JSONException e) {
+      throw new OBException(e);
+    }
+  }
+
+  public static BigDecimal getServiceAmount(OrderLine orderline, BigDecimal linesTotalAmount,
+      BigDecimal totalDiscounts, BigDecimal totalPrice, BigDecimal relatedQty,
+      BigDecimal unitDiscountsAmt, JSONObject relatedInfo) {
+    if (relatedInfo == null || !relatedInfo.has("relatedLines")) {
+      return getServiceAmountByLine(orderline, linesTotalAmount, totalDiscounts, totalPrice,
+          relatedQty, unitDiscountsAmt, null, linesTotalAmount, totalDiscounts, totalPrice,
+          unitDiscountsAmt);
+    } else {
+      try {
+        JSONArray relatedLines = relatedInfo.getJSONArray("relatedLines");
+        JSONArray relatedAmounts = relatedInfo.getJSONArray("lineAmount");
+        JSONArray relatedDiscounts = relatedInfo.getJSONArray("lineDiscounts");
+        JSONArray relatedPrices = relatedInfo.getJSONArray("linePriceamount");
+        JSONArray relatedQuantities = relatedInfo.getJSONArray("lineRelatedqty");
+        JSONArray relatedUnitDiscounts = relatedInfo.getJSONArray("lineUnitdiscountsamt");
+
+        BigDecimal serviceAmount = BigDecimal.ZERO;
+        BigDecimal partialAmount;
+        for (int i = 0; i < relatedLines.length(); i++) {
+          BigDecimal amount = BigDecimal.valueOf(relatedAmounts.optDouble(i, 0));
+          if (amount.compareTo(BigDecimal.ZERO) == 0) {
+            continue;
+          }
+
+          BigDecimal discount = BigDecimal.valueOf(relatedDiscounts.optDouble(i, 0));
+          BigDecimal price = BigDecimal.valueOf(relatedPrices.optDouble(i, 0));
+          BigDecimal relatedLineQty = BigDecimal.valueOf(relatedQuantities.optDouble(i, 0));
+          BigDecimal unitDiscount = BigDecimal.valueOf(relatedUnitDiscounts.optDouble(i, 0));
+
+          String relatedLineId = relatedLines.getString(i);
+
+          partialAmount = getServiceAmountByLine(orderline, amount, discount, price, relatedLineQty,
+              unitDiscount, relatedLineId, linesTotalAmount, totalDiscounts, totalPrice,
+              unitDiscountsAmt);
+          serviceAmount = serviceAmount.add(partialAmount);
+        }
+
+        return serviceAmount;
+      } catch (JSONException e) {
+        throw new OBException(e);
+      }
+    }
+  }
+
+  private static BigDecimal getServiceAmountByLine(OrderLine orderline, BigDecimal lineAmount,
+      BigDecimal lineDiscounts, BigDecimal linePrice, BigDecimal relatedQty,
+      BigDecimal lineUnitDiscount, String relatedLineId, BigDecimal totalLineAmount,
+      BigDecimal totalDiscounts, BigDecimal totalLinePrice, BigDecimal totalUnitDiscounts) {
     BigDecimal localRelatedQty = relatedQty;
     final Product serviceProduct = orderline.getProduct();
     OBContext.setAdminMode(true);
     try {
-      if (linesTotalAmount != null && linesTotalAmount.compareTo(BigDecimal.ZERO) == 0) {
+      if (lineAmount != null && lineAmount.compareTo(BigDecimal.ZERO) == 0) {
         return BigDecimal.ZERO;
       }
       BigDecimal serviceBasePrice = getProductPrice(orderline.getOrderDate(),
@@ -82,7 +169,7 @@ public class ServicePriceUtils {
         return BigDecimal.ZERO;
       } else {
         ServicePriceRule servicePriceRule = getServicePriceRule(serviceProduct,
-            orderline.getOrderDate());
+            orderline.getOrderDate(), relatedLineId);
         if (servicePriceRule == null) {
           throw new OBException(
               "@ServicePriceRuleVersionNotFound@ " + orderline.getProduct().getIdentifier()
@@ -90,49 +177,47 @@ public class ServicePriceUtils {
         }
         BigDecimal relatedAmount = BigDecimal.ZERO;
         BigDecimal findRangeAmount = BigDecimal.ZERO;
-        if (linesTotalAmount != null) {
-          relatedAmount = linesTotalAmount;
+        if (lineAmount != null) {
+          relatedAmount = lineAmount;
         } else {
           HashMap<String, BigDecimal> relatedAmountAndQuatity = getRelatedAmountAndQty(orderline);
           relatedAmount = relatedAmountAndQuatity.get("amount");
-          // TODO: APPLY quantities
           localRelatedQty = relatedAmountAndQuatity.get("quantity");
         }
 
         if (PERCENTAGE.equals(servicePriceRule.getRuletype())) {
-          if (!servicePriceRule.isAfterdiscounts() && totalDiscounts != null
-              && unitDiscountsAmt != null) {
+          if (!servicePriceRule.isAfterdiscounts() && lineDiscounts != null
+              && lineUnitDiscount != null) {
             relatedAmount = UNIQUE_QUANTITY.equals(serviceProduct.getQuantityRule())
-                ? relatedAmount.add(totalDiscounts)
-                : relatedAmount.add(unitDiscountsAmt);
+                ? relatedAmount.add(lineDiscounts)
+                : relatedAmount.add(lineUnitDiscount);
           }
           serviceRelatedPrice = relatedAmount.multiply(
               new BigDecimal(servicePriceRule.getPercentage()).divide(new BigDecimal("100.00")));
         } else {
           if (!servicePriceRule.isAfterdiscounts() && totalDiscounts != null
-              && unitDiscountsAmt != null) {
+              && totalUnitDiscounts != null) {
             findRangeAmount = UNIQUE_QUANTITY.equals(serviceProduct.getQuantityRule())
-                ? linesTotalAmount.add(totalDiscounts)
-                : totalPrice.add(unitDiscountsAmt);
+                ? totalLineAmount.add(totalDiscounts)
+                : totalLinePrice.add(totalUnitDiscounts);
           } else {
             findRangeAmount = UNIQUE_QUANTITY.equals(serviceProduct.getQuantityRule())
-                ? linesTotalAmount
-                : totalPrice;
+                ? totalLineAmount
+                : totalLinePrice;
           }
           ServicePriceRuleRange range = getRange(servicePriceRule, findRangeAmount);
           if (range == null) {
             throw new OBException("@ServicePriceRuleRangeNotFound@. @ServicePriceRule@: "
-                + servicePriceRule.getIdentifier() + ", @AmountUpTo@: " + linesTotalAmount);
+                + servicePriceRule.getIdentifier() + ", @AmountUpTo@: " + lineAmount);
           }
           if (PERCENTAGE.equals(range.getRuleType())) {
-            if (!range.isAfterDiscounts() && totalDiscounts != null && unitDiscountsAmt != null) {
+            if (!range.isAfterDiscounts() && lineDiscounts != null && lineUnitDiscount != null) {
               relatedAmount = UNIQUE_QUANTITY.equals(serviceProduct.getQuantityRule())
-                  ? linesTotalAmount.add(totalDiscounts)
-                  : totalPrice.add(unitDiscountsAmt);
+                  ? lineAmount.add(lineDiscounts)
+                  : linePrice.add(lineUnitDiscount);
             } else {
-              relatedAmount = UNIQUE_QUANTITY.equals(serviceProduct.getQuantityRule())
-                  ? linesTotalAmount
-                  : totalPrice;
+              relatedAmount = UNIQUE_QUANTITY.equals(serviceProduct.getQuantityRule()) ? lineAmount
+                  : linePrice;
             }
             serviceRelatedPrice = relatedAmount
                 .multiply(new BigDecimal(range.getPercentage()).divide(new BigDecimal("100.00")));
@@ -270,23 +355,66 @@ public class ServicePriceUtils {
    *          Order Date of the Sales Order
    */
   public static ServicePriceRule getServicePriceRule(Product serviceProduct, Date orderDate) {
+    return getServicePriceRule(serviceProduct, orderDate, null);
+  }
+
+  /**
+   * Method that returns for a "Price Rule Based" Service product the Service Price Rule on the
+   * given date
+   * 
+   * @param serviceProduct
+   *          Service Product
+   * @param orderDate
+   *          Order Date of the Sales Order
+   * @param relatedLine
+   *          Line related to the service
+   */
+  public static ServicePriceRule getServicePriceRule(Product serviceProduct, Date orderDate,
+      String relatedLine) {
+    OrderLine ol = null;
     OBContext.setAdminMode(true);
     try {
+      if (relatedLine != null) {
+        ol = OBDal.getInstance().get(OrderLine.class, relatedLine);
+      }
       StringBuffer where = new StringBuffer();
-      where.append(" select " + ServicePriceRuleVersion.PROPERTY_SERVICEPRICERULE);
+      where.append(" select sprv." + ServicePriceRuleVersion.PROPERTY_SERVICEPRICERULE);
       where.append(" from " + ServicePriceRuleVersion.ENTITY_NAME + " as sprv");
+      where.append(" left join sprv.relatedProduct rp ");
+      where.append(" left join sprv.relatedProductCategory rpc ");
       where.append(
           " where sprv." + ServicePriceRuleVersion.PROPERTY_PRODUCT + ".id = :serviceProductId");
       where
           .append(" and sprv." + ServicePriceRuleVersion.PROPERTY_VALIDFROMDATE + " <= :orderDate");
       where.append("   and sprv." + ServicePriceRuleVersion.PROPERTY_ACTIVE + " = true");
-      where.append(" order by sprv." + ServicePriceRuleVersion.PROPERTY_VALIDFROMDATE
-          + " desc, sprv." + ServicePriceRuleVersion.PROPERTY_CREATIONDATE + " desc");
+
+      if ("N".equals(serviceProduct.getIncludedProducts()) && relatedLine != null) {
+        where.append(" and rp is null or rp.relatedProduct.id = :relatedProductId ");
+      } else {
+        where.append(" and rp is null ");
+      }
+
+      if ("N".equals(serviceProduct.getIncludedProductCategories()) && relatedLine != null) {
+        where.append(" and rpc is null or rpc.productCategory.id = :relatedProdCatId ");
+      } else {
+        where.append(" and rpc is null ");
+      }
+
+      where.append(" order by case when rp is not null then 1 else 0 end desc, "
+          + " case when rpc is not null then 1 else 0 end desc, sprv."
+          + ServicePriceRuleVersion.PROPERTY_VALIDFROMDATE + " desc, sprv."
+          + ServicePriceRuleVersion.PROPERTY_CREATIONDATE + " desc");
       Query<ServicePriceRule> sprvQry = OBDal.getInstance()
           .getSession()
           .createQuery(where.toString(), ServicePriceRule.class);
       sprvQry.setParameter("serviceProductId", serviceProduct.getId());
       sprvQry.setParameter("orderDate", orderDate);
+      if ("N".equals(serviceProduct.getIncludedProducts()) && relatedLine != null) {
+        sprvQry.setParameter("relatedProductId", ol.getProduct().getId());
+      }
+      if ("N".equals(serviceProduct.getIncludedProductCategories()) && relatedLine != null) {
+        sprvQry.setParameter("relatedProdCatId", ol.getProduct().getProductCategory().getId());
+      }
       sprvQry.setMaxResults(1);
       return sprvQry.uniqueResult();
     } finally {

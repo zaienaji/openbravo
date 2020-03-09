@@ -26,6 +26,7 @@ import org.openbravo.base.weld.test.testinfrastructure.CdiInfrastructure;
 import org.openbravo.base.weld.test.testinfrastructure.DalPersistanceEventTest;
 import org.openbravo.base.weld.test.testinfrastructure.ParameterizedCdi;
 import org.openbravo.client.application.test.ADCSInitialization;
+import org.openbravo.client.application.test.ADCSTest;
 import org.openbravo.client.application.test.ApplicationTest;
 import org.openbravo.client.application.test.DisplayLogicAtServerLevelTest;
 import org.openbravo.client.application.test.DynamicExpressionParserTest;
@@ -34,12 +35,14 @@ import org.openbravo.client.application.test.MenuTemplateTest;
 import org.openbravo.client.application.test.MenuTest;
 import org.openbravo.client.application.test.event.DatasourceEventObserver;
 import org.openbravo.client.application.test.event.PersistanceObserver;
+import org.openbravo.client.kernel.CSSMinifier;
 import org.openbravo.client.kernel.freemarker.test.FreemarkerTemplateProcessorTest;
 import org.openbravo.client.kernel.freemarker.test.GenerateComponentTest;
 import org.openbravo.client.kernel.freemarker.test.LabelTest;
 import org.openbravo.erpCommon.info.ClassicSelectorTest;
 import org.openbravo.test.accounting.PostDocumentTest;
 import org.openbravo.test.accounting.RecordID2Test;
+import org.openbravo.test.authentication.AuthenticationManagerTest;
 import org.openbravo.test.cancelandreplace.CancelAndReplaceTest;
 import org.openbravo.test.centralbroker.CentralBrokerTest;
 import org.openbravo.test.copyLinesFromOrders.CopyLinesFromOrdersTest;
@@ -60,12 +63,14 @@ import org.openbravo.test.dal.DalTest;
 import org.openbravo.test.dal.DalUtilTest;
 import org.openbravo.test.dal.DynamicEntityTest;
 import org.openbravo.test.dal.HiddenUpdateTest;
+import org.openbravo.test.dal.ImageTest;
 import org.openbravo.test.dal.IssuesTest;
 import org.openbravo.test.dal.MappingGenerationTest;
 import org.openbravo.test.dal.OBContextTest;
 import org.openbravo.test.dal.ReadByNameTest;
 import org.openbravo.test.dal.ValidationTest;
 import org.openbravo.test.dal.ViewTest;
+import org.openbravo.test.datasource.GridExport;
 import org.openbravo.test.db.model.functions.ADOrgTreeTest;
 import org.openbravo.test.db.model.functions.Ad_isorgincludedTest;
 import org.openbravo.test.db.model.functions.SqlCallableStatement;
@@ -116,6 +121,8 @@ import org.openbravo.test.system.ErrorTextParserTest;
 import org.openbravo.test.system.ImportEntryBuilderTest;
 import org.openbravo.test.system.ImportEntrySizeTest;
 import org.openbravo.test.system.Issue29934Test;
+import org.openbravo.test.system.JSONSerialization;
+import org.openbravo.test.system.OldCallouts;
 import org.openbravo.test.system.Sessions;
 import org.openbravo.test.system.SystemServiceTest;
 import org.openbravo.test.system.SystemValidatorTest;
@@ -147,6 +154,9 @@ import org.openbravo.test.xml.UniqueConstraintImportTest;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 
+    // authentication
+    AuthenticationManagerTest.class, //
+
     // dal
     DalComplexQueryRequisitionTest.class, //
     DalComplexQueryTestOrderLine.class, //
@@ -172,6 +182,7 @@ import org.openbravo.test.xml.UniqueConstraintImportTest;
     ComputedColumnsTest.class, //
     DatasourceEventObserver.class, //
     PersistanceObserver.class, //
+    ImageTest.class, //
 
     // expression
     EvaluationTest.class, //
@@ -185,6 +196,7 @@ import org.openbravo.test.xml.UniqueConstraintImportTest;
     IndexesTest.class, //
     TrlColumnsOraTypeTest.class, //
     ADCSInitialization.class, //
+    ADCSTest.class, //
     DBModifiedTest.class,
 
     // modularity
@@ -217,6 +229,8 @@ import org.openbravo.test.xml.UniqueConstraintImportTest;
     CryptoUtilities.class, //
     Sessions.class, //
     OBContextTest.class, //
+    OldCallouts.class, //
+    JSONSerialization.class, //
 
     // xml
     ClientExportImportTest.class, //
@@ -271,6 +285,7 @@ import org.openbravo.test.xml.UniqueConstraintImportTest;
     MenuTest.class, //
     MenuTemplateTest.class, //
     DisplayLogicAtServerLevelTest.class, //
+    CSSMinifier.class, //
 
     // client kernel
     FreemarkerTemplateProcessorTest.class, //
@@ -305,6 +320,7 @@ import org.openbravo.test.xml.UniqueConstraintImportTest;
 
     // others
     DocumentNumberGeneration.class, //
+    GridExport.class, //
     ViewGeneration.class,
 
     // Cancel and Replace Tests

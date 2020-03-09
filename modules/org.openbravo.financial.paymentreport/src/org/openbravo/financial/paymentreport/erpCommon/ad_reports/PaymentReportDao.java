@@ -2110,17 +2110,14 @@ public class PaymentReportDao {
   }
 
   public static FieldProvider[] getObjectList(String objectNames) {
-    Vector<Object> vector = new Vector<Object>(0);
     if (StringUtils.isEmpty(objectNames)) {
-      FieldProvider objectListData[] = new FieldProvider[vector.size()];
-      vector.copyInto(objectListData);
-
-      return objectListData;
+      return new FieldProvider[0];
     } else {
       String[] names = objectNames.substring(1, objectNames.length() - 1).split(", ");
       SQLReturnObject sqlRO;
       String name = null;
 
+      Vector<FieldProvider> vector = new Vector<>(0);
       for (int i = 0; i < names.length; i++) {
         sqlRO = new SQLReturnObject();
         names[i] = names[i];

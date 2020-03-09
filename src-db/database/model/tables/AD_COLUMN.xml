@@ -221,6 +221,10 @@
         <default><![CDATA[N]]></default>
         <onCreateDefault><![CDATA['N']]></onCreateDefault>
       </column>
+      <column name="IS_CHILD_PROPERTY_IN_PARENT" primaryKey="false" required="true" type="CHAR" size="1" autoIncrement="false">
+        <default><![CDATA[N]]></default>
+        <onCreateDefault><![CDATA['Y']]></onCreateDefault>
+      </column>
       <foreign-key foreignTable="AD_CALLOUT" name="AD_COLUMN_AD_CALLOUT">
         <reference local="AD_CALLOUT_ID" foreign="AD_CALLOUT_ID"/>
       </foreign-key>
@@ -272,6 +276,7 @@
       <check name="AD_COLUMN_ALLOWCROSSORG_CHK"><![CDATA[ALLOWED_CROSS_ORG_LINK IN ('Y', 'N')]]></check>
       <check name="AD_COLUMN_ALLOWFILTERING_CHK"><![CDATA[ALLOWFILTERING IN ('Y', 'N')]]></check>
       <check name="AD_COLUMN_ALLOWSORTING_CHK"><![CDATA[ALLOWSORTING IN ('Y', 'N')]]></check>
+      <check name="AD_COLUMN_CHILDINPARENT_CHK"><![CDATA[IS_CHILD_PROPERTY_IN_PARENT IN ('Y', 'N')]]></check>
       <check name="AD_COLUMN_ISACTIVE_CHK"><![CDATA[ISACTIVE IN ('Y', 'N')]]></check>
       <check name="AD_COLUMN_ISAUTOSAVE_CHK"><![CDATA[ISAUTOSAVE IN ('Y', 'N')]]></check>
       <check name="AD_COLUMN_ISDESENCRYPTABLE_CHK"><![CDATA[ISDESENCRYPTABLE IN ('Y', 'N')]]></check>
