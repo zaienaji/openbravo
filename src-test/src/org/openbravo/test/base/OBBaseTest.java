@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2014-2018 Openbravo SLU 
+ * All portions are Copyright (C) 2014-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -43,7 +43,6 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.dialect.function.SQLFunction;
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.MockServletContext;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -54,7 +53,6 @@ import org.openbravo.base.exception.OBException;
 import org.openbravo.base.model.Entity;
 import org.openbravo.base.model.ModelProvider;
 import org.openbravo.base.provider.OBConfigFileProvider;
-import org.openbravo.base.session.OBPropertiesProvider;
 import org.openbravo.base.session.SessionFactoryController;
 import org.openbravo.base.structure.BaseOBObject;
 import org.openbravo.dal.core.DalContextListener;
@@ -67,7 +65,11 @@ import org.openbravo.database.ConnectionProvider;
 import org.openbravo.database.ExternalConnectionPool;
 import org.openbravo.model.ad.access.User;
 import org.openbravo.service.db.DalConnectionProvider;
+import org.openbravo.test.base.TestConstants.Clients;
 import org.openbravo.test.base.TestConstants.Orgs;
+import org.openbravo.test.base.TestConstants.Roles;
+import org.openbravo.test.base.TestConstants.Users;
+import org.openbravo.test.base.mock.OBServletContextMock;
 
 /**
  * OBBaseTest class which can/should be extended by most other test classes which want to make use
@@ -85,7 +87,7 @@ public class OBBaseTest {
     PluginManager.addPackage("org.openbravo.test.base");
   }
 
-  private static Logger log = LogManager.getLogger();
+  private static final Logger log = LogManager.getLogger();
   private static final String TEST_LOG_APPENDER_NAME = "TestLogAppender";
   private static TestLogAppender testLogAppender;
   private static List<String> disabledTestCases;
@@ -352,16 +354,7 @@ public class OBBaseTest {
   }
 
   private void setMockServletContext() {
-    String sourcePath = OBPropertiesProvider.getInstance()
-        .getOpenbravoProperties()
-        .getProperty("source.path");
-    String attachPath = OBPropertiesProvider.getInstance()
-        .getOpenbravoProperties()
-        .getProperty("attach.path");
-    MockServletContext mockServletContext = new MockServletContext(sourcePath + "/WebContent");
-    mockServletContext.addInitParameter("BaseConfigPath", "WEB-INF");
-    mockServletContext.addInitParameter("BaseDesignPath", "src-loc");
-    mockServletContext.addInitParameter("AttachmentDirectory", attachPath);
+    OBServletContextMock mockServletContext = new OBServletContextMock();
     DalContextListener.setServletContext(mockServletContext);
   }
 
@@ -474,7 +467,7 @@ public class OBBaseTest {
    * Set the current user to the 0 user.
    */
   protected void setSystemAdministratorContext() {
-    OBContext.setOBContext("0");
+    OBContext.setOBContext(Users.SYSTEM);
   }
 
   /**
@@ -484,11 +477,14 @@ public class OBBaseTest {
     OBContext.setOBContext(TEST_USER_ID, TEST_ROLE_ID, TEST_CLIENT_ID, TEST_ORG_ID);
   }
 
-  /**
-   * Sets the current user to the 100 user.
-   */
+  /** Sets the current user to the 100 user as F&B Group Admin */
   protected void setTestAdminContext() {
-    OBContext.setOBContext("100", "0", TEST_CLIENT_ID, TEST_ORG_ID);
+    OBContext.setOBContext(Users.OPENBRAVO, Roles.FB_GRP_ADMIN, Clients.FB_GRP, Orgs.MAIN);
+  }
+
+  /** Sets the current user to the 100 user as QA Admin */
+  protected static void setQAAdminContext() {
+    OBContext.setOBContext(Users.OPENBRAVO, Roles.QA_ADMIN_ROLE, QA_TEST_CLIENT_ID, QA_TEST_ORG_ID);
   }
 
   /**

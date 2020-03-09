@@ -11,7 +11,7 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU
- * All portions are Copyright (C) 2010-2018 Openbravo SLU
+ * All portions are Copyright (C) 2010-2019 Openbravo SLU
  * All Rights Reserved.
  * Contributor(s):  ______________________________________.
  *************************************************************************
@@ -22,14 +22,10 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.StringTokenizer;
 
 import javax.servlet.ServletException;
 
@@ -42,24 +38,19 @@ import org.openbravo.advpaymentmngt.utility.FIN_Utility;
 import org.openbravo.base.exception.OBException;
 import org.openbravo.base.provider.OBProvider;
 import org.openbravo.base.secureApp.VariablesSecureApp;
-import org.openbravo.base.session.OBPropertiesProvider;
 import org.openbravo.base.structure.BaseOBObject;
 import org.openbravo.dal.core.DalUtil;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
-import org.openbravo.dal.service.OBDao;
-import org.openbravo.data.FieldProvider;
 import org.openbravo.database.ConnectionProvider;
 import org.openbravo.erpCommon.utility.CashVATUtil;
-import org.openbravo.erpCommon.utility.FieldProviderFactory;
 import org.openbravo.erpCommon.utility.OBError;
 import org.openbravo.erpCommon.utility.Utility;
 import org.openbravo.model.common.businesspartner.BusinessPartner;
 import org.openbravo.model.common.currency.Currency;
 import org.openbravo.model.common.enterprise.DocumentType;
 import org.openbravo.model.common.enterprise.Organization;
-import org.openbravo.model.common.enterprise.OrganizationInformation;
 import org.openbravo.model.common.invoice.Invoice;
 import org.openbravo.model.common.plm.Product;
 import org.openbravo.model.financialmgmt.accounting.Costcenter;
@@ -75,7 +66,6 @@ import org.openbravo.model.financialmgmt.payment.FIN_PaymentProposal;
 import org.openbravo.model.financialmgmt.payment.FIN_PaymentSchedInvV;
 import org.openbravo.model.financialmgmt.payment.FIN_PaymentSchedule;
 import org.openbravo.model.financialmgmt.payment.FIN_PaymentScheduleDetail;
-import org.openbravo.model.financialmgmt.payment.FinAccPaymentMethod;
 import org.openbravo.model.marketing.Campaign;
 import org.openbravo.model.materialmgmt.cost.ABCActivity;
 import org.openbravo.model.project.Project;
@@ -669,6 +659,25 @@ public class FIN_AddPayment {
    */
   public static void saveGLItem(FIN_Payment payment, BigDecimal glitemAmount, GLItem glitem,
       String paymentId) {
+    saveGLItem(payment, glitemAmount, glitem, paymentId, true);
+  }
+
+  /**
+   * It adds to the Payment a new Payment Detail with the given GL Item and amount.
+   * 
+   * @param payment
+   *          Payment where the new Payment Detail needs to be added.
+   * @param glitemAmount
+   *          Amount of the new Payment Detail.
+   * @param glitem
+   *          GLItem to be set in the new Payment Detail.
+   * @param paymentId
+   *          id to set in new entities
+   * @param doFlush
+   *          Do the flush during the process
+   */
+  public static void saveGLItem(FIN_Payment payment, BigDecimal glitemAmount, GLItem glitem,
+      String paymentId, boolean doFlush) {
     // FIXME: added to access the FIN_PaymentSchedule and FIN_PaymentScheduleDetail tables to be
     // removed when new security implementation is done
     dao = new AdvPaymentMngtDao();
@@ -677,7 +686,7 @@ public class FIN_AddPayment {
       FIN_PaymentScheduleDetail psd = dao.getNewPaymentScheduleDetail(payment.getOrganization(),
           glitemAmount, paymentId);
       FIN_PaymentDetail pd = dao.getNewPaymentDetail(payment, psd, glitemAmount, BigDecimal.ZERO,
-          false, glitem, true, paymentId);
+          false, glitem, doFlush, paymentId);
       pd.setFinPayment(payment);
       OBDal.getInstance().save(pd);
       OBDal.getInstance().save(payment);
@@ -848,24 +857,6 @@ public class FIN_AddPayment {
   }
 
   /**
-   * Creates a HashMap with the FIN_PaymentScheduleDetail id's and the amount gotten from the
-   * Session.
-   * 
-   * The amounts are stored in Session like "inpPaymentAmount"+paymentScheduleDetail.Id
-   * 
-   * @param vars
-   *          VariablseSecureApp with the session data.
-   * @param selectedPaymentScheduleDetails
-   *          List of FIN_PaymentScheduleDetails that need to be included in the HashMap.
-   * @return A HashMap mapping the FIN_PaymentScheduleDetail's Id with the corresponding amount.
-   */
-  public static HashMap<String, BigDecimal> getSelectedPaymentDetailsAndAmount(
-      VariablesSecureApp vars, List<FIN_PaymentScheduleDetail> selectedPaymentScheduleDetails)
-      throws ServletException {
-    return getSelectedBaseOBObjectAmount(vars, selectedPaymentScheduleDetails, "inpPaymentAmount");
-  }
-
-  /**
    * Creates a HashMap with the BaseOBObject id's and the amount gotten from the Session.
    * 
    * The amounts are stored in Session like "htmlElementId"+basobObject.Id
@@ -886,368 +877,6 @@ public class FIN_AddPayment {
           new BigDecimal(vars.getNumericParameter(htmlElementId + (String) o.getId(), "")));
     }
     return selectedBaseOBObjectAmounts;
-  }
-
-  private static List<FIN_PaymentScheduleDetail> getOrderedPaymentScheduleDetails(
-      Set<String> psdSet) {
-    OBCriteria<FIN_PaymentScheduleDetail> orderedPSDs = OBDal.getInstance()
-        .createCriteria(FIN_PaymentScheduleDetail.class);
-    orderedPSDs.add(Restrictions.in(FIN_PaymentScheduleDetail.PROPERTY_ID, psdSet));
-    orderedPSDs.addOrderBy(FIN_PaymentScheduleDetail.PROPERTY_AMOUNT, true);
-    return orderedPSDs.list();
-  }
-
-  private static HashMap<String, BigDecimal> calculateAmounts(BigDecimal recordAmount,
-      Set<String> psdSet) {
-    BigDecimal remainingAmount = recordAmount;
-    HashMap<String, BigDecimal> recordsAmounts = new HashMap<String, BigDecimal>();
-    // PSD needs to be properly ordered to ensure negative amounts are processed first
-    List<FIN_PaymentScheduleDetail> psds = getOrderedPaymentScheduleDetails(psdSet);
-    for (FIN_PaymentScheduleDetail paymentScheduleDetail : psds) {
-      BigDecimal outstandingAmount = paymentScheduleDetail.getAmount();
-      // Manage negative amounts
-      if ((remainingAmount.compareTo(BigDecimal.ZERO) > 0
-          && remainingAmount.compareTo(outstandingAmount) >= 0)
-          || ((remainingAmount.compareTo(BigDecimal.ZERO) == -1
-              && outstandingAmount.compareTo(BigDecimal.ZERO) == -1)
-              && (remainingAmount.compareTo(outstandingAmount) <= 0))) {
-        recordsAmounts.put(paymentScheduleDetail.getId(), outstandingAmount);
-        remainingAmount = remainingAmount.subtract(outstandingAmount);
-      } else {
-        recordsAmounts.put(paymentScheduleDetail.getId(), remainingAmount);
-        if (psdSet.size() > 0) {
-          remainingAmount = BigDecimal.ZERO;
-        }
-      }
-
-    }
-    return recordsAmounts;
-  }
-
-  /**
-   * Builds a FieldProvider with a set of Payment Schedule Details based on the
-   * selectedScheduledPaymentDetails and filteredScheduledPaymentDetails Lists. When the firstLoad
-   * parameter is true the "paymentAmount" field is loaded from the corresponding Payment Proposal
-   * Detail if it exists, when false it gets the amount from session.
-   * 
-   * @param vars
-   *          VariablesSecureApp containing the Session data.
-   * @param selectedScheduledPaymentDetails
-   *          List of FIN_PaymentScheduleDetails that need to be selected by default.
-   * @param filteredScheduledPaymentDetails
-   *          List of FIN_PaymentScheduleDetails that need to be unselected by default.
-   * @param firstLoad
-   *          Boolean to set if the PaymentAmount is gotten from the PaymentProposal (true) or from
-   *          Session (false)
-   * @param paymentProposal
-   *          PaymentProposal used to get the amount when firstLoad is true.
-   * @return a FieldProvider object with all the given FIN_PaymentScheduleDetails.
-   */
-  public static FieldProvider[] getShownScheduledPaymentDetails(VariablesSecureApp vars,
-      List<FIN_PaymentScheduleDetail> selectedScheduledPaymentDetails,
-      List<FIN_PaymentScheduleDetail> filteredScheduledPaymentDetails, boolean firstLoad,
-      FIN_PaymentProposal paymentProposal) throws ServletException {
-    return getShownScheduledPaymentDetails(vars, selectedScheduledPaymentDetails,
-        filteredScheduledPaymentDetails, firstLoad, paymentProposal, null);
-  }
-
-  public static FieldProvider[] getShownScheduledPaymentDetails(VariablesSecureApp vars,
-      List<FIN_PaymentScheduleDetail> selectedScheduledPaymentDetails,
-      List<FIN_PaymentScheduleDetail> filteredScheduledPaymentDetails, boolean firstLoad,
-      FIN_PaymentProposal paymentProposal, String strSelectedPaymentDetails)
-      throws ServletException {
-    return getShownScheduledPaymentDetails(vars, selectedScheduledPaymentDetails,
-        filteredScheduledPaymentDetails, firstLoad, paymentProposal, strSelectedPaymentDetails,
-        false);
-  }
-
-  public static FieldProvider[] getShownScheduledPaymentDetails(VariablesSecureApp vars,
-      List<FIN_PaymentScheduleDetail> selectedScheduledPaymentDetails,
-      List<FIN_PaymentScheduleDetail> filteredScheduledPaymentDetails, boolean firstLoad,
-      FIN_PaymentProposal paymentProposal, String strSelectedPaymentDetails,
-      boolean showDoubtfulDebtAmount) throws ServletException {
-
-    String strSelectedRecords = "";
-    if (!"".equals(strSelectedPaymentDetails) && strSelectedPaymentDetails != null) {
-      strSelectedRecords = strSelectedPaymentDetails;
-      strSelectedRecords = strSelectedRecords.replace("(", "");
-      strSelectedRecords = strSelectedRecords.replace(")", "");
-    }
-    dao = new AdvPaymentMngtDao();
-    final List<FIN_PaymentScheduleDetail> shownScheduledPaymentDetails = new ArrayList<FIN_PaymentScheduleDetail>();
-    shownScheduledPaymentDetails.addAll(selectedScheduledPaymentDetails);
-    shownScheduledPaymentDetails.addAll(filteredScheduledPaymentDetails);
-    FIN_PaymentScheduleDetail[] FIN_PaymentScheduleDetails = new FIN_PaymentScheduleDetail[0];
-    FIN_PaymentScheduleDetails = shownScheduledPaymentDetails.toArray(FIN_PaymentScheduleDetails);
-    FieldProvider[] data = FieldProviderFactory.getFieldProviderArray(shownScheduledPaymentDetails);
-    String dateFormat = OBPropertiesProvider.getInstance()
-        .getOpenbravoProperties()
-        .getProperty("dateFormat.java");
-    SimpleDateFormat dateFormater = new SimpleDateFormat(dateFormat);
-    // FIXME: added to access the FIN_PaymentSchedule and FIN_PaymentScheduleDetail tables to be
-    // removed when new security implementation is done
-    OBContext.setAdminMode();
-    try {
-      for (int i = 0; i < data.length; i++) {
-        String selectedId = (selectedScheduledPaymentDetails
-            .contains(FIN_PaymentScheduleDetails[i])) ? FIN_PaymentScheduleDetails[i].getId() : "";
-        // If selectedId belongs to a grouping selection calculate whether it should be selected or
-        // not
-        if (!"".equals(selectedId) && !"".equals(strSelectedPaymentDetails)
-            && strSelectedPaymentDetails != null) {
-          StringTokenizer records = new StringTokenizer(strSelectedRecords, "'");
-          Set<String> recordSet = new LinkedHashSet<String>();
-          while (records.hasMoreTokens()) {
-            recordSet.add(records.nextToken());
-          }
-          if (recordSet.contains(selectedId)) {
-            FieldProviderFactory.setField(data[i], "finSelectedPaymentDetailId", selectedId);
-          } else {
-            String selectedRecord = FIN_PaymentScheduleDetails[i].getId();
-            // Find record which contains psdId
-            Set<String> psdIdSet = new LinkedHashSet<String>();
-            for (String record : recordSet) {
-              if (record.contains(selectedId)) {
-                selectedRecord = record;
-                StringTokenizer st = new StringTokenizer(record, ",");
-                while (st.hasMoreTokens()) {
-                  psdIdSet.add(st.nextToken());
-                }
-              }
-            }
-            String psdAmount = vars.getNumericParameter("inpPaymentAmount" + selectedRecord, "");
-
-            HashMap<String, BigDecimal> idsAmounts = calculateAmounts(new BigDecimal(psdAmount),
-                psdIdSet);
-            FieldProviderFactory.setField(data[i], "finSelectedPaymentDetailId", selectedId);
-            FieldProviderFactory.setField(data[i], "paymentAmount",
-                idsAmounts.get(selectedId).toString());
-          }
-        }
-
-        FieldProviderFactory.setField(data[i], "finSelectedPaymentDetailId",
-            (selectedScheduledPaymentDetails.contains(FIN_PaymentScheduleDetails[i]))
-                ? FIN_PaymentScheduleDetails[i].getId()
-                : "");
-        FieldProviderFactory.setField(data[i], "finScheduledPaymentDetailId",
-            FIN_PaymentScheduleDetails[i].getId());
-        if (FIN_PaymentScheduleDetails[i].getOrderPaymentSchedule() != null) {
-          FieldProviderFactory.setField(data[i], "orderNr",
-              FIN_PaymentScheduleDetails[i].getOrderPaymentSchedule().getOrder().getDocumentNo());
-          FieldProviderFactory.setField(data[i], "orderNrTrunc",
-              FIN_PaymentScheduleDetails[i].getOrderPaymentSchedule().getOrder().getDocumentNo());
-          FieldProviderFactory.setField(data[i], "orderPaymentScheduleId",
-              FIN_PaymentScheduleDetails[i].getOrderPaymentSchedule().getId());
-        } else {
-          FieldProviderFactory.setField(data[i], "orderNr", "");
-          FieldProviderFactory.setField(data[i], "orderNrTrunc", "");
-          FieldProviderFactory.setField(data[i], "orderPaymentScheduleId", "");
-        }
-        if (FIN_PaymentScheduleDetails[i].getInvoicePaymentSchedule() != null) {
-          FIN_PaymentSchedule psd = FIN_PaymentScheduleDetails[i].getInvoicePaymentSchedule();
-          OrganizationInformation orgInfo = OBDao.getActiveOBObjectList(psd.getOrganization(),
-              Organization.PROPERTY_ORGANIZATIONINFORMATIONLIST) != null
-                  ? (OrganizationInformation) OBDao
-                      .getActiveOBObjectList(psd.getOrganization(),
-                          Organization.PROPERTY_ORGANIZATIONINFORMATIONLIST)
-                      .get(0)
-                  : null;
-          if (!psd.getInvoice().isSalesTransaction() && orgInfo != null
-              && orgInfo.getAPRMPaymentDescription().equals("Supplier Reference")) {
-            // When the Organization of the Invoice sets that the Invoice Document No. is the
-            // supplier's
-            FieldProviderFactory.setField(data[i], "invoiceNr",
-                FIN_PaymentScheduleDetails[i].getInvoicePaymentSchedule()
-                    .getInvoice()
-                    .getOrderReference());
-            FieldProviderFactory.setField(data[i], "invoiceNrTrunc",
-                FIN_PaymentScheduleDetails[i].getInvoicePaymentSchedule()
-                    .getInvoice()
-                    .getOrderReference());
-          } else {
-            // When the Organization of the Invoice sets that the Invoice Document No. is the
-            // default
-            // Invoice Number
-            FieldProviderFactory.setField(data[i], "invoiceNr",
-                FIN_PaymentScheduleDetails[i].getInvoicePaymentSchedule()
-                    .getInvoice()
-                    .getDocumentNo());
-            FieldProviderFactory.setField(data[i], "invoiceNrTrunc",
-                FIN_PaymentScheduleDetails[i].getInvoicePaymentSchedule()
-                    .getInvoice()
-                    .getDocumentNo());
-          }
-          FieldProviderFactory.setField(data[i], "invoicePaymentScheduleId",
-              FIN_PaymentScheduleDetails[i].getInvoicePaymentSchedule().getId());
-        } else {
-          FieldProviderFactory.setField(data[i], "invoiceNr", "");
-          FieldProviderFactory.setField(data[i], "invoiceNrTrunc", "");
-          FieldProviderFactory.setField(data[i], "invoicePaymentScheduleId", "");
-        }
-        if (FIN_PaymentScheduleDetails[i].getInvoicePaymentSchedule() != null) {
-          FieldProviderFactory.setField(data[i], "expectedDate",
-              dateFormater
-                  .format(
-                      FIN_PaymentScheduleDetails[i].getInvoicePaymentSchedule().getExpectedDate())
-                  .toString());
-          FieldProviderFactory.setField(data[i], "dueDate",
-              dateFormater
-                  .format(FIN_PaymentScheduleDetails[i].getInvoicePaymentSchedule().getDueDate())
-                  .toString());
-          FieldProviderFactory.setField(data[i], "transactionDate",
-              dateFormater.format(FIN_PaymentScheduleDetails[i].getInvoicePaymentSchedule()
-                  .getInvoice()
-                  .getInvoiceDate()).toString());
-          FieldProviderFactory.setField(data[i], "invoicedAmount",
-              FIN_PaymentScheduleDetails[i].getInvoicePaymentSchedule()
-                  .getInvoice()
-                  .getGrandTotalAmount()
-                  .toString());
-          FieldProviderFactory.setField(data[i], "expectedAmount",
-              FIN_PaymentScheduleDetails[i].getInvoicePaymentSchedule().getAmount().toString());
-
-          // Truncate Business Partner
-          String businessPartner = FIN_PaymentScheduleDetails[i].getInvoicePaymentSchedule()
-              .getInvoice()
-              .getBusinessPartner()
-              .getIdentifier();
-          FieldProviderFactory.setField(data[i], "businessPartnerId",
-              FIN_PaymentScheduleDetails[i].getInvoicePaymentSchedule()
-                  .getInvoice()
-                  .getBusinessPartner()
-                  .getId());
-          String truncateBusinessPartner = (businessPartner.length() > 18)
-              ? businessPartner.substring(0, 15).concat("...").toString()
-              : businessPartner;
-          FieldProviderFactory.setField(data[i], "businessPartnerName",
-              (businessPartner.length() > 18) ? businessPartner : "");
-          FieldProviderFactory.setField(data[i], "businessPartnerNameTrunc",
-              truncateBusinessPartner);
-
-          // Truncate Payment Method
-          String paymentMethodName = FIN_PaymentScheduleDetails[i].getInvoicePaymentSchedule()
-              .getFinPaymentmethod()
-              .getName();
-          String truncatePaymentMethodName = (paymentMethodName.length() > 18)
-              ? paymentMethodName.substring(0, 15).concat("...").toString()
-              : paymentMethodName;
-          FieldProviderFactory.setField(data[i], "paymentMethodName",
-              (paymentMethodName.length() > 18) ? paymentMethodName : "");
-          FieldProviderFactory.setField(data[i], "paymentMethodNameTrunc",
-              truncatePaymentMethodName);
-
-          if (FIN_PaymentScheduleDetails[i].getInvoicePaymentSchedule()
-              .getFINPaymentPriority() != null) {
-            FieldProviderFactory.setField(data[i], "gridLineColor",
-                FIN_PaymentScheduleDetails[i].getInvoicePaymentSchedule()
-                    .getFINPaymentPriority()
-                    .getColor());
-          }
-        } else {
-          FieldProviderFactory.setField(data[i], "expectedDate",
-              dateFormater
-                  .format(FIN_PaymentScheduleDetails[i].getOrderPaymentSchedule().getExpectedDate())
-                  .toString());
-          FieldProviderFactory.setField(data[i], "dueDate",
-              dateFormater
-                  .format(FIN_PaymentScheduleDetails[i].getOrderPaymentSchedule().getDueDate())
-                  .toString());
-          FieldProviderFactory.setField(data[i], "transactionDate",
-              dateFormater.format(
-                  FIN_PaymentScheduleDetails[i].getOrderPaymentSchedule().getOrder().getOrderDate())
-                  .toString());
-          FieldProviderFactory.setField(data[i], "invoicedAmount", "");
-          FieldProviderFactory.setField(data[i], "expectedAmount",
-              FIN_PaymentScheduleDetails[i].getOrderPaymentSchedule().getAmount().toString());
-
-          // Truncate Business Partner
-          String businessPartner = FIN_PaymentScheduleDetails[i].getOrderPaymentSchedule()
-              .getOrder()
-              .getBusinessPartner()
-              .getIdentifier();
-          FieldProviderFactory.setField(data[i], "businessPartnerId",
-              FIN_PaymentScheduleDetails[i].getOrderPaymentSchedule()
-                  .getOrder()
-                  .getBusinessPartner()
-                  .getId());
-          String truncateBusinessPartner = (businessPartner.length() > 18)
-              ? businessPartner.substring(0, 15).concat("...").toString()
-              : businessPartner;
-          FieldProviderFactory.setField(data[i], "businessPartnerName",
-              (businessPartner.length() > 18) ? businessPartner : "");
-          FieldProviderFactory.setField(data[i], "businessPartnerNameTrunc",
-              truncateBusinessPartner);
-
-          // Truncate Payment Method
-          String paymentMethodName = FIN_PaymentScheduleDetails[i].getOrderPaymentSchedule()
-              .getFinPaymentmethod()
-              .getName();
-          String truncatePaymentMethodName = (paymentMethodName.length() > 18)
-              ? paymentMethodName.substring(0, 15).concat("...").toString()
-              : paymentMethodName;
-          FieldProviderFactory.setField(data[i], "paymentMethodName",
-              (paymentMethodName.length() > 18) ? paymentMethodName : "");
-          FieldProviderFactory.setField(data[i], "paymentMethodNameTrunc",
-              truncatePaymentMethodName);
-
-          if (FIN_PaymentScheduleDetails[i].getOrderPaymentSchedule()
-              .getFINPaymentPriority() != null) {
-            FieldProviderFactory.setField(data[i], "gridLineColor",
-                FIN_PaymentScheduleDetails[i].getOrderPaymentSchedule()
-                    .getFINPaymentPriority()
-                    .getColor());
-          }
-        }
-        FieldProviderFactory.setField(data[i], "outstandingAmount",
-            FIN_PaymentScheduleDetails[i].getAmount().toString());
-        FieldProviderFactory.setField(data[i], "doubtfulDebtAmount",
-            FIN_PaymentScheduleDetails[i].getDoubtfulDebtAmount().toString());
-        FieldProviderFactory.setField(data[i], "displayDoubtfulDebt",
-            showDoubtfulDebtAmount ? "" : "display: none;");
-
-        String strPaymentAmt = "";
-        String strDifference = "";
-        if (firstLoad && (selectedScheduledPaymentDetails.contains(FIN_PaymentScheduleDetails[i]))
-            && paymentProposal != null) {
-          strPaymentAmt = dao.getPaymentProposalDetailAmount(FIN_PaymentScheduleDetails[i],
-              paymentProposal);
-        } else {
-          strPaymentAmt = vars
-              .getNumericParameter("inpPaymentAmount" + FIN_PaymentScheduleDetails[i].getId(), "");
-        }
-        if (!"".equals(strPaymentAmt)) {
-          strDifference = FIN_PaymentScheduleDetails[i].getAmount()
-              .subtract(new BigDecimal(strPaymentAmt))
-              .toString();
-        }
-        if (data[i].getField("paymentAmount") == null
-            || "".equals(data[i].getField("paymentAmount"))) {
-          FieldProviderFactory.setField(data[i], "paymentAmount", strPaymentAmt);
-        }
-        FieldProviderFactory.setField(data[i], "difference", strDifference);
-        FieldProviderFactory.setField(data[i], "rownum", String.valueOf(i));
-
-      }
-    } finally {
-      OBContext.restorePreviousMode();
-    }
-    return data;
-  }
-
-  /**
-   * Returns a List of FIN_PaymentScheduleDetails related to the Proposal Details of the given
-   * Payment Proposal.
-   * 
-   * @param paymentProposal
-   */
-  public static List<FIN_PaymentScheduleDetail> getSelectedPendingPaymentsFromProposal(
-      FIN_PaymentProposal paymentProposal) {
-    List<FIN_PaymentScheduleDetail> existingPaymentScheduleDetail = new ArrayList<FIN_PaymentScheduleDetail>();
-    for (FIN_PaymentPropDetail proposalDetail : paymentProposal.getFINPaymentPropDetailList()) {
-      existingPaymentScheduleDetail.add(proposalDetail.getFINPaymentScheduledetail());
-    }
-
-    return existingPaymentScheduleDetail;
   }
 
   /**
@@ -1478,6 +1107,7 @@ public class FIN_AddPayment {
       obc.add(Restrictions.eq(FIN_PaymentScheduleDetail.PROPERTY_INVOICEPAYMENTSCHEDULE,
           invoicePaymentSchedule));
       obc.addOrderBy(FIN_PaymentScheduleDetail.PROPERTY_CREATIONDATE, false);
+      obc.setFilterOnReadableOrganization(false);
       obc.setMaxResults(1);
       return (FIN_PaymentScheduleDetail) obc.uniqueResult();
     } finally {
@@ -1500,27 +1130,6 @@ public class FIN_AddPayment {
     } finally {
       OBContext.restorePreviousMode();
     }
-  }
-
-  /**
-   * Returns true if a financial account transactions has to be automatically triggered after
-   * payment is processed.
-   * 
-   * @param payment
-   * @return Returns true if a financial account transactions has to be automatically triggered
-   *         after payment is processed.
-   */
-  public static Boolean isForcedFinancialAccountTransaction(FIN_Payment payment) {
-    OBCriteria<FinAccPaymentMethod> psdFilter = OBDal.getInstance()
-        .createCriteria(FinAccPaymentMethod.class);
-    psdFilter.add(Restrictions.eq(FinAccPaymentMethod.PROPERTY_ACCOUNT, payment.getAccount()));
-    psdFilter.add(
-        Restrictions.eq(FinAccPaymentMethod.PROPERTY_PAYMENTMETHOD, payment.getPaymentMethod()));
-    for (FinAccPaymentMethod paymentMethod : psdFilter.list()) {
-      return payment.isReceipt() ? paymentMethod.isAutomaticDeposit()
-          : paymentMethod.isAutomaticWithdrawn();
-    }
-    return false;
   }
 
   /**
@@ -1736,25 +1345,6 @@ public class FIN_AddPayment {
       return obc.list();
     } finally {
       OBContext.restorePreviousMode();
-    }
-  }
-
-  public static List<FIN_PaymentScheduleDetail> getGLItemScheduleDetails(FIN_Payment payment) {
-    if (payment.getFINPaymentDetailList().size() > 0) {
-      OBContext.setAdminMode();
-      try {
-        OBCriteria<FIN_PaymentScheduleDetail> selectedGLItems = OBDal.getInstance()
-            .createCriteria(FIN_PaymentScheduleDetail.class);
-        selectedGLItems.createAlias(FIN_PaymentScheduleDetail.PROPERTY_PAYMENTDETAILS, "pd");
-        selectedGLItems.add(Restrictions.in(FIN_PaymentScheduleDetail.PROPERTY_PAYMENTDETAILS,
-            payment.getFINPaymentDetailList()));
-        selectedGLItems.add(Restrictions.isNotNull("pd." + FIN_PaymentDetail.PROPERTY_GLITEM));
-        return selectedGLItems.list();
-      } finally {
-        OBContext.restorePreviousMode();
-      }
-    } else {
-      return new ArrayList<FIN_PaymentScheduleDetail>();
     }
   }
 

@@ -95,7 +95,7 @@ public class AverageCostAdjustment extends CostingAlgorithmAdjustmentImp {
     CostAdjustmentLine baseCAL = getCostAdjLine();
     for (CostAdjustmentLine costAdjLine : getTrxAdjustmentLines(basetrx)) {
       BigDecimal adjustmentAmt = costAdjLine.getAdjustmentAmount();
-      if (!strCostCurrencyId.equals(costAdjLine.getCurrency().getId())) {
+      if (!strCostCurrencyId.equals(costAdjLine.getCurrency().getId()) && adjustmentAmt != null) {
         adjustmentAmt = FinancialUtils.getConvertedAmount(adjustmentAmt, costAdjLine.getCurrency(),
             getCostCurrency(), costAdjLine.getAccountingDate(), getCostOrg(),
             FinancialUtils.PRECISION_STANDARD);
@@ -105,6 +105,14 @@ public class AverageCostAdjustment extends CostingAlgorithmAdjustmentImp {
         if (costAdjLine.isSource() && !costAdjLine.isRelatedTransactionAdjusted()
             && !costAdjLine.getId().equals(strCostAdjLineId)) {
           searchRelatedTransactionCosts(costAdjLine);
+          if (adjustmentAmt == null) {
+            adjustmentAmt = costAdjLine.getAdjustmentAmount();
+            if (!strCostCurrencyId.equals(costAdjLine.getCurrency().getId())) {
+              adjustmentAmt = FinancialUtils.getConvertedAmount(adjustmentAmt,
+                  costAdjLine.getCurrency(), getCostCurrency(), costAdjLine.getAccountingDate(),
+                  getCostOrg(), FinancialUtils.PRECISION_STANDARD);
+            }
+          }
         }
 
         costAdjLine.setRelatedTransactionAdjusted(Boolean.TRUE);
@@ -260,7 +268,7 @@ public class AverageCostAdjustment extends CostingAlgorithmAdjustmentImp {
         List<CostAdjustmentLine> existingAdjLines = getTrxAdjustmentLines(trx);
         for (CostAdjustmentLine existingCAL : existingAdjLines) {
           BigDecimal adjustmentAmt = existingCAL.getAdjustmentAmount();
-          if (!strCurrentCurId.equals(existingCAL.getCurrency().getId())) {
+          if (!strCurrentCurId.equals(existingCAL.getCurrency().getId()) && adjustmentAmt != null) {
             Currency curCurrency = OBDal.getInstance().get(Currency.class, strCurrentCurId);
             adjustmentAmt = FinancialUtils.getConvertedAmount(adjustmentAmt,
                 existingCAL.getCurrency(), curCurrency, existingCAL.getAccountingDate(),
@@ -269,6 +277,15 @@ public class AverageCostAdjustment extends CostingAlgorithmAdjustmentImp {
           if (isFromThisCostAdjustment(existingCAL)) {
             if (existingCAL.isSource() && !existingCAL.isRelatedTransactionAdjusted()) {
               searchRelatedTransactionCosts(existingCAL);
+              if (adjustmentAmt == null) {
+                adjustmentAmt = existingCAL.getAdjustmentAmount();
+                if (!strCurrentCurId.equals(existingCAL.getCurrency().getId())) {
+                  Currency curCurrency = OBDal.getInstance().get(Currency.class, strCurrentCurId);
+                  adjustmentAmt = FinancialUtils.getConvertedAmount(adjustmentAmt,
+                      existingCAL.getCurrency(), curCurrency, existingCAL.getAccountingDate(),
+                      getCostOrg(), FinancialUtils.PRECISION_STANDARD);
+                }
+              }
             }
             if (existingCAL.getTransactionCostList().isEmpty()) {
               trxAdjAmt = trxAdjAmt.add(adjustmentAmt);

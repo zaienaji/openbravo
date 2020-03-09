@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
   <database name="FUNCTION C_UOM_CONVERT">
-    <function name="C_UOM_CONVERT" type="NUMERIC">
+    <function name="C_UOM_CONVERT" type="NUMERIC" volatility="STABLE">
       <parameter name="p_qty" type="NUMERIC" mode="in">
         <default/>
       </parameter>
@@ -28,7 +28,7 @@
 * parts created by ComPiere are Copyright (C) ComPiere, Inc.;
 * All Rights Reserved.
 * Contributor(s): Openbravo SLU
-* Contributions are Copyright (C) 2001-2008 Openbravo, S.L.U.
+* Contributions are Copyright (C) 2001-2019 Openbravo, S.L.U.
 *
 * Specifically, this derivative work is based upon the following Compiere
 * file and version.

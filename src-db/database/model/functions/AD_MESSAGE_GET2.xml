@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
   <database name="FUNCTION AD_MESSAGE_GET2">
-    <function name="AD_MESSAGE_GET2" type="NVARCHAR">
+    <function name="AD_MESSAGE_GET2" type="NVARCHAR" volatility="STABLE">
       <parameter name="p_value" type="NVARCHAR" mode="in">
         <default/>
       </parameter>
@@ -19,7 +19,7 @@
 * under the License.
 * The Original Code is Openbravo ERP.
 * The Initial Developer of the Original Code is Openbravo SLU
-* All portions are Copyright (C) 2001-2008 Openbravo SLU
+* All portions are Copyright (C) 2001-2019 Openbravo SLU
 * All Rights Reserved.
 * Contributor(s):  ______________________________________.
 ************************************************************************/

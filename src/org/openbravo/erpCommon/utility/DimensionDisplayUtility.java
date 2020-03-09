@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2012-2018 Openbravo SLU
+ * All portions are Copyright (C) 2012-2019 Openbravo SLU
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -116,17 +116,6 @@ public class DimensionDisplayUtility {
     columnDimensionMap.put("C_CAMPAIGN_ID", DIM_Campaign);
     columnDimensionMap.put("C_ACTIVITY_ID", DIM_Activity);
     columnDimensionMap.put("A_ASSET_ID", DIM_Asset);
-  }
-
-  public static String displayAcctDimensions(String centrally, String dimemsion, String docBaseType,
-      String level) {
-    String var = "";
-    if (centrally.equals("N")) {
-      var = "$Element_" + dimemsion;
-    } else {
-      var = "$Element_" + dimemsion + "_" + docBaseType + "_" + level;
-    }
-    return var;
   }
 
   /**

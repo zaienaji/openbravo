@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
   <database name="FUNCTION M_GET_OFFERS_STD_PRICE">
-    <function name="M_GET_OFFERS_STD_PRICE" type="NUMERIC">
+    <function name="M_GET_OFFERS_STD_PRICE" type="NUMERIC" volatility="IMMUTABLE">
       <parameter name="p_bpartner_id" type="VARCHAR" mode="in">
         <default/>
       </parameter>
@@ -31,7 +31,7 @@
 * under the License.
 * The Original Code is Openbravo ERP.
 * The Initial Developer of the Original Code is Openbravo SLU
-* All portions are Copyright (C) 2001-2006 Openbravo SLU
+* All portions are Copyright (C) 2001-2019 Openbravo SLU
 * All Rights Reserved.
 * Contributor(s):  ______________________________________.
 ************************************************************************/

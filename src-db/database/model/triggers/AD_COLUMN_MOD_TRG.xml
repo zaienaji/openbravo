@@ -16,7 +16,7 @@
 * under the License.
 * The Original Code is Openbravo ERP.
 * The Initial Developer of the Original Code is Openbravo SLU
-* All portions are Copyright (C) 2008-2016 Openbravo SLU
+* All portions are Copyright (C) 2008-2019 Openbravo SLU
 * All Rights Reserved.
 * Contributor(s):  ______________________________________.
 ************************************************************************/
@@ -112,7 +112,7 @@ BEGIN
         COALESCE(:NEW.AllowSorting, '.') != COALESCE(:OLD.AllowSorting, '.') OR
         COALESCE(:NEW.AllowFiltering, '.') != COALESCE(:OLD.AllowFiltering, '.') OR
         :NEW.Allowed_Cross_Org_Link != :OLD.Allowed_Cross_Org_Link OR
-        1=2) THEN
+        :NEW.is_Child_Property_In_Parent != :OLD.is_Child_Property_In_Parent) THEN
       RAISE_APPLICATION_ERROR(-20000, '@20532@');
     END IF;
   END IF;
@@ -178,6 +178,10 @@ BEGIN
         COALESCE(:NEW.imagewidth                 , 1 ) = COALESCE(:OLD.imagewidth                 , 1 )AND
         COALESCE(:NEW.imageheight                , 1 ) = COALESCE(:OLD.imageheight                , 1 )AND
         COALESCE(:NEW.isusedsequence             ,'.') = COALESCE(:OLD.isusedsequence             ,'.')AND
+        COALESCE(:NEW.AllowSorting               ,'.') = COALESCE(:OLD.AllowSorting               ,'.')AND
+        COALESCE(:NEW.AllowFiltering             ,'.') = COALESCE(:OLD.AllowFiltering             ,'.')AND
+        :NEW.Allowed_Cross_Org_Link                    = :OLD.Allowed_Cross_Org_Link                   AND
+        :NEW.is_Child_Property_In_Parent               = :OLD.is_Child_Property_In_Parent              AND
         COALESCE(:OLD.ISEXCLUDEAUDIT		,'.') != COALESCE(:NEW.ISEXCLUDEAUDIT		,'.')) THEN
       
 		:NEW.UPDATED := :OLD.UPDATED;

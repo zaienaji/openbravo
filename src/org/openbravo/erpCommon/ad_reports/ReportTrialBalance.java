@@ -444,15 +444,10 @@ public class ReportTrialBalance extends HttpSecureAppServlet {
       xmlDocument.setParameter("messageMessage", myMessage.getMessage());
     }
 
-    try {
-      ComboTableData comboTableData = new ComboTableData(vars, readOnlyCP, "TABLEDIR", "AD_ORG_ID",
-          "", "", Utility.getContext(readOnlyCP, vars, "#User_Org", "ReportTrialBalance"),
-          Utility.getContext(readOnlyCP, vars, "#User_Client", "ReportTrialBalance"), '*');
-      comboTableData.fillParameters(null, "ReportTrialBalance", "");
-      xmlDocument.setData("reportAD_ORGID", "liststructure", comboTableData.select(false));
-    } catch (Exception ex) {
-      throw new ServletException(ex);
-    }
+    xmlDocument.setData("reportAD_ORGID", "liststructure",
+        SelectorUtilityData.selectAllOrganizations(readOnlyCP,
+            Utility.getContext(readOnlyCP, vars, "#User_Org", "ReportTrialBalance"),
+            Utility.getContext(readOnlyCP, vars, "#User_Client", "ReportTrialBalance")));
 
     xmlDocument.setData("reportC_ACCTSCHEMA_ID", "liststructure",
         AccountingSchemaMiscData.selectC_ACCTSCHEMA_ID(readOnlyCP,

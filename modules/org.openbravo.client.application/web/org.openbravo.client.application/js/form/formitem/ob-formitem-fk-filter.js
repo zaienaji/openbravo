@@ -193,6 +193,43 @@ isc.OBFKFilterTextItem.addProperties({
               }
             }
           }
+        },
+        _original_recordClick: isc.PickListMenu.getPrototype().recordClick,
+        recordClick: function(
+          viewer,
+          record,
+          recordNum,
+          field,
+          fieldNum,
+          value,
+          rawValue
+        ) {
+          var filterEditor = this.formItem && this.formItem.grid,
+            grid = filterEditor && filterEditor.parentElement;
+          if (field && field.name === '_checkboxField') {
+            // when clicking on the checkbox, execute default behaviour
+            return this._original_recordClick(
+              viewer,
+              record,
+              recordNum,
+              field,
+              fieldNum,
+              value,
+              rawValue
+            );
+          } else {
+            // when clicking a row outside the checkbox, select that specific row and close the popup
+            this.formItem.setValue('==' + record._identifier);
+            if (grid) {
+              if (grid.lazyFiltering) {
+                grid.filterHasChanged = true;
+                grid.sorter.enable();
+              } else {
+                filterEditor.performFilter(true, true);
+              }
+            }
+            this.hide();
+          }
         }
       };
     }

@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2008-2018 Openbravo SLU 
+ * All portions are Copyright (C) 2008-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -27,7 +27,6 @@ import org.apache.tools.ant.BuildException;
 import org.openbravo.base.AntExecutor;
 import org.openbravo.base.exception.OBException;
 import org.openbravo.base.session.OBPropertiesProvider;
-import org.openbravo.base.session.SessionFactoryController;
 import org.openbravo.dal.core.DalInitializingTask;
 import org.openbravo.database.CPStandAlone;
 
@@ -81,14 +80,8 @@ public class ApplyModuleTask extends DalInitializingTask {
       log4j.error("Error checking modules with reference data", e);
     }
     if (ds != null && ds.length > 0) {
-      try {
-        // Initialize DAL and execute
-        super.execute();
-      } finally {
-        // Close the Hibernate pool to force the termination of a non-daemon thread used by the
-        // pool to validate its status. Otherwise this thread may cause this task to never finish.
-        SessionFactoryController.getInstance().closeHibernatePool();
-      }
+      // Initialize DAL and execute
+      super.execute();
     } else {
       try {
         if (!forceRefData) {

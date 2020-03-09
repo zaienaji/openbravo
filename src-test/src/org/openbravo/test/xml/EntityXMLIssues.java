@@ -155,7 +155,7 @@ public class EntityXMLIssues extends XMLBaseTest {
    */
   @Test
   public void testMantis12633() {
-    setTestAdminContext();
+    setSystemAdministratorContext();
     // read the column
     final Column column = OBDal.getInstance().get(Column.class, "102");
     String xml = getXML(Collections.singletonList(column));

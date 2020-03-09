@@ -11,7 +11,7 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU
- * All portions are Copyright (C) 2010-2018 Openbravo SLU
+ * All portions are Copyright (C) 2010-2019 Openbravo SLU
  * All Rights Reserved.
  * Contributor(s):  ______________________________________.
  *************************************************************************
@@ -32,20 +32,15 @@ import org.hibernate.query.Query;
 import org.openbravo.advpaymentmngt.utility.FIN_Utility;
 import org.openbravo.base.exception.OBException;
 import org.openbravo.base.provider.OBProvider;
-import org.openbravo.base.secureApp.VariablesSecureApp;
 import org.openbravo.base.session.OBPropertiesProvider;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.dal.service.OBQuery;
 import org.openbravo.data.FieldProvider;
-import org.openbravo.database.ConnectionProvider;
-import org.openbravo.erpCommon.ad_forms.AcctServer;
 import org.openbravo.erpCommon.utility.AccDefUtility;
 import org.openbravo.erpCommon.utility.FieldProviderFactory;
-import org.openbravo.erpCommon.utility.OBObjectFieldProvider;
 import org.openbravo.model.ad.datamodel.Table;
-import org.openbravo.model.ad.ui.Tab;
 import org.openbravo.model.financialmgmt.accounting.AccountingFact;
 import org.openbravo.model.financialmgmt.payment.FIN_FinaccTransaction;
 import org.openbravo.model.financialmgmt.payment.FIN_FinancialAccount;
@@ -53,43 +48,6 @@ import org.openbravo.model.financialmgmt.payment.FIN_Payment;
 import org.openbravo.model.financialmgmt.payment.FIN_Reconciliation;
 
 public class TransactionsDao {
-
-  public static List<Tab> getWindowData(String className) {
-
-    final Map<String, Object> parameters = new HashMap<>(1);
-    final StringBuilder whereClause = new StringBuilder();
-    whereClause.append(" as td");
-    whereClause.append(" left outer join td.window as win");
-    whereClause.append(" left outer join td.masterDetailForm as mdf");
-    whereClause.append(" where UPPER(mdf.javaClassName) = UPPER(:className)");
-    parameters.put("className", className);
-
-    final OBQuery<Tab> obQuery = OBDal.getInstance().createQuery(Tab.class, whereClause.toString());
-    obQuery.setNamedParameters(parameters);
-    return obQuery.list();
-  }
-
-  public static OBObjectFieldProvider[] getAccTrxData(String finFinancialAccountId) {
-    final Map<String, Object> parameters = new HashMap<>(1);
-    final StringBuilder whereClause = new StringBuilder();
-    whereClause.append(" as ft");
-    whereClause.append(" left outer join ft.account as acc");
-    whereClause.append(" left outer join ft.reconciliation as rec");
-    whereClause.append(" where acc.id = rec.account.id");
-    whereClause.append(" and acc.id = :financialAccountId");
-    parameters.put("financialAccountId", finFinancialAccountId);
-    OBContext.setAdminMode();
-    try {
-      final OBQuery<FIN_FinaccTransaction> obQuery = OBDal.getInstance()
-          .createQuery(FIN_FinaccTransaction.class, whereClause.toString());
-      obQuery.setNamedParameters(parameters);
-      OBObjectFieldProvider[] objectFieldProvider = OBObjectFieldProvider
-          .createOBObjectFieldProvider(obQuery.list());
-      return objectFieldProvider;
-    } finally {
-      OBContext.restorePreviousMode();
-    }
-  }
 
   public static FIN_FinaccTransaction createFinAccTransaction(FIN_Payment payment) {
     final FIN_FinaccTransaction newTransaction = OBProvider.getInstance()
@@ -160,47 +118,6 @@ public class TransactionsDao {
     return 0l;
   }
 
-  @Deprecated
-  public static void process(FIN_FinaccTransaction finFinancialAccountTransaction) {
-    final FIN_FinancialAccount financialAccount = OBDal.getInstance()
-        .get(FIN_FinancialAccount.class, finFinancialAccountTransaction.getAccount().getId());
-    financialAccount.setCurrentBalance(financialAccount.getCurrentBalance()
-        .add(finFinancialAccountTransaction.getDepositAmount()
-            .subtract(finFinancialAccountTransaction.getPaymentAmount())));
-    finFinancialAccountTransaction.setProcessed(true);
-    FIN_Payment payment = finFinancialAccountTransaction.getFinPayment();
-    if (payment != null) {
-      payment.setStatus(payment.isReceipt() ? "RDNC" : "PWNC");
-      finFinancialAccountTransaction.setStatus(payment.isReceipt() ? "RDNC" : "PWNC");
-      OBDal.getInstance().save(payment);
-    } else {
-      finFinancialAccountTransaction.setStatus(finFinancialAccountTransaction.getDepositAmount()
-          .compareTo(finFinancialAccountTransaction.getPaymentAmount()) > 0 ? "RDNC" : "PWNC");
-    }
-    OBDal.getInstance().save(financialAccount);
-    OBDal.getInstance().save(finFinancialAccountTransaction);
-    OBDal.getInstance().flush();
-    return;
-  }
-
-  public static void post(VariablesSecureApp vars, ConnectionProvider connectionProvider,
-      FIN_FinaccTransaction finFinancialAccountTransaction) {
-    final String AD_TABLE_ID = "4D8C3B3C31D1410DA046140C9F024D17";
-    try {
-      AcctServer acct = AcctServer.get(AD_TABLE_ID, vars.getClient(),
-          finFinancialAccountTransaction.getOrganization().getId(), connectionProvider);
-      if (acct == null) {
-        throw new OBException("Accounting process failed for the financial account transaction");
-      } else if (!acct.post(finFinancialAccountTransaction.getId(), false, vars, connectionProvider,
-          connectionProvider.getConnection()) || acct.errors != 0) {
-        connectionProvider.releaseRollbackConnection(connectionProvider.getConnection());
-        throw new OBException(acct.getMessageResult().getMessage());
-      }
-    } catch (Exception e) {
-      throw new OBException("Accounting process failed for the financial account transaction", e);
-    }
-  }
-
   public static FIN_Reconciliation getLastReconciliation(FIN_FinancialAccount account,
       String isProcessed) {
     OBContext.setAdminMode();
@@ -222,29 +139,6 @@ public class TransactionsDao {
     }
   }
 
-  public static int getPendingToMatchCount(FIN_FinancialAccount financialAccount) {
-    final StringBuilder whereClause = new StringBuilder();
-
-    OBContext.setAdminMode();
-    try {
-      whereClause.append(" as fatrx ");
-      whereClause.append(" where fatrx.");
-      whereClause.append(FIN_FinaccTransaction.PROPERTY_ACCOUNT);
-      whereClause.append(".id='");
-      whereClause.append(financialAccount.getId());
-      whereClause.append("'");
-      whereClause.append(" and fatrx.")
-          .append(FIN_FinaccTransaction.PROPERTY_RECONCILIATION)
-          .append(" is null ");
-      final OBQuery<FIN_FinaccTransaction> obqFATrx = OBDal.getInstance()
-          .createQuery(FIN_FinaccTransaction.class, whereClause.toString());
-      return obqFATrx.count();
-
-    } finally {
-      OBContext.restorePreviousMode();
-    }
-  }
-
   public static void updateAccountingDate(FIN_FinaccTransaction transaction) {
     final String FIN_FINACC_TRANSACTION_TABLE = "4D8C3B3C31D1410DA046140C9F024D17";
     OBCriteria<AccountingFact> obcAF = OBDal.getInstance().createCriteria(AccountingFact.class);
@@ -258,39 +152,6 @@ public class TransactionsDao {
           AccDefUtility.getCalendar(transaction.getOrganization()))));
     }
     return;
-  }
-
-  public static List<FIN_FinaccTransaction> getTransactionsToReconciled(
-      FIN_FinancialAccount account, Date statementDate, boolean hideAfterDate) {
-
-    OBContext.setAdminMode();
-    try {
-
-      final Map<String, Object> parameters = new HashMap<>();
-      final StringBuilder whereClause = new StringBuilder();
-      whereClause.append(" as ft");
-      whereClause.append(" left outer join ft.reconciliation as rec");
-      whereClause.append(" where ft.account.id = :accountId");
-      whereClause.append(" and (rec is null or rec.processed = 'N')");
-      whereClause.append(" and ft.processed = 'Y'");
-      parameters.put("accountId", account.getId());
-      if (hideAfterDate) {
-        whereClause.append(" and ft.transactionDate < :statementDate");
-        parameters.put("statementDate", statementDate);
-      }
-      whereClause.append(" order by ft.transactionDate, ft.lineNo");
-
-      final OBQuery<FIN_FinaccTransaction> obQuery = OBDal.getInstance()
-          .createQuery(FIN_FinaccTransaction.class, whereClause.toString(), parameters);
-
-      return obQuery.list();
-
-    } catch (Exception e) {
-      throw new OBException(e);
-
-    } finally {
-      OBContext.restorePreviousMode();
-    }
   }
 
   public static FieldProvider[] getTransactionsFiltered(FIN_FinancialAccount account,

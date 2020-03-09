@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2008-2012 Openbravo SLU 
+ * All portions are Copyright (C) 2008-2020 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -22,7 +22,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -226,12 +225,8 @@ public class ExtractModule {
   private void createOBX(File file, ZipOutputStream obx) throws Exception {
     File[] list;
     if (file.isDirectory()) {
-      list = file.listFiles(new FilenameFilter() {
-        @Override
-        public boolean accept(File f, String s) {
-          return !(s.equals(".svn") || s.equals(".hg"));
-        }
-      });
+      list = file.listFiles(
+          (f, name) -> !(name.equals(".svn") || name.equals(".hg") || name.equals(".git")));
     } else {
       list = new File[] { file };
     }

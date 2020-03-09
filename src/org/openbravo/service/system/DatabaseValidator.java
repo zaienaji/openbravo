@@ -159,14 +159,6 @@ public class DatabaseValidator implements SystemValidator {
       }
     }
 
-    final OBCriteria<Table> tcs = OBDal.getInstance().createCriteria(Table.class);
-    tcs.add(Restrictions.eq(Table.PROPERTY_VIEW, false));
-    final List<Table> adTables = tcs.list();
-    final Map<String, Table> adTablesByName = new HashMap<String, Table>();
-    for (Table adTable : adTables) {
-      adTablesByName.put(adTable.getDBTableName(), adTable);
-    }
-
     // the following cases are checked:
     // 1) table present in ad, but not in db
     // 2) table present in db, not in ad
@@ -192,14 +184,14 @@ public class DatabaseValidator implements SystemValidator {
       dbViews.put(view.getName().toUpperCase(), view);
     }
 
+    final List<Table> adTables = OBDal.getInstance()
+        .createCriteria(Table.class)
+        .add(Restrictions.eq(Table.PROPERTY_VIEW, false))
+        .add(Restrictions.eq(Table.PROPERTY_DATAORIGINTYPE, ApplicationConstants.TABLEBASEDTABLE))
+        .list();
+
     final String moduleId = (getValidateModule() == null ? null : getValidateModule().getId());
     for (Table adTable : adTables) {
-
-      // Do not validate the table if it is based on a datasource
-      if (!ApplicationConstants.TABLEBASEDTABLE.equals(adTable.getDataOriginType())) {
-        continue;
-      }
-
       final org.apache.ddlutils.model.Table dbTable = dbTablesByName
           .get(adTable.getDBTableName().toUpperCase());
       final View view = dbViews.get(adTable.getDBTableName().toUpperCase());
@@ -264,6 +256,7 @@ public class DatabaseValidator implements SystemValidator {
 
     checkKillableImplementation(result);
 
+    OBDal.getInstance().getSession().clear();
     return result;
   }
 

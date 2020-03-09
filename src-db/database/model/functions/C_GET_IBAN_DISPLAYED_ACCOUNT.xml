@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
   <database name="FUNCTION C_GET_IBAN_DISPLAYED_ACCOUNT">
-    <function name="C_GET_IBAN_DISPLAYED_ACCOUNT" type="NVARCHAR">
+    <function name="C_GET_IBAN_DISPLAYED_ACCOUNT" type="NVARCHAR" volatility="STABLE">
       <parameter name="p_iban" type="NVARCHAR" mode="in">
         <default/>
       </parameter>
@@ -19,7 +19,7 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU
- * All portions are Copyright (C) 2012-2016 Openbravo SLU
+ * All portions are Copyright (C) 2012-2019 Openbravo SLU
  * All Rights Reserved.
 *************************************************************************
 ****

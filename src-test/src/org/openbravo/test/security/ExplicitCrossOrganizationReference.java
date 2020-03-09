@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2016-2018 Openbravo SLU 
+ * All portions are Copyright (C) 2016-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -56,6 +56,7 @@ import org.openbravo.model.common.enterprise.Organization;
 import org.openbravo.model.common.enterprise.Warehouse;
 import org.openbravo.model.common.order.Order;
 import org.openbravo.model.common.order.OrderLine;
+import org.openbravo.test.base.TestConstants.Roles;
 
 /**
  * Test cases covering special cases for cross organization references, where they are allowed based
@@ -69,7 +70,7 @@ public class ExplicitCrossOrganizationReference extends CrossOrganizationReferen
   private static String QA_ONLY_SPAIN_ROLE;
   private static final String CORE = "0";
   private static final String ORDER_WAREHOUSE_COLUMN = "2202";
-  private static final String ORDER_BP_COLUMN = "2762";
+  private static final String ORDER_CREATEDBY_COLUMN = "2166";
   private static final String ORDERLINE_ORDER_COLUMN = "2213";
 
   private static final List<String> COLUMNS_TO_ALLOW_CROSS_ORG = Arrays
@@ -172,7 +173,7 @@ public class ExplicitCrossOrganizationReference extends CrossOrganizationReferen
     try {
       exception.expect(OBSecurityException.class);
 
-      order.setBusinessPartner(OBDal.getInstance().getProxy(BusinessPartner.class, USA_BP));
+      order.setCancelledorder(OBDal.getInstance().getProxy(Order.class, USA_ORDER));
       OBDal.getInstance().commitAndClose();
     } finally {
       OBContext.restorePreviousCrossOrgReferenceMode();
@@ -382,7 +383,7 @@ public class ExplicitCrossOrganizationReference extends CrossOrganizationReferen
    */
   @Test
   public void orderLineDSShouldShowAllChildren() throws Exception {
-    JSONObject resp = createOrderAndFetchLines(QA_ADMIN_ROLE);
+    JSONObject resp = createOrderAndFetchLines(Roles.QA_ADMIN_ROLE);
     assertThat("number of fetched order lines", resp.getJSONObject("response").getInt("totalRows"),
         is(2));
   }
@@ -414,8 +415,8 @@ public class ExplicitCrossOrganizationReference extends CrossOrganizationReferen
     try {
       core.setInDevelopment(false);
 
-      Column orderBP = OBDal.getInstance().get(Column.class, ORDER_BP_COLUMN);
-      orderBP.setAllowedCrossOrganizationReference(true);
+      Column orderCreatedBy = OBDal.getInstance().get(Column.class, ORDER_CREATEDBY_COLUMN);
+      orderCreatedBy.setAllowedCrossOrganizationReference(true);
 
       exception.expect(Exception.class);
       OBDal.getInstance().commitAndClose();
@@ -481,7 +482,7 @@ public class ExplicitCrossOrganizationReference extends CrossOrganizationReferen
 
   /** Creates a role with Org user level, and access to Spain Org */
   static Role createOrgUserLevelRole() {
-    setQAAdminRole();
+    setQAAdminContext();
     Role spainRole = OBProvider.getInstance().get(Role.class);
     spainRole.setName("QA Only Spain - " + System.currentTimeMillis()); // some randomness
     spainRole.setOrganization(OBDal.getInstance().getProxy(Organization.class, "0"));

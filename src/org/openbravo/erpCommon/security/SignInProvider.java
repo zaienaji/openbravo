@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2014 Openbravo SLU 
+ * All portions are Copyright (C) 2014-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -19,18 +19,16 @@
 
 package org.openbravo.erpCommon.security;
 
-import javax.enterprise.context.ApplicationScoped;
-
 /**
  * If this interface is implemented, an alternative HTML code for Google Sign In is displayed in Log
  * In page.
  * 
- * Note at most one class per instance should implement this interface.
+ * Note at most one class per instance should implement this interface and it must be annotated as
+ * {@ApplicationScoped}.
  * 
  * @author alostale
  *
  */
-@ApplicationScoped
 public interface SignInProvider {
   /**
    * HTML code to be placed in Log In page for Google Sing in button

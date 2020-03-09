@@ -42,17 +42,22 @@
 <script type="text/javascript" id="errorDifferentPasswordInFields">var errorDifferentPasswordInFields = 'xx';</script>
 
 <script type="text/javascript">
-var validBrowserFirefox = '52.0.0.0';
-var validBrowserChrome = '74.0.0.0';
-var validBrowserExplorer = '9.0.0.0';
-var validBrowserEdge = '42.0.0.0'; // EdgeHTML version
-var validBrowserSafari = '10.0.0.0';
 
-var recBrowserFirefox = '60.0.0.0';
-var recBrowserChrome = '75.0.0.0';
-var recBrowserExplorer = '11.0.0.0';
-var recBrowserEdge = '44.0.0.0'; // EdgeHTML version
-var recBrowserSafari = '12.0.0.0';
+var validBrowserVersions = {
+		firefox: '52.0.0.0',
+		chrome: '75.0.0.0',
+		explorer: '11.0.0.0',
+		edge: '17.0.0.0',      // EdgeHtml version
+		safari: '10.0.0.0',
+};
+
+var recBrowserVersions = {
+		firefox: '60.0.0.0',
+		chrome: '76.0.0.0',
+		//explorer: '11.0.0.0', // IE browser unsupported
+		edge: '18.0.0.0',      // EdgeHtml version
+		safari: '12.0.0.0',
+};
 
 // currentRevision must be the same value as the one returned by getCurrentRevision() (see utils.js)
 var currentRevision = '35323';

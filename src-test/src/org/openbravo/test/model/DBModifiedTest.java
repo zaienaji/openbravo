@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2018 Openbravo SLU 
+ * All portions are Copyright (C) 2018-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -73,7 +73,7 @@ public class DBModifiedTest extends OBBaseTest {
   private boolean isDBModified(boolean saveChecksum) {
     Object modified = OBDal.getInstance()
         .getSession()
-        .createNativeQuery("SELECT AD_DB_MODIFIED(:saveChecksum) FROM DUAL", Object.class)
+        .createNativeQuery("SELECT AD_DB_MODIFIED(:saveChecksum) FROM DUAL")
         .setParameter("saveChecksum", saveChecksum ? "Y" : "N") //
         .uniqueResult();
 

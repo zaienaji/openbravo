@@ -404,9 +404,10 @@ public class CashVATUtil {
 
   /**
    * Returns the total percentage that should be applied to the cash vat regime that comes from a
-   * prepayment, i.e. from an (partially or totally) paid/collected order. This percentage must be
-   * directly registered into the final tax account instead of the transitory tax account as usual,
-   * because this part of the invoice has been paid from the order
+   * prepayment, i.e. from an (partially or totally) paid/collected order and from a payment created
+   * at invoicing time (see {@link FIN_PaymentDetail#PROPERTY_ISPAIDATINVOICING}). This percentage
+   * must be directly registered into the final tax account instead of the transitory tax account as
+   * usual, because this part of the invoice has been paid from the order
    */
   public static BigDecimal calculatePrepaidPercentageForCashVATTax(final String cTaxID,
       final String cInvoiceId) {
@@ -420,7 +421,8 @@ public class CashVATUtil {
       hql.append(" and " + InvoiceTaxCashVAT_V.PROPERTY_INVOICE + "." + Invoice.PROPERTY_ID
           + " = :invoiceId ");
       hql.append(" and " + InvoiceTaxCashVAT_V.PROPERTY_CANCELED + " = false ");
-      hql.append(" and " + InvoiceTaxCashVAT_V.PROPERTY_ISPREPAYMENT + " = true ");
+      hql.append(" and (" + InvoiceTaxCashVAT_V.PROPERTY_ISPREPAYMENT + " = true ");
+      hql.append("      or " + InvoiceTaxCashVAT_V.PROPERTY_ISPAIDATINVOICING + " = true) ");
       hql.append(" group by " + InvoiceTaxCashVAT_V.PROPERTY_TAX + "." + TaxRate.PROPERTY_ID + ", "
           + InvoiceTaxCashVAT_V.PROPERTY_INVOICE + "." + Invoice.PROPERTY_ID);
 

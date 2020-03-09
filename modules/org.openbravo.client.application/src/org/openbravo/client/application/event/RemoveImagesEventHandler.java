@@ -36,8 +36,15 @@ import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.model.ad.utility.Image;
+import org.openbravo.model.common.enterprise.Organization;
 import org.openbravo.model.common.plm.Product;
 
+/**
+ * This observer takes care of deleting an image detected as no longer needed after removing the
+ * last record referencing it. Besides, in case the organization of an entity having image
+ * properties is updated, this observer will update the referenced images by setting the same
+ * organization.
+ */
 class RemoveImagesEventHandler extends EntityPersistenceEventObserver {
 
   private static Entity[] entities = getImageEntities();
@@ -125,27 +132,34 @@ class RemoveImagesEventHandler extends EntityPersistenceEventObserver {
       return;
     }
 
+    Property orgProperty = event.getTargetInstance().getEntity().getProperty("organization");
+
     // Iterate image properties of the entity
     for (String property : getImageProperties(event.getTargetInstance().getEntity())) {
 
       Property imageProperty = event.getTargetInstance().getEntity().getProperty(property);
+      Image bob = (Image) event.getPreviousState(imageProperty);
+      if (bob == null) {
+        continue;
+      }
 
       // If the old image is different than the new one remove the old image if exists
       if (event.getPreviousState(imageProperty) != null
           && event.getCurrentState(imageProperty) != event.getPreviousState(imageProperty)) {
-
-        Image bob = (Image) event.getPreviousState(imageProperty);
-        if (bob != null) {
-          String selectedProduct = event.getId();
-          if (!checkImageUtilization(selectedProduct, bob)) {
-            OBContext.setAdminMode(true);
-            try {
-              OBDal.getInstance().remove(bob);
-            } finally {
-              OBContext.restorePreviousMode();
-            }
+        String selectedProduct = event.getId();
+        if (!checkImageUtilization(selectedProduct, bob)) {
+          OBContext.setAdminMode(true);
+          try {
+            OBDal.getInstance().remove(bob);
+          } finally {
+            OBContext.restorePreviousMode();
           }
         }
+      } else if (event.getPreviousState(orgProperty) != null
+          && event.getCurrentState(orgProperty) != event.getPreviousState(orgProperty)) {
+        // The ad_org_id of the parent entity has changed, update the ad_org_id of the referenced
+        // image to be the same
+        bob.setOrganization((Organization) event.getCurrentState(orgProperty));
       }
     }
   }

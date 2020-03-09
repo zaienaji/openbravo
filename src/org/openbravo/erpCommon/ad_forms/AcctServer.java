@@ -1356,7 +1356,7 @@ public abstract class AcctServer {
           OBContext.restorePreviousMode();
         }
         if (("").equals(amt) || amt == null) {
-          amt = getConvertedAmt("1", currency, acctSchema.m_C_Currency_ID, DateAcct,
+          amt = getConvertedAmt("1", currency, acctSchema.m_C_Currency_ID, getConversionDate(),
               acctSchema.m_CurrencyRateType, AD_Client_ID, AD_Org_ID, conn);
         }
         // if (log4j.isDebugEnabled()) log4j.debug
@@ -1397,6 +1397,15 @@ public abstract class AcctServer {
   public String getAmount() {
     return Amounts[0];
   } // getAmount
+
+  /**
+   * Get the Convertion Date
+   * 
+   * @return DateAcct
+   */
+  protected String getConversionDate() {
+    return DateAcct;
+  }
 
   /**
    * Convert an amount
@@ -2911,7 +2920,7 @@ public abstract class AcctServer {
     if (multiply) {
       return amount.multiply(conversionRateDoc.getRate());
     } else {
-      return amount.divide(conversionRateDoc.getRate(), 6, RoundingMode.HALF_EVEN);
+      return amount.divide(conversionRateDoc.getRate(), 12, RoundingMode.HALF_EVEN);
     }
   }
 

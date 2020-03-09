@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2009-2018 Openbravo SLU 
+ * All portions are Copyright (C) 2009-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -28,6 +28,7 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.junit.Test;
+import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.dal.service.OBQuery;
 import org.openbravo.model.common.order.OrderLine;
@@ -197,9 +198,8 @@ public class DalComplexQueryTestOrderLine extends OBBaseTest {
     whereClause.append(" and ol.salesOrder.documentStatus='CO' ");
 
     // Add the readable organization and client clauses
-    whereClause
-        .append(" and ol.organization " + OBDal.getInstance().getReadableOrganizationsInClause());
-    whereClause.append(" and ol.client " + OBDal.getInstance().getReadableClientsInClause());
+    whereClause.append(" and ol.organization.id in :orgs");
+    whereClause.append(" and ol.client.id in :clients");
 
     // append active
     whereClause.append(" and ol.active=true");
@@ -220,10 +220,12 @@ public class DalComplexQueryTestOrderLine extends OBBaseTest {
 
     log.debug(hql);
 
-    // final Session session = OBDal.getInstance().getSession();
-    // session.createQuery(hql.toString());
-    final Query<Object[]> query = OBDal.getInstance().getSession().createQuery(hql, Object[].class);
-    query.setParameter("bpId", "1000017");
+    final Query<Object[]> query = OBDal.getInstance()
+        .getSession()
+        .createQuery(hql, Object[].class)
+        .setParameter("bpId", "1000017")
+        .setParameterList("orgs", OBContext.getOBContext().getReadableOrganizations())
+        .setParameterList("clients", OBContext.getOBContext().getReadableClients());
 
     for (Object[] os : query.list()) {
       for (Object result : os) {

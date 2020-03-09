@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2001-2018 Openbravo SLU 
+ * All portions are Copyright (C) 2001-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -21,6 +21,9 @@ package org.openbravo.erpCommon.utility;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 @SuppressWarnings("serial")
 public class OBError implements Serializable {
@@ -32,44 +35,32 @@ public class OBError implements Serializable {
   public OBError() {
   }
 
-  public void setType(String _data) {
-    String localData = _data;
-    if (localData == null) {
-      localData = "";
-    }
-    this.type = localData;
+  public void setType(String type) {
+    this.type = type != null ? type : "";
   }
 
   public String getType() {
     return ((this.type == null) ? "Hidden" : this.type);
   }
 
-  public void setTitle(String _data) {
-    String localData = _data;
-    if (localData == null) {
-      localData = "";
-    }
-    this.title = localData;
+  public void setTitle(String title) {
+    this.title = title != null ? title : "";
   }
 
   public String getTitle() {
     return ((this.title == null) ? "" : this.title);
   }
 
-  public void setMessage(String _data) {
-    String localData = _data;
-    if (localData == null) {
-      localData = "";
-    }
-    this.message = localData;
+  public void setMessage(String message) {
+    this.message = message != null ? message : "";
   }
 
   public String getMessage() {
     return ((this.message == null) ? "" : this.message);
   }
 
-  public void setConnectionAvailable(boolean _data) {
-    this.connectionAvailable = _data;
+  public void setConnectionAvailable(boolean connectionAvailable) {
+    this.connectionAvailable = connectionAvailable;
   }
 
   public boolean isEmpty() {
@@ -88,10 +79,20 @@ public class OBError implements Serializable {
   }
 
   public Map<String, String> toMap() {
-    Map<String, String> o = new HashMap<String, String>();
+    Map<String, String> o = new HashMap<>();
     o.put("title", title);
     o.put("message", message);
     o.put("type", type);
     return o;
+  }
+
+  public JSONObject toJSON() {
+    JSONObject obError = new JSONObject();
+    JSONObject data = new JSONObject(toMap());
+    try {
+      obError.put("OBError", data);
+    } catch (JSONException ignore) {
+    }
+    return obError;
   }
 }

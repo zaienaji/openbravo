@@ -21,13 +21,9 @@ package org.openbravo.test.system;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.Date;
-
 import org.junit.Test;
 import org.openbravo.base.secureApp.VariablesSecureApp;
 import org.openbravo.dal.core.OBContext;
-import org.openbravo.model.ad.utility.DataSet;
-import org.openbravo.service.dataset.DataSetService;
 import org.openbravo.test.base.OBBaseTest;
 
 /**
@@ -39,9 +35,6 @@ import org.openbravo.test.base.OBBaseTest;
 
 public class Issue29934Test extends OBBaseTest {
 
-  /**
-   * Test the {@link DataSetService#hasChanged(DataSet, Date)} method.
-   */
   @Test
   public void doTest() {
     setTestUserContext();

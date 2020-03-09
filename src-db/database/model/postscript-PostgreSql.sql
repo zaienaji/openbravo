@@ -114,7 +114,7 @@ $BODY$ DECLARE
 * under the License.
 * The Original Code is Openbravo ERP.
 * The Initial Developer of the Original Code is Openbravo SLU
-* All portions are Copyright (C) 2008-2009 Openbravo SLU
+* All portions are Copyright (C) 2008-2019 Openbravo SLU
 * All Rights Reserved.
 * Contributor(s):  ______________________________________.
 ************************************************************************/
@@ -181,7 +181,7 @@ $BODY$ DECLARE
    RETURN v_is_included;
  
 END;   $BODY$
-  LANGUAGE 'plpgsql' VOLATILE
+  LANGUAGE 'plpgsql' STABLE
 /-- END
 
 CREATE OR REPLACE FUNCTION AD_ORG_CHK_DOC_PAYMENTS(p_header_table IN character varying, p_lines_table IN character varying, p_document_id IN character varying, p_header_column_id IN character varying, p_lines_column_id IN character varying, p_lines_column_payment_id IN character varying) 
@@ -199,7 +199,7 @@ CREATE OR REPLACE FUNCTION AD_ORG_CHK_DOC_PAYMENTS(p_header_table IN character v
 * under the License.
 * The Original Code is Openbravo ERP.
 * The Initial Developer of the Original Code is Openbravo SLU
-* All portions are Copyright (C) 2008-2009 Openbravo SLU
+* All portions are Copyright (C) 2008-2019 Openbravo SLU
 * All Rights Reserved.
 * Contributor(s):  ______________________________________.
 ************************************************************************/
@@ -269,7 +269,7 @@ CREATE OR REPLACE FUNCTION AD_ORG_CHK_DOC_PAYMENTS(p_header_table IN character v
   RETURN v_is_included;
  
 END;   $BODY$
-  LANGUAGE 'plpgsql' VOLATILE
+  LANGUAGE 'plpgsql' STABLE
 /-- END
 
 -- Inserts an alert recipient for available updates

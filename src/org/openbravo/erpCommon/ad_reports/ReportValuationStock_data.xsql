@@ -53,8 +53,8 @@
                                  WHERE dateacct < to_date(?)
                                    AND dateacct > to_date(?)
                                  GROUP BY m_transaction_id, c_currency_id) tc ON trx.m_transaction_id = tc.m_transaction_id
-                    WHERE trx.MOVEMENTDATE < to_date(?)
-                    AND trx.MOVEMENTDATE > to_date(?)
+                    WHERE TRUNC(trx.MOVEMENTDATE) < to_date(?)
+                    AND TRUNC(trx.MOVEMENTDATE) > to_date(?)
                     AND trx.TRXPROCESSDATE >= to_timestamp(?, ?)
                     AND trx.ad_org_id IN ('1')
                     AND 0=0
@@ -157,8 +157,8 @@
             JOIN M_PRODUCT p ON trx.m_product_id = p.m_product_id
             JOIN M_TRANSACTION_COST tc ON trx.m_transaction_id = tc.m_transaction_id AND tc.dateacct < to_date(?)
               AND tc.dateacct > to_date(?)
-          WHERE trx.MOVEMENTDATE < to_date(?)
-            AND trx.MOVEMENTDATE > to_date(?)
+          WHERE TRUNC(trx.MOVEMENTDATE) < to_date(?)
+            AND TRUNC(trx.MOVEMENTDATE) > to_date(?)
             AND trx.TRXPROCESSDATE >= to_timestamp(?, ?)
             AND trx.ad_org_id IN ('1')
             AND trx.iscostcalculated = 'Y'
@@ -219,8 +219,8 @@
         JOIN m_transaction trx ON trx.m_product_id = p.m_product_id
         JOIN m_locator l ON trx.m_locator_id = l.m_locator_id
       WHERE trx.iscostcalculated = 'N'
-        AND trx.MOVEMENTDATE < to_date(?)
-        AND trx.MOVEMENTDATE > to_date(?)
+        AND TRUNC(trx.MOVEMENTDATE) < to_date(?)
+        AND TRUNC(trx.MOVEMENTDATE) > to_date(?)
         AND trx.TRXPROCESSDATE >= to_timestamp(?, ?)
         AND  trx.ad_org_id IN ('2')
         AND 2 = 2
@@ -305,8 +305,8 @@
                                  WHERE dateacct < to_date(?)
                                    AND dateacct > to_date(?)
                                  GROUP BY m_transaction_id, c_currency_id) tc ON trx.m_transaction_id = tc.m_transaction_id
-                    WHERE trx.MOVEMENTDATE < to_date(?)
-                    AND trx.MOVEMENTDATE > to_date(?)
+                    WHERE TRUNC(trx.MOVEMENTDATE) < to_date(?)
+                    AND TRUNC(trx.MOVEMENTDATE) > to_date(?)
                     AND trx.TRXPROCESSDATE >= to_timestamp(?, ?)
                     AND trx.ad_org_id IN ('1')
                     AND 0=0
@@ -380,8 +380,8 @@
             JOIN M_PRODUCT p ON trx.m_product_id = p.m_product_id
             JOIN M_TRANSACTION_COST tc ON trx.m_transaction_id = tc.m_transaction_id 
               AND tc.dateacct < to_date(?) AND tc.dateacct > to_date(?)
-          WHERE trx.MOVEMENTDATE < to_date(?)
-            AND trx.MOVEMENTDATE > to_date(?)
+          WHERE TRUNC(trx.MOVEMENTDATE) < to_date(?)
+            AND TRUNC(trx.MOVEMENTDATE) > to_date(?)
             AND trx.TRXPROCESSDATE >= to_timestamp(?, ?)
             AND trx.ad_org_id IN ('1')
             AND trx.iscostcalculated = 'Y'
@@ -423,8 +423,8 @@
         JOIN m_transaction trx ON trx.m_product_id = p.m_product_id
         JOIN m_locator l ON trx.m_locator_id = l.m_locator_id
       WHERE trx.iscostcalculated = 'N'
-        AND trx.MOVEMENTDATE < to_date(?)
-        AND trx.MOVEMENTDATE > to_date(?)
+        AND TRUNC(trx.MOVEMENTDATE) < to_date(?)
+        AND TRUNC(trx.MOVEMENTDATE) > to_date(?)
         AND trx.TRXPROCESSDATE >= to_timestamp(?, ?)
         AND  trx.ad_org_id IN ('2')
         AND 2 = 2
@@ -506,10 +506,12 @@
        SELECT MAX(dateto)
        FROM m_valued_stock_agg agg
        WHERE ad_client_id = ?
+       AND dateto < to_date(?)
        AND ad_org_id IN ('1')
       ]]>
     </Sql>
     <Parameter name="adClient"/>
+    <Parameter name="dateFilter"/>
     <Parameter name="organization" type="replace" optional="true" after="AND ad_org_id IN (" text="'1'"/>
   </SqlMethod>
   

@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2008-2018 Openbravo SLU 
+ * All portions are Copyright (C) 2008-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -30,6 +30,7 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -68,7 +69,7 @@ public class OBCriteria<E extends BaseOBObject> extends CriteriaImpl {
   private boolean filterOnReadableClients = true;
   private boolean filterOnReadableOrganization = true;
   private boolean filterOnActive = true;
-  private List<OrderBy> orderBys = new ArrayList<OrderBy>();
+  private List<OrderBy> orderBys = new ArrayList<>();
   private boolean initialized = false;
   private boolean modified = false;
 
@@ -209,11 +210,11 @@ public class OBCriteria<E extends BaseOBObject> extends CriteriaImpl {
     for (final OrderBy ob : orderBys) {
       final int j = 0;
       String orderOn = ob.getOrderOn();
-      if (orderOn.indexOf(".") != -1) {
-        final String orderJoin = orderOn.substring(0, orderOn.lastIndexOf("."));
+      if (orderOn.indexOf('.') != -1) {
+        final String orderJoin = orderOn.substring(0, orderOn.lastIndexOf('.'));
         final String alias = "order_ob_" + j;
         createAlias(orderJoin, alias);
-        orderOn = alias + "." + orderOn.substring(orderOn.lastIndexOf(".") + 1);
+        orderOn = alias + "." + orderOn.substring(orderOn.lastIndexOf('.') + 1);
       }
 
       if (ob.isAscending()) {
@@ -237,10 +238,13 @@ public class OBCriteria<E extends BaseOBObject> extends CriteriaImpl {
    *          the property on which to order, can also be a property of an associated entity (etc.)
    * @param ascending
    *          if true then order ascending, false order descending
+   * 
+   * @return this OBCriteria instance, for method chaining
    */
-  public void addOrderBy(String orderOn, boolean ascending) {
+  public OBCriteria<E> addOrderBy(String orderOn, boolean ascending) {
     orderBys.add(new OrderBy(orderOn, ascending));
     modified = true;
+    return this;
   }
 
   /**
@@ -272,10 +276,13 @@ public class OBCriteria<E extends BaseOBObject> extends CriteriaImpl {
    *          if true then when querying (for example call list()) a filter on readable
    *          organizations is added to the query, if false then this is not done
    * @see OBContext#getReadableOrganizations()
+   * 
+   * @return this OBCriteria instance, for method chaining
    */
-  public void setFilterOnReadableOrganization(boolean filterOnReadableOrganization) {
+  public OBCriteria<E> setFilterOnReadableOrganization(boolean filterOnReadableOrganization) {
     this.filterOnReadableOrganization = filterOnReadableOrganization;
     modified = true;
+    return this;
   }
 
   /**
@@ -294,10 +301,13 @@ public class OBCriteria<E extends BaseOBObject> extends CriteriaImpl {
    * 
    * @param filterOnActive
    *          if true then only objects with isActive='Y' are returned, false otherwise
+   * 
+   * @return this OBCriteria instance, for method chaining
    */
-  public void setFilterOnActive(boolean filterOnActive) {
+  public OBCriteria<E> setFilterOnActive(boolean filterOnActive) {
     this.filterOnActive = filterOnActive;
     modified = true;
+    return this;
   }
 
   /**
@@ -318,10 +328,55 @@ public class OBCriteria<E extends BaseOBObject> extends CriteriaImpl {
    * @param filterOnReadableClients
    *          if true then only objects from readable clients are returned, if false then objects
    *          from all clients are returned
+   * 
+   * @return this OBCriteria instance, for method chaining
    */
-  public void setFilterOnReadableClients(boolean filterOnReadableClients) {
+  public OBCriteria<E> setFilterOnReadableClients(boolean filterOnReadableClients) {
     this.filterOnReadableClients = filterOnReadableClients;
     modified = true;
+    return this;
+  }
+
+  /**
+   * Add a restriction to constrain the results to be retrieved.
+   * 
+   * @param expression
+   *          The criterion object representing the restriction to be applied
+   * 
+   * @return this OBCriteria instance, for method chaining
+   */
+  @Override
+  @SuppressWarnings("unchecked")
+  public OBCriteria<E> add(Criterion expression) {
+    return (OBCriteria<E>) super.add(expression);
+  }
+
+  /**
+   * Set a limit upon the number of objects to be retrieved.
+   * 
+   * @param maxResults
+   *          The maximum number of results
+   * 
+   * @return this OBCriteria instance, for method chaining
+   */
+  @Override
+  @SuppressWarnings("unchecked")
+  public OBCriteria<E> setMaxResults(int maxResults) {
+    return (OBCriteria<E>) super.setMaxResults(maxResults);
+  }
+
+  /**
+   * Set the first result to be retrieved.
+   * 
+   * @param firstResult
+   *          The first result to retrieve, numbered from 0
+   * 
+   * @return this OBCriteria instance, for method chaining
+   */
+  @Override
+  @SuppressWarnings("unchecked")
+  public OBCriteria<E> setFirstResult(int firstResult) {
+    return (OBCriteria<E>) super.setFirstResult(firstResult);
   }
 
   // OrderBy to support multiple orderby clauses

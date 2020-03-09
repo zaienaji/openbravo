@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2001-2019 Openbravo SLU 
+ * All portions are Copyright (C) 2001-2020 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -693,8 +693,10 @@ public class GeneralAccountingReports extends HttpSecureAppServlet {
       throw new ServletException(ex);
     }
     xmlDocument.setParameter("orgs", Utility.arrayDobleEntrada("arrOrgs", new FieldProvider[0]));
-    xmlDocument.setParameter("accountingReports", Utility.arrayDobleEntrada("arrAccountingReports",
-        GeneralAccountingReportsData.selectRptDouble(readOnlyCP)));
+    xmlDocument.setParameter("accountingReports",
+        Utility.arrayDobleEntrada("arrAccountingReports",
+            GeneralAccountingReportsData.selectRptDouble(readOnlyCP, Utility.getContext(readOnlyCP,
+                vars, "#AccessibleOrgTree", "GeneralAccountingReports"))));
     xmlDocument.setParameter("years", Utility.arrayDobleEntrada("arrYears", new FieldProvider[0]));
     response.setContentType("text/html; charset=UTF-8");
     PrintWriter out = response.getWriter();

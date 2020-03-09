@@ -26,7 +26,7 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU
- * All portions are Copyright (C) 2008-2014 Openbravo SLU
+ * All portions are Copyright (C) 2008-2019 Openbravo SLU
  * All Rights Reserved.
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -47,6 +47,7 @@ public class ${entity.simpleClassName} extends BaseOBObject ${entity.implementsS
     public static final String ENTITY_NAME = "${entity.name}";
     <#list entity.properties as p>
     <#if !p.computedColumn>
+    <@addDeprecationIfNeeded property=p />
     public static final String PROPERTY_${p.name?upper_case} = "${p.name}";
     </#if>
     </#list>
@@ -110,6 +111,7 @@ public class ${entity.simpleClassName} extends BaseOBObject ${entity.implementsS
 	</#list>
 	<#list entity.properties as p>
 	<#if p.oneToMany>
+	<@addDeprecationIfNeeded property=p />
     @SuppressWarnings("unchecked")
     public ${theList(entity)}<${p.shorterNameTargetEntity}> get${p.name?cap_first}() {
       <#if !p.computedColumn>
@@ -119,6 +121,7 @@ public class ${entity.simpleClassName} extends BaseOBObject ${entity.implementsS
       </#if>
     }
 
+    <@addDeprecationIfNeeded property=p />
     public void set${p.getterSetterName?cap_first}(${theList(entity)}<${p.shorterNameTargetEntity}> ${p.name}) {
         set(PROPERTY_${p.name?upper_case}, ${p.name});
     }
@@ -211,3 +214,9 @@ public class ${entity.simpleClassName} extends BaseOBObject ${entity.implementsS
     }
     </#if>
 }
+<#macro addDeprecationIfNeeded property>
+    <#if util.isDeprecated(property)>
+    /** @deprecated ${util.getDeprecationMessage(property)}*/
+    @Deprecated
+    </#if>
+</#macro>

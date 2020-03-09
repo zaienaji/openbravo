@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
   <database name="FUNCTION C_GETINVOICESTATUSFROMSHIPMENT">
-    <function name="C_GETINVOICESTATUSFROMSHIPMENT" type="NUMERIC">
+    <function name="C_GETINVOICESTATUSFROMSHIPMENT" type="NUMERIC" volatility="STABLE">
       <parameter name="p_minoutid" type="VARCHAR" mode="in">
         <default/>
       </parameter>

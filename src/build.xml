@@ -212,7 +212,6 @@ build.war: build a war file in the lib directory.
   <target name="generate.entities.quick" depends="compile.src.gen">
     <java classname="org.openbravo.base.gen.GenerateEntitiesTask" fork="yes" jvm="${env.JAVA_HOME}/bin/java" maxmemory="${build.maxmemory}" failonerror="true">
       <arg line="'${base.src}' '${friendlyWarnings}'" />
-      <jvmarg line="${jvm.arg.line}" />
       <classpath refid="project.class.path" />
       <syspropertyset>
          <propertyref name="java.security.egd" />
@@ -412,9 +411,10 @@ build.war: build a war file in the lib directory.
     <copy todir="${base.context}/WEB-INF/lib" encoding="UTF-8">
       <fileset dir="${base.modules}">
         <include name="*/lib/runtime/**" />
-        <exclude if="exclude.cdi" name="org.openbravo.base.weld/lib/runtime/weld*"/>
-        <exclude if="exclude.cdi" name="org.openbravo.base.weld/lib/runtime/*api*"/>
+        <exclude if="exclude.cdi" name="org.openbravo.base.weld/lib/runtime/cdi*"/>
         <exclude if="exclude.cdi" name="org.openbravo.base.weld/lib/runtime/javax*"/>
+        <exclude if="exclude.cdi" name="org.openbravo.base.weld/lib/runtime/jboss*"/>
+        <exclude if="exclude.cdi" name="org.openbravo.base.weld/lib/runtime/weld*"/>
       </fileset>
       <mapper type="regexp" from="(.*\${file.separator}lib\${file.separator}runtime)(.*)" to="\2" />
     </copy>

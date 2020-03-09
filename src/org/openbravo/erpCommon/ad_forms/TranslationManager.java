@@ -91,7 +91,8 @@ public class TranslationManager {
   /** XML Value Original */
   static final String XML_VALUE_ATTRIBUTE_ISTRL = "isTrl";
 
-  static final String CONTRIBUTORS_FILENAME = "CONTRIBUTORS";
+  public static final String CONTRIBUTORS_FILENAME = "CONTRIBUTORS";
+  public static final String BUILD_FILENAME = "buildStructureTrl";
   static final String XML_CONTRIB = "Contributors";
 
   private static final Logger log4j = LogManager.getLogger();
@@ -113,7 +114,7 @@ public class TranslationManager {
    *          Language to be used for translating error messages
    * @return Message with the error or with the success
    */
-  static OBError exportTrl(ConnectionProvider conn, String exportDirectory, String strLang,
+  public static OBError exportTrl(ConnectionProvider conn, String exportDirectory, String strLang,
       String strClient, String uiLanguage) {
     final String AD_Language = strLang;
     OBError myMessage = null;
@@ -192,7 +193,7 @@ public class TranslationManager {
 
       Build build = (Build) beanReader.parse(xmlReader);
 
-      FileWriter outputWriterT = new FileWriter(directory + "/buildStructureTrl.xml");
+      FileWriter outputWriterT = new FileWriter(directory + "/" + BUILD_FILENAME + ".xml");
       outputWriterT.write("<?xml version='1.0' ?>\n");
 
       BeanWriter beanWriterT = new BeanWriter(outputWriterT);

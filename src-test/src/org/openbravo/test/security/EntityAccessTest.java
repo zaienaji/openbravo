@@ -222,7 +222,7 @@ public class EntityAccessTest extends CrossOrganizationReference {
    */
   @Test
   public void changeOrgIsAllowedHavingComputedColumns() {
-    setTestAdminContext();
+    setQAAdminContext();
     Order order = createOrder(SPAIN_ORG);
     String orderId = order.getId();
 

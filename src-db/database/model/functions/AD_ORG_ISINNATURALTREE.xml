@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
   <database name="FUNCTION AD_ORG_ISINNATURALTREE">
-    <function name="AD_ORG_ISINNATURALTREE" type="VARCHAR">
+    <function name="AD_ORG_ISINNATURALTREE" type="VARCHAR" volatility="STABLE">
       <parameter name="p_orga" type="VARCHAR" mode="in">
         <default/>
       </parameter>
@@ -22,7 +22,7 @@
 * under the License.
 * The Original Code is Openbravo ERP.
 * The Initial Developer of the Original Code is Openbravo SLU
-* All portions are Copyright (C) 2012 Openbravo SLU
+* All portions are Copyright (C) 2012-2019 Openbravo SLU
 * All Rights Reserved.
 * Contributor(s):  ______________________________________.
 ************************************************************************/

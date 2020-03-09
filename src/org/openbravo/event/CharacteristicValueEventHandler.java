@@ -28,18 +28,22 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
+import org.openbravo.base.exception.OBException;
 import org.openbravo.base.model.Entity;
 import org.openbravo.base.model.ModelProvider;
 import org.openbravo.base.model.Property;
 import org.openbravo.base.secureApp.VariablesSecureApp;
 import org.openbravo.client.kernel.RequestContext;
+import org.openbravo.client.kernel.event.EntityNewEvent;
 import org.openbravo.client.kernel.event.EntityPersistenceEventObserver;
 import org.openbravo.client.kernel.event.EntityUpdateEvent;
 import org.openbravo.client.kernel.event.TransactionBeginEvent;
 import org.openbravo.client.kernel.event.TransactionCompletedEvent;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBDal;
+import org.openbravo.erpCommon.utility.OBMessageUtils;
 import org.openbravo.materialmgmt.VariantChDescUpdateProcess;
+import org.openbravo.model.common.plm.Characteristic;
 import org.openbravo.model.common.plm.CharacteristicValue;
 import org.openbravo.scheduling.OBScheduler;
 import org.openbravo.scheduling.ProcessBundle;
@@ -60,11 +64,44 @@ class CharacteristicValueEventHandler extends EntityPersistenceEventObserver {
     chvalueUpdated.set(null);
   }
 
+  public void onNew(@Observes EntityNewEvent event) {
+    if (!isValidEvent(event)) {
+      return;
+    }
+    CharacteristicValue characteristicValue = (CharacteristicValue) event.getTargetInstance();
+    checkForDuplicates(characteristicValue);
+  }
+
+  private void checkForDuplicates(CharacteristicValue characteristicValue) {
+    Characteristic characteristic = characteristicValue.getCharacteristic();
+    if (characteristic.isVariant()) {
+      if (existsDuplicateNameInSameCharacteristic(characteristicValue)) {
+        throw new OBException(OBMessageUtils.messageBD("DuplicatedChValueName"));
+      }
+    }
+  }
+
+  private boolean existsDuplicateNameInSameCharacteristic(CharacteristicValue characteristicValue) {
+    //@formatter:off
+    String hql = "select 1 from CharacteristicValue chv join chv.characteristic ch where chv.name = :name and ch.id = :characteristicId";
+    //@formatter:on
+
+    Query<Integer> query = OBDal.getInstance()
+        .getSession()
+        .createQuery(hql, Integer.class)
+        .setParameter("name", characteristicValue.getName())
+        .setParameter("characteristicId", characteristicValue.getCharacteristic().getId());
+
+    query.setMaxResults(1);
+    return !query.list().isEmpty();
+  }
+
   public void onUpdate(@Observes EntityUpdateEvent event) {
     if (!isValidEvent(event)) {
       return;
     }
     final CharacteristicValue chv = (CharacteristicValue) event.getTargetInstance();
+    checkForDuplicates(chv);
     chvalueUpdated.set(chv.getId());
     // Update all product characteristics configurations with updated code of the characteristic.
     // Only when product characteristics is not linked with subset.

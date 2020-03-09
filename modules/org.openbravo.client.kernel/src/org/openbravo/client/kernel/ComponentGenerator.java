@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2010-2011 Openbravo SLU 
+ * All portions are Copyright (C) 2010-2019 Openbravo SLU
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -47,6 +47,7 @@ public class ComponentGenerator {
    * Compressing is done if the module of the component ({@link Component#getModule()}) is not in
    * development.
    *
+   * 
    * @param component
    *          the component to generate javascript for
    * @return generated and compressed javascript.

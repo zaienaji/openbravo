@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2009-2017 Openbravo SLU 
+ * All portions are Copyright (C) 2009-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -116,10 +116,7 @@ public class SelectorFieldPropertyCallout extends SimpleCallout {
         tableId = tableId.substring(0, tableId.length() - 3);
       }
 
-      final Table propertyTable = OBDal.getInstance()
-          .createQuery(Table.class, Table.PROPERTY_ID + "='" + tableId + "'")
-          .list()
-          .get(0);
+      final Table propertyTable = OBDal.getInstance().getProxy(Table.class, tableId);
 
       final OBCriteria<Column> columnCriteria = OBDal.getInstance().createCriteria(Column.class);
       columnCriteria.add(Restrictions.and(Restrictions.eq(Column.PROPERTY_TABLE, propertyTable),

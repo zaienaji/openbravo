@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
  ************************************************************************************
- * Copyright (C) 2010-2011 Openbravo S.L.U.
+ * Copyright (C) 2010-2019 Openbravo S.L.U.
  * Licensed under the Openbravo Commercial License version 1.0
  * You may obtain a copy of the License at http://www.openbravo.com/legal/obcl.html
  * or in the legal folder of this module distribution.
@@ -82,7 +82,7 @@
       WHERE ad_table_id = '4D8C3B3C31D1410DA046140C9F024D17'
         AND isreadonly = 'Y'
         AND isexclude = 'N'
-        AND created <= (SELECT created FROM ad_tab WHERE ad_tab_id = 'FF8080812F213146012F2135BC25000E')
+        AND created <= (SELECT created FROM ad_tab WHERE ad_tab_id = '23691259D1BD4496BCC5F32645BCA4B9')
       ]]>
     </Sql>
   </SqlMethod>

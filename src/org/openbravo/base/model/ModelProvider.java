@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2008-2018 Openbravo SLU 
+ * All portions are Copyright (C) 2008-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -23,12 +23,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -92,6 +95,11 @@ public class ModelProvider implements OBSingleton {
   private Session initsession;
 
   private static final String TABLEBASEDTABLE = "Table";
+
+  private static final Set<String> ENTITIES_WITHOUT_ALL_CHILD_PROPERTIES = new HashSet<>(
+      Arrays.asList("org.openbravo.model.ad.system.Client",
+          "org.openbravo.model.common.enterprise.Organization",
+          "org.openbravo.model.ad.module.Module", "org.openbravo.model.ad.system.Language"));
 
   /**
    * Returns the singleton instance providing the ModelProvider functionality.
@@ -213,7 +221,7 @@ public class ModelProvider implements OBSingleton {
         }
       }
 
-      log.debug("Setting referencetypes for columns");
+      log.debug("Setting referencetypes for columns ");
       for (final Table t : tablesByTableName.values()) {
         t.setReferenceTypes(ModelProvider.instance);
       }
@@ -304,13 +312,17 @@ public class ModelProvider implements OBSingleton {
         }
         // dumpPropertyNames(e);
       }
-      for (final Entity e : model) {
-        // add virtual property in the parent table based on
-        // isParent columns
 
-        // Support datasource based tables
+      boolean generateAllChildProperties = OBPropertiesProvider.getInstance()
+          .getBooleanProperty("hb.generate.all.parent.child.properties");
+      if (generateAllChildProperties) {
+        log.warn("Generating all children properties in parent entities.");
+        log.warn(
+            "Properties created from columns flagged as 'do not generate child property in parent entity' are deprecated and will be removed in a future release.");
+      }
+      for (final Entity e : model) {
         if (!e.isDataSourceBased() && !e.isHQLBased()) {
-          createPropertyInParentEntity(e);
+          createPropertyInParentEntity(e, generateAllChildProperties);
         }
       }
 
@@ -318,6 +330,16 @@ public class ModelProvider implements OBSingleton {
         for (final Property p : e.getProperties()) {
           if (p.isOneToMany()) {
             p.initializeName();
+          }
+          if (p.getReferencedProperty() != null) {
+            Entity referencedEntity = p.getReferencedProperty().getEntity();
+            if ("ADImage".equals(referencedEntity.getName())) {
+              entitiesWithImage.computeIfAbsent(p.getEntity(), k -> new ArrayList<>())
+                  .add(p.getName());
+            } else if ("OBPRF_FILE".equals(referencedEntity.getName())) {
+              entitiesWithFile.computeIfAbsent(p.getEntity(), k -> new ArrayList<>())
+                  .add(p.getName());
+            }
           }
         }
       }
@@ -739,6 +761,7 @@ public class ModelProvider implements OBSingleton {
     newProp.setTargetEntity(idProperty.getTargetEntity());
     newProp.setReferencedProperty(idProperty.getTargetEntity().getIdProperties().get(0));
     newProp.setOneToOne(true);
+    newProp.setChildPropertyInParent(idProperty.isChildPropertyInParent());
 
     // the name is the name of the class of the target without
     // the package part and with the first character lowercased
@@ -790,41 +813,45 @@ public class ModelProvider implements OBSingleton {
     e.addProperty(compId);
   }
 
-  private void createPropertyInParentEntity(Entity e) {
+  private void createPropertyInParentEntity(Entity e, boolean generateAllChildProperties) {
     try {
-      List<Property> props = new ArrayList<Property>(e.getProperties());
+      List<Property> props = new ArrayList<>(e.getProperties());
       for (final Property p : props) {
-        if (!p.isParent() && (p.isOneToMany() || p.isId()
-            || p.getColumnName().equalsIgnoreCase("createdby")
-            || p.getColumnName().equalsIgnoreCase("updatedby") || p.getReferencedProperty() == null
-            || entitiesByClassName.get("org.openbravo.model.ad.system.Client")
-                .equals(p.getReferencedProperty().getEntity())
-            || entitiesByClassName.get("org.openbravo.model.common.enterprise.Organization")
-                .equals(p.getReferencedProperty().getEntity())
-            || entitiesByClassName.get("org.openbravo.model.ad.module.Module")
-                .equals(p.getReferencedProperty().getEntity())
-            || entitiesByClassName.get("org.openbravo.model.ad.system.Language")
-                .equals(p.getReferencedProperty().getEntity()))) {
-          continue;
-        }
-
-        // don't create a parent reference for these
-        if (p.getSqlLogic() != null) {
+        if (!shouldGenerateChildPropertyInParent(p, generateAllChildProperties)) {
+          if (!generateAllChildProperties && shouldGenerateChildPropertyInParent(p, true)) {
+            // When creating child property parent entity, base property is flagged as referenced,
+            // let's keep this flag even it does not get generated as it affects
+            // BaseOBObject.checkDerivedReadable.
+            p.setBeingReferenced(true);
+          }
           continue;
         }
 
         if (p.getReferencedProperty() == null) {
           // Log message in case referenced property is null, this will cause a NPE, which is not
           // solved but at least relevant info is shown to fix it in AD
-          log.error("Referenced property is null for " + e.getName() + "." + p.getName());
+          log.error("Referenced property is null for {}.{}", e.getName(), p.getName());
         }
 
         final Entity parent = p.getReferencedProperty().getEntity();
         createChildProperty(parent, p);
       }
     } catch (Exception ex) {
-      ex.printStackTrace();
+      log.error("Could not create parent entity properties for entity {}", e, ex);
     }
+  }
+
+  /**
+   * Determines whether for a given property, it is a child that should have a property on its
+   * parent entity.
+   */
+  public boolean shouldGenerateChildPropertyInParent(Property p,
+      boolean generateAllChildProperties) {
+    return (p.isChildPropertyInParent() || generateAllChildProperties) && !p.isOneToMany()
+        && !p.isId() && !p.isAuditInfo() && p.getReferencedProperty() != null
+        && (!ENTITIES_WITHOUT_ALL_CHILD_PROPERTIES
+            .contains(p.getReferencedProperty().getEntity().getClassName()) || p.isParent())
+        && p.getSqlLogic() == null;
   }
 
   private void createChildProperty(Entity parentEntity, Property childProperty) {
@@ -842,27 +869,6 @@ public class ModelProvider implements OBSingleton {
     newProp.setOneToMany(true);
     newProp.setChild(childProperty.isParent());
     parentEntity.addProperty(newProp);
-
-    // If the Entity is ADImage, add its entity to entitiesWithImage
-    if (parentEntity.getName().equals("ADImage")) {
-      if (entitiesWithImage.containsKey(childProperty.getEntity())) {
-        entitiesWithImage.get(childProperty.getEntity()).add(childProperty.getName());
-      } else {
-        List<String> propertyList = new ArrayList<String>();
-        propertyList.add(childProperty.getName());
-        entitiesWithImage.put(childProperty.getEntity(), propertyList);
-      }
-    }
-    // If the Entity is ADFile, add its entity to entitiesWithFile
-    if (parentEntity.getName().equals("OBPRF_FILE")) {
-      if (entitiesWithFile.containsKey(childProperty.getEntity())) {
-        entitiesWithFile.get(childProperty.getEntity()).add(childProperty.getName());
-      } else {
-        List<String> propertyList = new ArrayList<String>();
-        propertyList.add(childProperty.getName());
-        entitiesWithFile.put(childProperty.getEntity(), propertyList);
-      }
-    }
   }
 
   /**

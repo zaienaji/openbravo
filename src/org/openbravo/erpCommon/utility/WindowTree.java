@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2001-2017 Openbravo SLU 
+ * All portions are Copyright (C) 2001-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -49,9 +49,6 @@ import org.openbravo.model.ad.ui.Tab;
 import org.openbravo.model.ad.utility.Tree;
 import org.openbravo.utils.Replace;
 import org.openbravo.xmlEngine.XmlDocument;
-
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
 
 /**
  * @author Fernando Iriazabal
@@ -115,9 +112,7 @@ public class WindowTree extends HttpSecureAppServlet {
         error.setType("Error");
         error.setTitle("Error");
         error.setMessage(strResult);
-        XStream xs = new XStream(new JettisonMappedXmlDriver());
-        xs.alias("OBError", OBError.class);
-        strResult = xs.toXML(error);
+        strResult = error.toJSON().toString();
       }
 
       out.print(strResult);

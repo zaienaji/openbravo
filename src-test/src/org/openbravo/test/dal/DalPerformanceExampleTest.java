@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2012-2018 Openbravo SLU 
+ * All portions are Copyright (C) 2012-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -32,6 +32,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.openbravo.base.provider.OBProvider;
 import org.openbravo.dal.core.DalUtil;
+import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.dal.service.OBQuery;
@@ -250,13 +251,13 @@ public class DalPerformanceExampleTest extends OBBaseTest {
       int i = 0;
       // for joining referenced objects we can't use OBQuery, but have to
       // use a direct Hibernate query object
-      final String queryStr = "from BusinessPartner as bp left join bp.businessPartnerCategory where bp.organization.id "
-          + OBDal.getInstance().getReadableOrganizationsInClause();
+      final String queryStr = "from BusinessPartner as bp left join bp.businessPartnerCategory where bp.organization.id in :orgs";
 
       final Query<Object[]> qry = OBDal.getInstance()
           .getSession()
-          .createQuery(queryStr, Object[].class);
-      qry.setMaxResults(1000);
+          .createQuery(queryStr, Object[].class)
+          .setParameterList("orgs", OBContext.getOBContext().getReadableOrganizations())
+          .setMaxResults(1000);
       final ScrollableResults scroller = qry.scroll(ScrollMode.FORWARD_ONLY);
       while (scroller.next()) {
         final BusinessPartner bp = (BusinessPartner) scroller.get()[0];

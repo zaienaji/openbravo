@@ -11,7 +11,7 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU
- * All portions are Copyright (C) 2014-2016 Openbravo SLU
+ * All portions are Copyright (C) 2014-2019 Openbravo SLU
  * All Rights Reserved.
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 
@@ -323,6 +324,7 @@ public class AddPaymentActionHandler extends BaseProcessActionHandler {
       List<FIN_PaymentScheduleDetail> psds = getOrderedPaymentScheduleDetails(psdIds);
       BigDecimal outstandingAmount = BigDecimal.ZERO;
       BigDecimal remainingAmount = paidAmount;
+      boolean isFullPaydAndHasNegativeLines = fullPaydAndHasNegativeLines(psds, paidAmount);
       for (FIN_PaymentScheduleDetail psd : psds) {
         BigDecimal assignAmount = BigDecimal.ZERO;
 
@@ -344,14 +346,33 @@ public class AddPaymentActionHandler extends BaseProcessActionHandler {
             || (remainingAmount.signum() < 0
                 && remainingAmount.compareTo(outstandingAmount) <= 0)) {
           assignAmount = outstandingAmount;
-          remainingAmount = remainingAmount.subtract(outstandingAmount);
+          if (!isFullPaydAndHasNegativeLines) {
+            remainingAmount = remainingAmount.subtract(outstandingAmount);
+          }
         } else {
-          assignAmount = remainingAmount;
-          remainingAmount = BigDecimal.ZERO;
+          if (isFullPaydAndHasNegativeLines) {
+            assignAmount = outstandingAmount;
+          } else {
+            assignAmount = remainingAmount;
+            remainingAmount = BigDecimal.ZERO;
+          }
         }
         FIN_AddPayment.updatePaymentDetail(psd, payment, assignAmount, isWriteOff);
       }
     }
+  }
+
+  private boolean fullPaydAndHasNegativeLines(List<FIN_PaymentScheduleDetail> psds,
+      BigDecimal paidAmount) {
+    BigDecimal sumOfAmounts = psds.stream()
+        .map(FIN_PaymentScheduleDetail::getAmount)
+        .reduce(BigDecimal::add)
+        .get();
+
+    List<FIN_PaymentScheduleDetail> negativePsd = psds.stream()
+        .filter(t -> t.getAmount().signum() < 0)
+        .collect(Collectors.toList());
+    return sumOfAmounts.compareTo(paidAmount) == 0 && !negativePsd.isEmpty();
   }
 
   private void addCredit(FIN_Payment payment, JSONObject jsonparams, BigDecimal differenceAmount,

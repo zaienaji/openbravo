@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
   <database name="FUNCTION C_DEBT_PAYMENT_STATUS">
-    <function name="C_DEBT_PAYMENT_STATUS" type="CHAR">
+    <function name="C_DEBT_PAYMENT_STATUS" type="CHAR" volatility="IMMUTABLE">
       <parameter name="p_settlement_cancel_id" type="VARCHAR" mode="in">
         <default/>
       </parameter>
@@ -34,7 +34,7 @@
 * under the License.
 * The Original Code is Openbravo ERP.
 * The Initial Developer of the Original Code is Openbravo SLU
-* All portions are Copyright (C) 2001-2006 Openbravo SLU
+* All portions are Copyright (C) 2001-2019 Openbravo SLU
 * All Rights Reserved.
 * Contributor(s):  ______________________________________.
 ************************************************************************/

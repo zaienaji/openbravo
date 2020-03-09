@@ -19,15 +19,13 @@
 * under the License.
 * The Original Code is Openbravo ERP.
 * The Initial Developer of the Original Code is Openbravo SLU
-* All portions are Copyright (C) 2013-2015 Openbravo SLU
+* All portions are Copyright (C) 2013-2019 Openbravo SLU
 * All Rights Reserved.
 * Contributor(s):  ______________________________________.
 ************************************************************************/
   -- Logistice
   v_explode CHAR(1);
   v_invoiceID VARCHAR2(32);
-  v_CBPartner_ID VARCHAR2(32);
-  v_PriceList_ID VARCHAR2(32);
   v_PriceList_Version_ID VARCHAR2(32);
   v_Record_ID VARCHAR2(32);
   v_C_Tax_ID VARCHAR2(32) ;
@@ -44,7 +42,6 @@
   v_isdeferred_inv C_InvoiceLine.IsDeferred%TYPE;
   v_defplantype_inv C_InvoiceLine.DefPlanType%TYPE;
   v_periodnumber_inv C_InvoiceLine.periodnumber%TYPE;
-  v_DateInvoiced DATE;
   v_BaseAmount VARCHAR2(32);
   v_invoiceline_ID VARCHAR2(32);
 
@@ -75,9 +72,9 @@
     DBMS_OUTPUT.PUT_LINE('  Record_ID=' || v_Record_ID) ;
   BEGIN --BODY
      
-    SELECT C_INVOICE.c_invoice_id, C_INVOICE.c_bpartner_id, C_INVOICE.M_PriceList_ID, DATEORDERED, c_invoiceline.explode
-      INTO v_invoiceID, v_CBPartner_ID, v_PriceList_ID, v_DateInvoiced, v_explode
-    FROM C_INVOICE JOIN m_pricelist ON C_INVOICE.m_pricelist_id = m_pricelist.m_pricelist_id JOIN c_invoiceline ON C_INVOICE.c_invoice_id = c_invoiceline.c_invoice_id
+    SELECT C_INVOICE.c_invoice_id, c_invoiceline.explode
+      INTO v_invoiceID, v_explode
+    FROM C_INVOICE JOIN c_invoiceline ON C_INVOICE.c_invoice_id = c_invoiceline.c_invoice_id
     WHERE c_invoiceline.c_invoiceline_id=v_Record_ID  FOR UPDATE;
 
     IF (v_explode = 'Y') THEN
@@ -119,7 +116,7 @@
               AND p.IsBOM='Y'
               AND p.IsStocked='N'
             )
-       ORDER BY l.Line  FOR UPDATE
+       ORDER BY l.Line
        )
      LOOP
       v_Line:=CUR_BOM_Line.Line;
@@ -194,9 +191,9 @@
             now(), '0', now(), '0',
             CUR_BOM_Line.C_Invoice_ID, v_Line, CUR_BOM.Description, CUR_BOM.M_ProductBOM_ID,
             CUR_BOM.C_UOM_ID, CUR_BOM_Line.QtyInvoiced*CUR_BOM.BOMQty, M_BOM_PriceList(CUR_BOM.M_ProductBOM_ID, v_PriceList_Version_ID),
-            M_Get_Offers_Price(v_DateInvoiced, v_CBPartner_ID, CUR_BOM.M_ProductBOM_ID, M_BOM_PriceStd(CUR_BOM.M_ProductBOM_ID, v_PriceList_Version_ID),CUR_BOM_Line.QtyInvoiced*CUR_BOM.BOMQty, v_PriceList_ID),
+            M_BOM_PriceStd(CUR_BOM.M_ProductBOM_ID, v_PriceList_Version_ID),
             M_BOM_PriceLimit(CUR_BOM.M_ProductBOM_ID, v_PriceList_Version_ID),
-            M_Get_Offers_Price(v_DateInvoiced, v_CBPartner_ID, CUR_BOM.M_ProductBOM_ID, M_BOM_PriceStd(CUR_BOM.M_ProductBOM_ID, v_PriceList_Version_ID),CUR_BOM_Line.QtyInvoiced*CUR_BOM.BOMQty, v_PriceList_ID) * CUR_BOM_Line.QtyInvoiced*CUR_BOM.BOMQty, CUR_BOM_Line.C_Charge_ID, CUR_BOM_Line.ChargeAmt,
+            M_BOM_PriceStd(CUR_BOM.M_ProductBOM_ID, v_PriceList_Version_ID) * CUR_BOM_Line.QtyInvoiced*CUR_BOM.BOMQty, CUR_BOM_Line.C_Charge_ID, CUR_BOM_Line.ChargeAmt,
             coalesce(v_C_Tax_ID,CUR_BOM_Line.c_tax_id), M_BOM_PriceStd(CUR_BOM.M_ProductBOM_ID, v_PriceList_Version_ID),
             v_isdeferred_inv, v_defplantype_inv, v_periodnumber_inv, v_period_inv,
             CUR_BOM_Line.c_bpartner_id, CUR_BOM_Line.c_project_id, CUR_BOM_Line.c_projectline_id, CUR_BOM_Line.a_asset_id,

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
   <database name="FUNCTION APRM_SEQNOINVPAIDSTATUS">
-    <function name="APRM_SEQNOINVPAIDSTATUS" type="VARCHAR">
+    <function name="APRM_SEQNOINVPAIDSTATUS" type="VARCHAR" volatility="STABLE">
       <parameter name="p_paymentmethod_id" type="VARCHAR" mode="in">
         <default/>
       </parameter>
@@ -22,7 +22,7 @@
 * under the License.
 * The Original Code is Openbravo ERP.
 * The Initial Developer of the Original Code is Openbravo SLU
-* All portions are Copyright (C) 2015-2018 Openbravo SLU
+* All portions are Copyright (C) 2015-2019 Openbravo SLU
 * All Rights Reserved.
 * Contributor(s):  ______________________________________.
 ************************************************************************/

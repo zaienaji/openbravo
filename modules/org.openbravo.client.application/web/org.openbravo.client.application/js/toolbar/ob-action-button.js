@@ -253,7 +253,7 @@ isc.OBToolbarActionButton.addProperties({
 
     if (newWindow) {
       // Split path into protocol, server, port part and the rest (pathname, query, etc)
-      parsePathPart = /^((?:[A-Za-z]+:)?\/\/[^\/]+)?(\/.*)$/;
+      parsePathPart = /^((?:[A-Za-z]+:)?\/\/[^/]+)?(\/.*)$/;
       parts = parsePathPart.exec(newWindow);
       if (parts && parts[2]) {
         newWindow = parts[2];

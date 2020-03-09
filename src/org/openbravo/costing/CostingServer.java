@@ -11,7 +11,7 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU
- * All portions are Copyright (C) 2012-2018 Openbravo SLU
+ * All portions are Copyright (C) 2012-2019 Openbravo SLU
  * All Rights Reserved.
  * Contributor(s):  ______________________________________.
  *************************************************************************
@@ -24,6 +24,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Tuple;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.logging.log4j.LogManager;
@@ -32,6 +34,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
+import org.hibernate.query.Query;
 import org.openbravo.advpaymentmngt.utility.FIN_Utility;
 import org.openbravo.base.exception.OBException;
 import org.openbravo.base.provider.OBProvider;
@@ -367,9 +370,45 @@ public class CostingServer {
       }
     }
 
+    if (trxType == TrxType.ReceiptVoid || trxType == TrxType.ShipmentVoid) {
+      createCostAdjustmentForVoidedReceiptOrShipment();
+    }
     // update trxCost after cost adjustments
     transaction = OBDal.getInstance().get(MaterialTransaction.class, transaction.getId());
     trxCost = CostAdjustmentUtils.getTrxCost(transaction, false, getCostCurrency());
+  }
+
+  private void createCostAdjustmentForVoidedReceiptOrShipment() {
+    MaterialTransaction origInOutLineTrx = transaction.getGoodsShipmentLine()
+        .getCanceledInoutLine()
+        .getMaterialMgmtMaterialTransactionList()
+        .get(0);
+    boolean isCostPermanent = transaction.isCostPermanent();
+    transaction.setCostPermanent(false);
+    try (ScrollableResults scroll = getCostAdjustmentLines(origInOutLineTrx)) {
+      while (scroll.next()) {
+        Tuple result = (Tuple) scroll.get()[0];
+        BigDecimal cost = (BigDecimal) result.get("cost");
+        String sourceProcess = (String) result.get("sourceProcess");
+        createAdjustment(sourceProcess, cost);
+      }
+    }
+    OBDal.getInstance().refresh(transaction);
+    transaction.setCostPermanent(isCostPermanent);
+    OBDal.getInstance().flush();
+  }
+
+  private ScrollableResults getCostAdjustmentLines(final MaterialTransaction origInOutLineTrx) {
+
+    final String hqlQuery = "select tc.cost as cost, ca.sourceProcess as sourceProcess "
+        + "from TransactionCost tc join tc.costAdjustmentLine tal " + "join tal.costAdjustment ca "
+        + "where tc.inventoryTransaction = :transactionId";
+
+    final Query<Tuple> query = OBDal.getInstance().getSession().createQuery(hqlQuery, Tuple.class);
+    query.setParameter("transactionId", origInOutLineTrx);
+    query.setFetchSize(1000);
+
+    return query.scroll(ScrollMode.FORWARD_ONLY);
   }
 
   private boolean createAdjustment(String type, BigDecimal amount) {

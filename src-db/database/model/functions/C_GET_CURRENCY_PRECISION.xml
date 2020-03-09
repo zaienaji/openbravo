@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
   <database name="FUNCTION C_GET_CURRENCY_PRECISION">
-    <function name="C_GET_CURRENCY_PRECISION" type="NUMERIC">
+    <function name="C_GET_CURRENCY_PRECISION" type="NUMERIC" volatility="STABLE">
       <parameter name="p_curto_id" type="VARCHAR" mode="in">
         <default/>
       </parameter>
@@ -19,7 +19,7 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU
- * All portions are Copyright (C) 2010-2018 Openbravo SLU
+ * All portions are Copyright (C) 2010-2019 Openbravo SLU
  * All Rights Reserved.
 *************************************************************************
 ****

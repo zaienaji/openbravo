@@ -19,15 +19,13 @@
 * under the License.
 * The Original Code is Openbravo ERP.
 * The Initial Developer of the Original Code is Openbravo SLU
-* All portions are Copyright (C) 2013-2018 Openbravo SLU
+* All portions are Copyright (C) 2013-2019 Openbravo SLU
 * All Rights Reserved.
 * Contributor(s):  ______________________________________.
 ************************************************************************/
   -- Logistice
   v_explode CHAR(1);
   v_orderID VARCHAR2(32);
-  v_CBPartner_ID VARCHAR2(32);
-  v_PriceList_ID VARCHAR2(32);
   v_PriceList_Version_ID VARCHAR2(32);
   v_Record_ID VARCHAR2(32);
   v_C_Tax_ID VARCHAR2(32) ;
@@ -78,9 +76,9 @@
     DBMS_OUTPUT.PUT_LINE('  Record_ID=' || v_Record_ID) ;
   BEGIN --BODY
      
-    SELECT C_ORDER.c_order_id, C_ORDER.c_bpartner_id, c_order.M_PriceList_ID, c_orderline.explode
-      INTO v_orderID, v_CBPartner_ID, v_PriceList_ID, v_explode
-    FROM C_ORDER JOIN m_pricelist ON c_order.m_pricelist_id = m_pricelist.m_pricelist_id JOIN c_orderline ON c_order.c_order_id = c_orderline.c_order_id
+    SELECT C_ORDER.c_order_id, c_orderline.explode
+      INTO v_orderID, v_explode
+    FROM C_ORDER JOIN c_orderline ON c_order.c_order_id = c_orderline.c_order_id
     WHERE c_orderline.c_orderline_id=v_Record_ID  FOR UPDATE;
 
     IF (v_explode = 'Y') THEN
@@ -133,7 +131,7 @@
               AND p.IsBOM='Y'
               AND p.IsStocked='N' 
             )
-       ORDER BY l.Line  FOR UPDATE
+       ORDER BY l.Line
        )
     LOOP
       v_Line:=CUR_BOM_Line.Line;
@@ -155,8 +153,8 @@
         C_Currency_ID = CUR_BOM_Line.C_Currency_ID;
 
         IF(v_IsTaxIncluded='Y') THEN
-					v_gross_unit_price:=M_Get_Offers_Price(CUR_BOM_Line.DateOrdered, v_CBPartner_ID, CUR_BOM.M_ProductBOM_ID, M_BOM_PriceStd(CUR_BOM.M_ProductBOM_ID, v_PriceList_Version_ID), CUR_BOM_Line.QtyInvoiced*CUR_BOM.BOMQty, v_PriceList_ID);
-					v_gross_price_list:=M_Get_Offers_Price(CUR_BOM_Line.DateOrdered, v_CBPartner_ID, CUR_BOM.M_ProductBOM_ID, M_BOM_PriceList(CUR_BOM.M_ProductBOM_ID, v_PriceList_Version_ID), CUR_BOM_Line.QtyInvoiced*CUR_BOM.BOMQty, v_PriceList_ID);
+					v_gross_unit_price:=M_BOM_PriceStd(CUR_BOM.M_ProductBOM_ID, v_PriceList_Version_ID);
+					v_gross_price_list:=M_BOM_PriceList(CUR_BOM.M_ProductBOM_ID, v_PriceList_Version_ID);
 					v_line_gross_amount:=ROUND(CUR_BOM_Line.QtyOrdered*CUR_BOM.BOMQty*v_gross_unit_price, v_Precision);
 					v_price_actual:=0;
 					v_line_net_amt:=0;
@@ -164,7 +162,7 @@
 					v_gross_unit_price:=0;
 					v_line_gross_amount:=0;
 					v_gross_price_list:=0;
-					v_price_actual:=M_Get_Offers_Price(CUR_BOM_Line.DateOrdered, v_CBPartner_ID, CUR_BOM.M_ProductBOM_ID, M_BOM_PriceStd(CUR_BOM.M_ProductBOM_ID, v_PriceList_Version_ID), CUR_BOM_Line.QtyInvoiced*CUR_BOM.BOMQty, v_PriceList_ID);
+					v_price_actual:=M_BOM_PriceStd(CUR_BOM.M_ProductBOM_ID, v_PriceList_Version_ID);
 					v_line_net_amt:=ROUND(CUR_BOM_Line.QtyOrdered*CUR_BOM.BOMQty*v_gross_unit_price, v_Precision);
 				END IF;				
     

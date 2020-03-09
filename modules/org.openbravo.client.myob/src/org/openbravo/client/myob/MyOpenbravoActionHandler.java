@@ -11,7 +11,7 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU
- * All portions are Copyright (C) 2010-2017 Openbravo SLU
+ * All portions are Copyright (C) 2010-2019 Openbravo SLU
  * All Rights Reserved.
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -317,7 +317,8 @@ public class MyOpenbravoActionHandler extends BaseActionHandler implements Porta
         } else {
           // Remove all instances of the widget instance that is to be removed
           OBQuery<WidgetInstance> widgetInstanceQuery = OBDal.getInstance()
-              .createQuery(WidgetInstance.class, "copiedFrom='" + widgetInstance.getId() + "'");
+              .createQuery(WidgetInstance.class, "copiedFrom.id = :parent");
+          widgetInstanceQuery.setNamedParameter("parent", widgetInstance.getId());
           widgetInstanceQuery.setFilterOnActive(false);
           for (WidgetInstance copiedWidgetInstance : widgetInstanceQuery.list()) {
             OBDal.getInstance().remove(copiedWidgetInstance);
