@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+  <database name="FUNCTION OEZ_ORDER_POST">
+    <function name="OEZ_ORDER_POST" type="NULL">
+      <parameter name="p_pinstance_id" type="VARCHAR" mode="in">
+        <default/>
+      </parameter>
+      <body><![CDATA[BEGIN OEZ_ORDER_POST1(p_PInstance_ID, NULL) ;
+END OEZ_ORDER_POST
+]]></body>
+    </function>
+  </database>

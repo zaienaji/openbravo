@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+  <database name="FUNCTION OEZ_INVOICE_POST0">
+    <function name="OEZ_INVOICE_POST0" type="NULL">
+      <parameter name="p_pinstance_id" type="VARCHAR" mode="in">
+        <default/>
+      </parameter>
+      <body><![CDATA[BEGIN OEZ_INVOICE_POST(p_PInstance_ID, NULL);
+END OEZ_INVOICE_POST0
+]]></body>
+    </function>
+  </database>

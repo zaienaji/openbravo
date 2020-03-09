@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+  <database name="MODIFIED TABLE AD_SEQUENCE">
+    <table name="AD_SEQUENCE" primaryKey="AD_SEQUENCE_KEY">
+      <column name="EM_OEZ_CURRENTYEAR" primaryKey="false" required="false" type="VARCHAR" size="32" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <column name="EM_OEZ_RESETDOCSEQUENCE" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false">
+        <default><![CDATA[N]]></default>
+        <onCreateDefault/>
+      </column>
+      <column name="EM_OEZ_DOCSEQ" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false">
+        <default><![CDATA[N]]></default>
+        <onCreateDefault/>
+      </column>
+      <column name="EM_OEZ_RESETTYPE" primaryKey="false" required="false" type="VARCHAR" size="60" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <column name="EM_OEZ_GENERATE_MONTH" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false">
+        <default><![CDATA[N]]></default>
+        <onCreateDefault/>
+      </column>
+      <foreign-key foreignTable="C_YEAR" name="EM_OEZ_SEQUENCE_YEAR">
+        <reference local="EM_OEZ_CURRENTYEAR" foreign="C_YEAR_ID"/>
+      </foreign-key>
+    </table>
+  </database>

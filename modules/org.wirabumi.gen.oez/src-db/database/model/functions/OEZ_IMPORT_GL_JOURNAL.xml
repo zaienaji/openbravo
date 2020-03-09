@@ -1,0 +1,291 @@
+<?xml version="1.0"?>
+  <database name="FUNCTION OEZ_IMPORT_GL_JOURNAL">
+    <function name="OEZ_IMPORT_GL_JOURNAL" type="NULL">
+      <parameter name="p_pinstance_id" type="VARCHAR" mode="in">
+        <default/>
+      </parameter>
+      <body><![CDATA[v_ResultStr VARCHAR2(2000):='';
+  v_Message VARCHAR2(2000):='';
+  v_Result NUMBER:= 1; -- 0=failure
+  v_Record_ID VARCHAR2(32);
+  v_User_ID VARCHAR2(32);
+
+  --Imp GL Journal Parameter
+  v_tmpAD_OrgDoc_ID VARCHAR(32);
+  v_DocNoGLJournalBatch VARCHAR(60);
+  v_DocNoGLJournal VARCHAR(60);
+  v_UUIDBatch VARCHAR(32);
+  v_UUIDHeadGLJ VARCHAR(32);
+  v_UUIDLineGLJ VARCHAR(32);
+  v_DocTypeID VARCHAR(32);
+  v_PeriodID VARCHAR(32);
+  iGLLine INT;
+  v_debitAMT NUMBER;
+  v_creditAMT NUMBER;
+  v_GLLinesAcct VARCHAR(32);   
+  v_CurrAsset_ID VARCHAR(32);   
+  v_CurrBase_ID VARCHAR(32);
+  v_convRate NUMBER;
+  v_MultiplyRate NUMBER:= 0;
+  TYPE RECORD IS REF CURSOR;
+    Cur_Parameter RECORD;
+    Cur_GLJournal RECORD;
+  BEGIN    
+    --  Update AD_PInstance
+    DBMS_OUTPUT.PUT_LINE('Updating PInstance - Processing ' || p_PInstance_ID) ;
+    v_ResultStr:='PInstanceNotFound';
+    AD_UPDATE_PINSTANCE(p_PInstance_ID, NULL, 'Y', NULL, NULL) ;
+  BEGIN --BODY    
+    -- Get PARAMETERS
+    v_ResultStr:='ReadingParameters';
+    FOR Cur_Parameter IN
+      (SELECT i.Record_ID, i.AD_User_ID, i.AD_Client_ID, i.AD_Org_ID, p.ParameterName,
+        p.P_String, p.P_Number, p.P_Date, p.P_Date_To
+      FROM AD_PINSTANCE i
+      LEFT JOIN AD_PINSTANCE_PARA p ON i.AD_PInstance_ID=p.AD_PInstance_ID
+      WHERE i.AD_PInstance_ID=p_PInstance_ID
+      ORDER BY p.SeqNo
+      )
+    LOOP
+      v_Record_ID:= Cur_Parameter.Record_ID; --save the asset primary key
+      v_User_ID:= Cur_Parameter.AD_User_ID;
+      IF (Cur_Parameter.ParameterName = 'ad_org_id') THEN
+        v_tmpAD_OrgDoc_ID:= Cur_Parameter.P_String;
+      END IF;
+      /*
+      IF (Cur_Parameter.ParameterName = 'c_project_id') THEN
+        v_Project_ID:= Cur_Parameter.P_String;
+      END IF;
+      */
+    END LOOP; -- Get Parameter   
+       
+    DBMS_OUTPUT.PUT_LINE( 'Record_ID = ' || v_Record_ID);
+    
+    --Upating Import GL Journal
+    FOR Cur_GLJournal IN
+      (
+        SELECT i_gljournal_id, ad_client_id, ad_orgdoc_id, BatchDescription, Description, BatchDocumentNo,
+          AcctSchemaName, DocTypeName, CategoryName, DateAcct, ISO_Code, ProductValue, AccountValue, BPartnerValue,
+          JournalDocumentNo, ProjectValue,
+          (SELECT c_currency_id FROM c_currency WHERE iso_code=i_gljournal.iso_code LIMIT 1) AS c_currency_id,
+          (SELECT m_product_id FROM m_product WHERE Value=i_gljournal.ProductValue LIMIT 1) AS m_product_id
+        FROM i_gljournal
+        WHERE ad_client_id=(SELECT ad_client_id FROM i_gljournal WHERE i_gljournal_id=v_Record_ID)
+          AND i_isimported='N'
+        ORDER BY BatchDocumentNo, JournalDocumentNo ASC
+      )
+    LOOP
+      --Update fix record each row
+      UPDATE i_gljournal SET
+        ad_orgdoc_id=v_tmpAD_OrgDoc_ID,
+        C_AcctSchema_ID=(SELECT C_AcctSchema_ID FROM C_AcctSchema WHERE upper(name)=upper(Cur_GLJournal.AcctSchemaName)),
+        C_DocType_ID=(SELECT C_DocType_ID FROM C_DocType WHERE upper(name)=upper(Cur_GLJournal.DocTypeName)
+          AND AD_Client_ID=Cur_GLJournal.ad_client_id LIMIT 1),
+        GL_Category_ID=(SELECT GL_Category_ID FROM GL_Category WHERE upper(name)=upper(Cur_GLJournal.CategoryName)
+          AND AD_Client_ID=Cur_GLJournal.ad_client_id LIMIT 1),
+        C_Period_ID=(SELECT C_Period_ID FROM C_Period WHERE Cur_GLJournal.DateAcct>=StartDate
+          AND Cur_GLJournal.DateAcct<=EndDate AND AD_Client_ID=Cur_GLJournal.ad_client_id LIMIT 1),
+        C_Currency_ID=(SELECT C_Currency_ID FROM C_Currency WHERE upper(ISO_CODE)=upper(Cur_GLJournal.ISO_Code)),
+        C_UOM_ID=(SELECT C_UOM_ID FROM M_Product WHERE upper(value)=upper(Cur_GLJournal.ProductValue)),
+        C_ValidCombination_ID=(SELECT vc.C_ValidCombination_ID FROM C_ValidCombination vc
+          LEFT JOIN C_ElementValue ev ON vc.account_id=ev.C_ElementValue_ID
+        WHERE upper(value)=upper(Cur_GLJournal.AccountValue) LIMIT 1),
+        Account_ID=(SELECT C_ElementValue_ID FROM C_ElementValue
+        WHERE upper(value)=upper(Cur_GLJournal.AccountValue) LIMIT 1),
+        C_BPartner_ID=(SELECT C_BPartner_ID FROM C_BPartner WHERE upper(value)=upper(Cur_GLJournal.BPartnerValue)),
+        M_Product_ID=(SELECT M_Product_ID FROM M_Product WHERE upper(value)=upper(Cur_GLJournal.ProductValue)),
+        C_Project_ID=(SELECT C_Project_ID FROM C_Project
+        WHERE upper(trim(value))=upper(trim(Cur_GLJournal.ProjectValue)) LIMIT 1),
+        C_Campaign_ID=(SELECT C_Campaign_ID FROM C_Project
+        WHERE upper(trim(value))=upper(trim(Cur_GLJournal.ProjectValue)) LIMIT 1),
+        AD_OrgTrx_ID=Cur_GLJournal.ad_orgdoc_id
+      WHERE i_gljournal_id=Cur_GLJournal.i_gljournal_id;
+    END LOOP;
+
+    --Generated GL Journal
+    FOR Cur_GLJournal IN
+      (
+        SELECT i_gljournal_id, ad_client_id, ad_orgdoc_id, BatchDescription, Description, BatchDocumentNo,
+          AcctSchemaName, DocTypeName, CategoryName, DateAcct, ISO_Code, ProductValue, AccountValue, BPartnerValue,
+          JournalDocumentNo, CurrencyRate::NUMERIC, GL_Category_ID, C_AcctSchema_ID, C_DocType_ID, GL_Category_ID,
+          C_Period_ID, Line, C_UOM_ID, Qty, C_ValidCombination_ID, AmtSourceDr, AmtSourceCr, AmtAcctDr, AmtAcctCr, C_BPartner_ID,
+          C_Campaign_ID, C_Activity_ID, C_SalesRegion_ID, C_Project_ID,
+          (SELECT c_currency_id FROM c_currency WHERE iso_code=i_gljournal.iso_code LIMIT 1) AS c_currency_id,
+          (SELECT m_product_id FROM m_product WHERE Value=i_gljournal.ProductValue LIMIT 1) AS m_product_id
+        FROM i_gljournal
+        WHERE ad_client_id=(SELECT ad_client_id FROM i_gljournal WHERE i_gljournal_id=v_Record_ID)
+          AND i_isimported='N'
+        ORDER BY BatchDocumentNo, JournalDocumentNo ASC
+      )
+    LOOP        
+      -----------------------------------------------------------------------
+      --Get currency on header (Imp GL Journal) and base currency on client--
+      -----------------------------------------------------------------------
+      SELECT Cur_GLJournal.c_currency_id INTO v_CurrAsset_ID;
+      SELECT c_currency_id INTO v_CurrBase_ID FROM ad_client WHERE ad_client_id=Cur_GLJournal.ad_client_id;
+
+      IF (v_CurrAsset_ID = v_CurrBase_ID) THEN
+        v_convRate:= Cur_GLJournal.CurrencyRate;
+      ELSE        
+        SELECT COALESCE((SELECT multiplyrate FROM c_conversion_rate WHERE c_currency_id = v_CurrAsset_ID
+        AND c_currency_id_to = v_CurrBase_ID AND (validfrom <= now())
+        AND (validto >= now() OR validto IS NULL)
+        ORDER BY validfrom DESC LIMIT 1), 0) INTO v_MultiplyRate;
+     
+        IF (v_MultiplyRate = 0) THEN
+          v_convRate:= Cur_GLJournal.CurrencyRate;
+        ELSE
+          v_convRate:= v_MultiplyRate;
+        END IF;
+      END IF;
+     
+      --Get next documentno
+      SELECT Cur_GLJournal.BatchDocumentNo INTO v_DocNoGLJournalBatch;
+
+      IF ((SELECT COALESCE(gl_journalbatch_id, 'NULL') FROM gl_journalbatch WHERE documentno=v_DocNoGLJournalBatch)<>'NULL') THEN
+        SELECT gl_journalbatch_id INTO v_UUIDBatch FROM gl_journalbatch WHERE documentno=v_DocNoGLJournalBatch;
+
+        UPDATE gl_journalbatch SET ad_client_id=Cur_GLJournal.ad_client_id, ad_org_id=v_tmpAD_OrgDoc_ID,
+          created=now(), createdby=v_User_ID, updated=now(), updatedby=v_User_ID, description=Cur_GLJournal.BatchDescription,
+          gl_category_id=Cur_GLJournal.GL_Category_ID, datedoc=now(), dateacct=Cur_GLJournal.DateAcct,
+          c_currency_id=Cur_GLJournal.c_currency_id
+        WHERE gl_journalbatch_id=v_UUIDBatch;
+      ELSE
+        SELECT get_uuid() INTO v_UUIDBatch;
+
+        --Create Batch
+        INSERT INTO gl_journalbatch
+          (
+            gl_journalbatch_id, ad_client_id, ad_org_id, isactive, created, createdby,
+            updated, updatedby, documentno, description, postingtype, gl_category_id,
+            datedoc, dateacct, c_period_id, c_currency_id, totaldr, totalcr, controlamt,
+            processing, processed, copyfrom, istemplate
+          )
+        VALUES
+          (
+            v_UUIDBatch, Cur_GLJournal.ad_client_id, v_tmpAD_OrgDoc_ID, 'Y', now(), v_User_ID,
+            now(), v_User_ID, v_DocNoGLJournalBatch, Cur_GLJournal.BatchDescription, 'A', Cur_GLJournal.GL_Category_ID,
+            now(), Cur_GLJournal.DateAcct, NULL, Cur_GLJournal.c_currency_id, 0, 0, 0,
+            'N', 'N', 'N', 'N'
+          );
+      END IF;
+
+      --Create Header
+      --Get next documentno
+      SELECT Cur_GLJournal.JournalDocumentNo INTO v_DocNoGLJournal;
+      
+      IF ((SELECT COALESCE(glj.gl_journal_id, 'NULL') FROM gl_journal glj WHERE gl_journalbatch_id=v_UUIDBatch
+        AND documentno=v_DocNoGLJournal)<>'NULL') THEN
+        SELECT COALESCE(gl_journal_id, 'NULL') INTO v_UUIDHeadGLJ FROM gl_journal WHERE gl_journalbatch_id=v_UUIDBatch
+        AND documentno=v_DocNoGLJournal;
+        
+        UPDATE gl_journal SET ad_client_id=Cur_GLJournal.ad_client_id, ad_org_id=v_tmpAD_OrgDoc_ID,
+          created=now(), createdby=v_User_ID, updated=now(), updatedby=v_User_ID,
+          c_acctschema_id=Cur_GLJournal.C_AcctSchema_ID, c_doctype_id=Cur_GLJournal.C_DocType_ID,
+          description=Cur_GLJournal.BatchDescription, gl_category_id=Cur_GLJournal.GL_Category_ID,
+          datedoc=now(), dateacct=Cur_GLJournal.DateAcct, c_period_id=Cur_GLJournal.C_Period_ID,
+          c_currency_id=Cur_GLJournal.c_currency_id, currencyrate=v_convRate
+        WHERE gl_journal_id=v_UUIDHeadGLJ;
+      ELSE
+        SELECT get_uuid() INTO v_UUIDHeadGLJ;
+  
+        --Create Header for GL Journal
+        INSERT INTO gl_journal
+          (
+            gl_journal_id, ad_client_id, ad_org_id, isactive, created, createdby,
+            updated, updatedby, user1_id, user2_id, c_campaign_id, c_project_id, 
+            c_acctschema_id,
+            c_doctype_id, documentno, docstatus, docaction,
+            isapproved, isprinted, description, postingtype, gl_category_id,
+            datedoc, dateacct, c_period_id, c_currency_id, currencyratetype,
+            currencyrate, gl_journalbatch_id, totaldr, totalcr, controlamt,
+            processing, processed, posted, isopening
+          )
+        VALUES
+          (
+            v_UUIDHeadGLJ, Cur_GLJournal.ad_client_id, v_tmpAD_OrgDoc_ID, 'Y', now(), v_User_ID,
+            now(), v_User_ID, NULL, NULL, NULL, NULL,
+            Cur_GLJournal.C_AcctSchema_ID,
+            Cur_GLJournal.C_DocType_ID, v_DocNoGLJournal, 'DR', 'CO',
+            'Y', 'N', Cur_GLJournal.BatchDescription, 'A', Cur_GLJournal.GL_Category_ID,
+            now(), Cur_GLJournal.DateAcct, Cur_GLJournal.C_Period_ID, Cur_GLJournal.c_currency_id, 'S',
+            v_convRate, v_UUIDBatch, 0, 0, 0,
+            'N', 'N', 'N', 'N'
+          );
+      END IF;
+
+      --Create Line
+      IF ((SELECT COALESCE(gl_journalline_id, 'NULL') FROM gl_journalline WHERE gl_journal_id=v_UUIDHeadGLJ
+        AND line=Cur_GLJournal.Line)<>'NULL') THEN
+        SELECT COALESCE(gl_journalline_id, 'NULL') INTO v_UUIDLineGLJ FROM gl_journalline WHERE gl_journal_id=v_UUIDHeadGLJ
+        AND line=Cur_GLJournal.Line;
+        
+        UPDATE gl_journalline SET ad_client_id=Cur_GLJournal.ad_client_id, ad_org_id=v_tmpAD_OrgDoc_ID,
+          created=now(), createdby=v_User_ID, updated=now(), updatedby=v_User_ID, line=Cur_GLJournal.Line,
+          description=Cur_GLJournal.Description, amtsourcedr=Cur_GLJournal.AmtSourceDr, amtsourcecr=Cur_GLJournal.AmtSourceCr,
+          c_currency_id=Cur_GLJournal.c_currency_id, dateacct=Cur_GLJournal.DateAcct, amtacctdr=Cur_GLJournal.AmtAcctDr,
+          amtacctcr=Cur_GLJournal.AmtAcctCr, c_uom_id=Cur_GLJournal.C_UOM_ID, qty=Cur_GLJournal.Qty,
+          c_validcombination_id=Cur_GLJournal.C_ValidCombination_ID, c_campaign_id=Cur_GLJournal.C_Campaign_ID,
+          c_project_id=Cur_GLJournal.C_Project_ID, c_activity_id=Cur_GLJournal.C_Activity_ID,
+          c_salesregion_id=Cur_GLJournal.C_SalesRegion_ID, m_product_id=Cur_GLJournal.m_product_id,
+          c_bpartner_id=Cur_GLJournal.C_BPartner_ID
+        WHERE gl_journalline_id=v_UUIDLineGLJ;
+      ELSE
+        SELECT get_uuid() INTO v_UUIDLineGLJ;
+
+        INSERT INTO gl_journalline
+          (
+            gl_journalline_id, ad_client_id, ad_org_id, isactive, created, createdby,
+            updated, updatedby, gl_journal_id, line, isgenerated, description, amtsourcedr,
+            amtsourcecr, c_currency_id, currencyratetype, currencyrate, dateacct, amtacctdr,
+            amtacctcr, c_uom_id, qty, c_validcombination_id, c_debt_payment_id, c_withholding_id,
+            c_tax_id, user1_id, user2_id, c_campaign_id, c_project_id, c_activity_id, c_salesregion_id,
+            m_product_id, c_bpartner_id, open_items, em_aprm_addpayment
+          )
+        VALUES
+          (
+            v_UUIDLineGLJ, Cur_GLJournal.ad_client_id, v_tmpAD_OrgDoc_ID, 'Y', now(), v_User_ID,
+            now(), v_User_ID, v_UUIDHeadGLJ, Cur_GLJournal.Line, 'Y', Cur_GLJournal.Description, Cur_GLJournal.AmtSourceDr,
+            Cur_GLJournal.AmtSourceCr, Cur_GLJournal.c_currency_id, 'S', 1, Cur_GLJournal.DateAcct, Cur_GLJournal.AmtAcctDr,
+            Cur_GLJournal.AmtAcctCr, Cur_GLJournal.C_UOM_ID, Cur_GLJournal.Qty, Cur_GLJournal.C_ValidCombination_ID, NULL, NULL,
+            NULL, NULL, NULL, Cur_GLJournal.C_Campaign_ID, Cur_GLJournal.C_Project_ID, Cur_GLJournal.C_Activity_ID,
+            Cur_GLJournal.C_SalesRegion_ID, Cur_GLJournal.m_product_id, Cur_GLJournal.C_BPartner_ID, 'N', 'Y'
+          );
+      END IF;
+
+      --Update linked gl_journal to record each row
+      UPDATE i_gljournal SET
+        GL_JournalBatch_ID=v_UUIDBatch, GL_Journal_ID=v_UUIDHeadGLJ, GL_JournalLine_ID=v_UUIDLineGLJ,
+        I_IsImported='Y'
+      WHERE i_gljournal_id=Cur_GLJournal.i_gljournal_id;
+    END LOOP;
+
+    --Sorting BatchDocumentNo generated
+    SELECT REGEXP_REPLACE(SUBSTRING(array_agg(ArrayBatch.BatchDocumentNo)::varchar, 2, (SELECT length(array_agg(ArrayBatch.BatchDocumentNo)::varchar)-2))
+      , ',', ', ', 'g') INTO v_DocNoGLJournalBatch
+    FROM (SELECT DISTINCT BatchDocumentNo FROM i_gljournal
+    WHERE ad_client_id=(SELECT ad_client_id FROM i_gljournal WHERE i_gljournal_id=v_Record_ID)
+      AND i_isimported='N'
+    ORDER BY BatchDocumentNo ASC) AS ArrayBatch;
+        
+    v_Result:= 1;
+    v_Message:= 'G/L Journal Document No. ' || v_DocNoGLJournalBatch || ' has been generated.';
+    
+    --<<FINISH_PROCESS>>
+    --Update AD_PInstance
+    DBMS_OUTPUT.PUT_LINE('Updating PInstance - Finished ' || v_Message) ;
+    AD_UPDATE_PINSTANCE(p_PInstance_ID, NULL, 'N', v_Result, v_Message) ;
+    RETURN;
+  END; --BODY
+  
+EXCEPTION
+WHEN OTHERS THEN
+  v_ResultStr:= '@ERROR=' || SQLERRM;
+  DBMS_OUTPUT.PUT_LINE(v_ResultStr) ;
+  ROLLBACK;
+  AD_UPDATE_PINSTANCE(p_PInstance_ID, NULL, 'N', 0, v_ResultStr) ;
+  RETURN;
+END OEZ_IMPORT_GL_JOURNAL
+]]></body>
+    </function>
+  </database>

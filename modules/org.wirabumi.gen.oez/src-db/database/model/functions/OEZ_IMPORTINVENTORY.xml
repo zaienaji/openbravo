@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+  <database name="FUNCTION OEZ_IMPORTINVENTORY">
+    <function name="OEZ_IMPORTINVENTORY" type="NULL">
+      <parameter name="p_pinstance_id" type="VARCHAR" mode="in">
+        <default/>
+      </parameter>
+      <body><![CDATA[--generate product value list that have suspect of duplicity
+  -- Logistice
+  v_ResultStr VARCHAR2(2000):='';
+  v_Message VARCHAR2(2000):='';
+  v_Result NUMBER:=1; -- 0=failure
+  v_count integer:=0;
+  v_Record_ID VARCHAR(32);
+  v_AD_User_ID VARCHAR(32);
+  v_AD_Client_ID VARCHAR(32);
+  v_AD_Org_ID VARCHAR(32);
+
+  v_inventory_id VARCHAR(32);
+  v_inventoryline_id VARCHAR(32);
+  v_qtybook NUMBER:=0;
+  v_line NUMBER:=0;
+  v_qtyonhand NUMBER:=0;
+  cur_inventory RECORD;
+  cur_inventoryline RECORD;
+
+  
+  --  Parameter
+  TYPE RECORD IS REF CURSOR;
+    Cur_Parameter RECORD;
+ 
+  BEGIN
+   DBMS_OUTPUT.PUT_LINE('Updating PInstance - Processing ' || p_PInstance_ID) ;
+    v_ResultStr:='PInstanceNotFound';
+    AD_UPDATE_PINSTANCE(p_PInstance_ID, NULL, 'Y', NULL, NULL) ;
+  BEGIN --BODY
+
+    -- Get Parameters
+    v_ResultStr:='ReadingParameters';
+    FOR Cur_Parameter IN
+      (SELECT i.Record_ID, i.AD_User_ID, p.ParameterName, p.P_String, p.P_Number, p.P_Date
+      FROM AD_PInstance i
+      LEFT JOIN AD_PInstance_Para p
+        ON i.AD_PInstance_ID=p.AD_PInstance_ID
+      WHERE i.AD_PInstance_ID=p_PInstance_ID
+      ORDER BY p.SeqNo
+      )
+    LOOP
+      v_Record_ID:=Cur_Parameter.Record_ID;
+      v_AD_User_ID:=Cur_Parameter.AD_User_ID;
+    END LOOP;
+
+    select ad_client_id, ad_org_id into v_ad_client_id, v_ad_org_id from oez_i_inventory
+      where oez_i_inventory_id=v_Record_ID;
+    -- Get Parameter
+
+    --update product
+    update oez_i_inventory
+     set m_product_id=(select m_product_id from m_product where value=oez_i_inventory.productvalue
+				and ad_client_id=v_ad_client_id)
+    where ad_client_id=v_ad_client_id;
+
+    --update storage bin
+    update oez_i_inventory
+     set m_locator_id=
+       (select m_locator_id from m_locator
+        where value=oez_i_inventory.storagebinvalue and ad_client_id=v_ad_client_id)
+    where ad_client_id=v_ad_client_id;
+
+    --loop for import inventory
+    for cur_inventory in (select distinct(select m_warehouse_id from m_locator where m_locator_id=oez_i_inventory.m_locator_id) as m_warehouse_id,
+				movementdate from oez_i_inventory where ad_client_id=v_ad_client_id
+				and m_locator_id is not null
+				and m_product_id is not null
+				and movementdate is not null
+				and movementqty is not null
+				and m_inventory_id is null
+				and m_inventoryline_id is null
+				and processed='N'
+				group by m_locator_id, movementdate)
+    loop --start loop for import inventory
+
+      --insert m_inventory
+      v_inventory_id:=get_uuid();
+      INSERT INTO m_inventory(
+            m_inventory_id, ad_client_id, ad_org_id, isactive, created, createdby, 
+            updated, updatedby, "name",
+            description, m_warehouse_id, movementdate, 
+            posted, processed, processing, updateqty, generatelist,
+            ad_orgtrx_id, c_project_id, c_campaign_id, c_activity_id, user1_id, 
+            user2_id)
+	    VALUES (v_inventory_id, v_ad_client_id, v_ad_org_id, 'Y', now(), v_ad_user_id, 
+		    now(), v_ad_user_id, 'Opening Balance as per date '||(cur_inventory.movementdate::date)::character varying,
+		    null, cur_inventory.m_warehouse_id, cur_inventory.movementdate, 
+		    'N', 'N', 'N', 'N', 'N', 
+		    null, null, null, null, null, 
+		    null);
+
+       --insert m_inventoryline
+       v_line:=0;
+       for cur_inventoryline in (select oez_i_inventory_id, m_locator_id, m_product_id, movementqty, productvalue from oez_i_inventory
+					where m_locator_id in
+						(select m_locator_id from m_locator
+						 where m_warehouse_id=cur_inventory.m_warehouse_id)
+					and movementdate=cur_inventory.movementdate)
+       loop --start loop insert inventory line
+         v_line:=v_line+10;
+         v_inventoryline_id:=get_uuid();
+         select qtyonhand into v_qtyonhand from m_storage_detail where m_locator_id=cur_inventoryline.m_locator_id
+		      and m_product_id=cur_inventoryline.m_product_id;
+	 if v_qtyonhand is null then v_qtyonhand:=0; end if;
+	 if cur_inventoryline.m_product_id is not null then
+		 if (cur_inventoryline.movementqty is null or cur_inventoryline.movementqty=0) then
+		  raise exception 'Record with product key % have no or zero movement quantity', cur_inventoryline.productvalue;
+		 end if;
+		 INSERT INTO m_inventoryline(
+		    m_inventoryline_id, ad_client_id, ad_org_id, isactive, created, 
+		    createdby, updated, updatedby, m_inventory_id, m_locator_id, 
+		    m_product_id, line, qtybook, qtycount, description, m_attributesetinstance_id, 
+		    m_product_uom_id, quantityorder, c_uom_id, quantityorderbook)
+		    VALUES (v_inventoryline_id, v_ad_client_id, v_ad_org_id, 'Y', now(), 
+			    v_ad_user_id, now(), v_ad_user_id, v_inventory_id, cur_inventoryline.m_locator_id, 
+			    cur_inventoryline.m_product_id, v_line, v_qtyonhand, coalesce(cur_inventoryline.movementqty,0), null, null, --sementara attibute set null
+			    null, null, (select c_uom_id from m_product where m_product_id=cur_inventoryline.m_product_id), null);
+
+		--update product price record
+		update oez_i_inventory
+		  set m_inventory_id=v_inventory_id,
+		  m_inventoryline_id=v_inventoryline_id,
+		  Processed='Y'
+		where oez_i_inventory_id=cur_inventoryline.oez_i_inventory_id;
+	end if;
+
+      end loop; --end loop insert inventory line
+
+      --post physical inventory
+      OEZ_INVENTORY_POST(v_inventory_id, v_AD_User_ID);
+
+    end loop; --end loop for import inventory
+    
+    
+
+    IF(p_PInstance_ID IS NOT NULL) THEN
+      DBMS_OUTPUT.PUT_LINE('Updating PInstance - Finished ' || v_Message) ;
+      AD_UPDATE_PINSTANCE(p_PInstance_ID, NULL, 'N', v_Result, v_Message) ;
+    ELSE
+      DBMS_OUTPUT.PUT_LINE('Finished ' || v_Message) ;
+    END IF;
+    RETURN;
+  END; --BODY
+EXCEPTION
+WHEN OTHERS THEN
+  v_ResultStr:= '@ERROR=' || SQLERRM;
+  DBMS_OUTPUT.PUT_LINE(v_ResultStr) ;
+  IF(p_PInstance_ID IS NOT NULL) THEN
+    AD_UPDATE_PINSTANCE(p_PInstance_ID, NULL, 'N', 0, v_ResultStr) ;
+  END IF;
+END OEZ_IMPORTINVENTORY
+]]></body>
+    </function>
+  </database>

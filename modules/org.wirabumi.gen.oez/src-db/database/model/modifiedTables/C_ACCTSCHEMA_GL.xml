@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+  <database name="MODIFIED TABLE C_ACCTSCHEMA_GL">
+    <table name="C_ACCTSCHEMA_GL" primaryKey="C_ACCTSCHEMA_GL_KEY">
+      <column name="EM_OEZ_REALIZED_AR_FOREX" primaryKey="false" required="false" type="VARCHAR" size="32" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <column name="EM_OEZ_UNREALIZEDGAINFOREX" primaryKey="false" required="false" type="VARCHAR" size="32" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <column name="EM_OEZ_REALIZED_AP_FOREX" primaryKey="false" required="false" type="VARCHAR" size="32" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <column name="EM_OEZ_UNREALIZEDLOSSFOREX" primaryKey="false" required="false" type="VARCHAR" size="32" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <column name="EM_OEZ_PURCASE_ACCT" primaryKey="false" required="false" type="VARCHAR" size="32" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <foreign-key foreignTable="C_VALIDCOMBINATION" name="EM_OEZ_ACCTSCHEMA_GL_PURCHASE">
+        <reference local="EM_OEZ_PURCASE_ACCT" foreign="C_VALIDCOMBINATION_ID"/>
+      </foreign-key>
+      <foreign-key foreignTable="C_VALIDCOMBINATION" name="EM_OEZ_ACTSCHEMA_APFOREX">
+        <reference local="EM_OEZ_REALIZED_AP_FOREX" foreign="C_VALIDCOMBINATION_ID"/>
+      </foreign-key>
+      <foreign-key foreignTable="C_VALIDCOMBINATION" name="EM_OEZ_ACTSCHEMA_ARFOREX">
+        <reference local="EM_OEZ_REALIZED_AR_FOREX" foreign="C_VALIDCOMBINATION_ID"/>
+      </foreign-key>
+      <foreign-key foreignTable="C_VALIDCOMBINATION" name="EM_OEZ_ACTSCHEMA_GAINFOREX">
+        <reference local="EM_OEZ_UNREALIZEDGAINFOREX" foreign="C_VALIDCOMBINATION_ID"/>
+      </foreign-key>
+      <foreign-key foreignTable="C_VALIDCOMBINATION" name="EM_OEZ_ACTSCHEMA_LOSSFOREX">
+        <reference local="EM_OEZ_UNREALIZEDLOSSFOREX" foreign="C_VALIDCOMBINATION_ID"/>
+      </foreign-key>
+    </table>
+  </database>

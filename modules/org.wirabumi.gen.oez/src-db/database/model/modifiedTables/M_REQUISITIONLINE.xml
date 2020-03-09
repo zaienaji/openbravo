@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+  <database name="MODIFIED TABLE M_REQUISITIONLINE">
+    <table name="M_REQUISITIONLINE" primaryKey="M_REQUISITIONLINE_KEY">
+      <column name="EM_OEZ_SALESORDERLINE_ID" primaryKey="false" required="false" type="VARCHAR" size="32" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <foreign-key foreignTable="C_ORDERLINE" name="EM_OEZ_REQUITIONLINE_SO">
+        <reference local="EM_OEZ_SALESORDERLINE_ID" foreign="C_ORDERLINE_ID"/>
+      </foreign-key>
+    </table>
+  </database>

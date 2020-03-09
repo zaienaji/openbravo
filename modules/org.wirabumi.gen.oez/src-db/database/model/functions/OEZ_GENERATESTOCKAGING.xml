@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+  <database name="FUNCTION OEZ_GENERATESTOCKAGING">
+    <function name="OEZ_GENERATESTOCKAGING" type="NUMERIC">
+      <body><![CDATA[v_Result NUMBER:=1; -- 0=failure
+v_ResultStr VARCHAR(2000);
+v_lastupdate timestamp without time zone;
+v_newlastupdate timestamp without time zone;
+v_qty NUMBER;
+v_firstqty NUMBER;
+v_stockaging_id varchar(32);
+cur_transaction record;
+cur_outgoing record;
+v_count NUMBER:=0;
+  
+  BEGIN
+    
+  BEGIN --BODY
+  --get last update
+  select max(lastupdate) into v_lastupdate from oez_stockaginglog;
+  if v_lastupdate is null then v_lastupdate:='0001-01-01'::date; end if;
+
+  --insert last update
+  v_newlastupdate:=now();
+  INSERT INTO oez_stockaginglog(
+            oez_stockaginglog_id, ad_client_id, ad_org_id, isactive, created, 
+            createdby, updated, updatedby, lastupdate)
+    VALUES (get_uuid(), '0', '0', 'Y', v_newlastupdate, 
+            '100', v_newlastupdate, '100', v_newlastupdate);
+
+  --loop untuk incoming transaction
+  for cur_transaction in (select t.ad_client_id, t.ad_org_id, t.m_product_id, l.m_warehouse_id, t.movementdate, sum(t.movementqty) as qty
+			  from m_transaction t
+			  inner join m_locator l on l.m_locator_id=t.m_locator_id
+			  where t.updated>=v_lastupdate
+			  and t.updated<v_newlastupdate
+			  and t.movementqty>0
+			  group by t.ad_client_id, t.ad_org_id, t.m_product_id, l.m_warehouse_id, t.movementdate)
+  loop --start loop untuk incoming transaction
+  --raise notice 'incoming >>> product: %, warehouse: %', cur_transaction.m_product_id, cur_transaction.m_warehouse_id;
+    INSERT INTO oez_stockaging(
+            oez_stockaging_id, ad_client_id, ad_org_id, isactive, created, 
+            createdby, updated, updatedby, movementdate, m_product_id, qty,
+            m_warehouse_id, age)
+    VALUES (get_uuid(), cur_transaction.ad_client_id, cur_transaction.ad_org_id, 'Y', now(), 
+            '100', now(), '100', cur_transaction.movementdate, cur_transaction.m_product_id, cur_transaction.qty,
+            cur_transaction.m_warehouse_id,(select v_newlastupdate::date-cur_transaction.movementdate::date));
+  end loop; --end loop untuk incoming transaction
+
+  --loop untuk outgoing transaction
+  for cur_outgoing in (select t.ad_client_id, t.ad_org_id, t.m_product_id, l.m_warehouse_id, t.movementdate, sum(t.movementqty) as qty
+			  from m_transaction t
+			  inner join m_locator l on l.m_locator_id=t.m_locator_id
+			  where t.updated>=v_lastupdate
+			  and t.updated<v_newlastupdate
+			  and t.movementqty<0
+			  group by t.ad_client_id, t.ad_org_id, t.m_product_id, l.m_warehouse_id, t.movementdate)
+  loop --start loop untuk outgoing transaction
+    v_qty=abs(cur_outgoing.qty); --di-absolut-kan sebab record dengan movementtype negatif, selalu memiliki movementqty yg negatif
+    --raise notice 'outgoing >>> product: %, warehouse: %', cur_outgoing.m_product_id, cur_outgoing.m_warehouse_id;
+    v_count:=0;
+    while v_qty>0 loop --start loop remove incoming qty
+      v_count:=v_count+1;
+      select qty, oez_stockaging_id into v_firstqty,v_stockaging_id from oez_stockaging
+      where ad_client_id=cur_outgoing.ad_client_id
+      and ad_org_id=cur_outgoing.ad_org_id
+      and m_product_id=cur_outgoing.m_product_id
+      and m_warehouse_id=cur_outgoing.m_warehouse_id
+      and qty>0
+      order by movementdate asc limit 1;
+      if v_stockaging_id is null then exit; end if;
+      if v_firstqty>=v_qty then
+        --raise notice 'loop ke: %, remove incoming (greater)', v_count;
+        v_firstqty:=v_firstqty-v_qty;
+        if v_firstqty<0 then raise notice 'loop ke: %, remove incoming (greater), qty: %, product: %, warehouse: %, v_firstqty: %',
+					   v_count, v_qty, cur_outgoing.m_product_id, cur_outgoing.m_warehouse_id, v_firstqty; end if;
+        update oez_stockaging set qty=v_firstqty
+        where oez_stockaging_id=v_stockaging_id;
+        exit;
+      else
+        v_qty:=v_qty-v_firstqty;
+        --raise notice 'loop ke: %, remove incoming (nested), qty: %, product: %, warehouse: %, v_firstqty: %', v_count, v_qty, cur_outgoing.m_product_id, cur_outgoing.m_warehouse_id, v_firstqty;
+        update oez_stockaging set qty=0
+        where oez_stockaging_id=v_stockaging_id;
+      end if;
+    end loop; --end loop remove incoming qty
+  end loop; --end loop untuk outgoing transaction
+
+  --remove stockaging where movementqty=0
+  delete from oez_stockaging where qty=0;
+  
+  RETURN v_Result;
+  END; --BODY
+EXCEPTION
+WHEN OTHERS THEN
+  v_ResultStr:= '@ERROR=' || SQLERRM;
+  DBMS_OUTPUT.PUT_LINE(v_ResultStr) ;
+  ROLLBACK;  
+  RETURN 0;
+END OEZ_GENERATESTOCKAGING
+]]></body>
+    </function>
+  </database>

@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8"?><ob:Openbravo xmlns:ob="http://www.openbravo.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <oez_documentroutingaction id="11BEDF49190B4ADCB89E478046C325D4" identifier="11BEDF49190B4ADCB89E478046C325D4">
+    <id>11BEDF49190B4ADCB89E478046C325D4</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T14:39:57.321Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T14:39:57.321Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="263" entity-name="ADTab" identifier="Header - Sales Invoice"/>
+    <window id="167" entity-name="ADWindow" identifier="Sales Invoice"/>
+    <docstatusTo>RE</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.porting.InvoiceActionHandler</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="1415B2FB977E4150B42DC53ADE4D060D" identifier="1415B2FB977E4150B42DC53ADE4D060D">
+    <id>1415B2FB977E4150B42DC53ADE4D060D</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T16:30:22.451Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T16:30:22.451Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="30576C6ABD12419F9D19D497216FC9B8" entity-name="ADTab" identifier="Header - Return Material Receipt"/>
+    <window id="123271B9AD60469BAE8A924841456B63" entity-name="ADWindow" identifier="Return Material Receipt"/>
+    <docstatusTo>VO</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.porting.InoutActionHandler</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="15AA4A5C87CD4A9698306E22776F5203" identifier="15AA4A5C87CD4A9698306E22776F5203">
+    <id>15AA4A5C87CD4A9698306E22776F5203</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T16:24:34.561Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T16:24:34.561Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="5A5CCFC8359B4D79BA705DC487FE8173" entity-name="ADTab" identifier="Header - Return to Vendor"/>
+    <window id="C50A8AEE6F044825B5EF54FAAE76826F" entity-name="ADWindow" identifier="Return to Vendor"/>
+    <docstatusTo>RE</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.porting.OrderActionHandler</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="16791616BF204F059EEB3C09D17CF8C7" identifier="16791616BF204F059EEB3C09D17CF8C7">
+    <id>16791616BF204F059EEB3C09D17CF8C7</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T16:28:58.619Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T16:28:58.619Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="257" entity-name="ADTab" identifier="Header - Goods Shipment"/>
+    <window id="169" entity-name="ADWindow" identifier="Goods Shipment"/>
+    <docstatusTo>VO</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.porting.InoutActionHandler</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="1CDDBD7106B4439FACF0D96A8FB9D79F" identifier="1CDDBD7106B4439FACF0D96A8FB9D79F">
+    <id>1CDDBD7106B4439FACF0D96A8FB9D79F</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T16:23:36.201Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T16:23:36.201Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="294" entity-name="ADTab" identifier="Header - Purchase Order"/>
+    <window id="181" entity-name="ADWindow" identifier="Purchase Order"/>
+    <docstatusTo>RE</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.porting.OrderActionHandler</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="1D77C5B897D34390BCA95ED0EE02CC6B" identifier="1D77C5B897D34390BCA95ED0EE02CC6B">
+    <id>1D77C5B897D34390BCA95ED0EE02CC6B</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T16:24:05.960Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T16:24:05.960Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="AF4090093CFF1431E040007F010048A5" entity-name="ADTab" identifier="Header - Return from Customer"/>
+    <window id="FF808081330213E60133021822E40007" entity-name="ADWindow" identifier="Return from Customer"/>
+    <docstatusTo>RE</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.porting.OrderActionHandler</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="1F9E1A3202624DDFB445A87FB78222BB" identifier="1F9E1A3202624DDFB445A87FB78222BB">
+    <id>1F9E1A3202624DDFB445A87FB78222BB</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T12:08:43.407Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T12:08:43.407Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="160" entity-name="ADTab" identifier="Header - G/L Journal"/>
+    <window id="132" entity-name="ADWindow" identifier="G/L Journal"/>
+    <docstatusTo>CO</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.porting.GLJournalActionHandler</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="21FFDEB418DF405EB511DD5870DC4A39" identifier="21FFDEB418DF405EB511DD5870DC4A39">
+    <id>21FFDEB418DF405EB511DD5870DC4A39</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T16:28:40.472Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T16:28:40.472Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="257" entity-name="ADTab" identifier="Header - Goods Shipment"/>
+    <window id="169" entity-name="ADWindow" identifier="Goods Shipment"/>
+    <docstatusTo>CO</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.porting.InoutActionHandler</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="2794FBB406D1487EBFD485A2852325A7" identifier="2794FBB406D1487EBFD485A2852325A7">
+    <id>2794FBB406D1487EBFD485A2852325A7</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T16:26:16.958Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T16:26:25.257Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="290" entity-name="ADTab" identifier="Header - Purchase Invoice"/>
+    <window id="183" entity-name="ADWindow" identifier="Purchase Invoice"/>
+    <docstatusTo>CO</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.porting.InvoiceActionHandler</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="2B0C15F4D68C436985CE15D10552B0F8" identifier="2B0C15F4D68C436985CE15D10552B0F8">
+    <id>2B0C15F4D68C436985CE15D10552B0F8</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T16:23:17.711Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T16:23:26.444Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="294" entity-name="ADTab" identifier="Header - Purchase Order"/>
+    <window id="181" entity-name="ADWindow" identifier="Purchase Order"/>
+    <docstatusTo>CO</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.porting.OrderActionHandler</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="2BB9A0B429934F41A8F1657F18A91607" identifier="2BB9A0B429934F41A8F1657F18A91607">
+    <id>2BB9A0B429934F41A8F1657F18A91607</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T16:38:10.938Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T16:38:10.938Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="180" entity-name="ADTab" identifier="Product - Product"/>
+    <window id="140" entity-name="ADWindow" identifier="Product"/>
+    <docstatusTo>CO</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.event.ActivateDocumentHandlerAction</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="374743DBB2AB42DBBED2857109FA4DA0" identifier="374743DBB2AB42DBBED2857109FA4DA0">
+    <id>374743DBB2AB42DBBED2857109FA4DA0</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T16:32:15.190Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T16:32:15.190Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="800249" entity-name="ADTab" identifier="Requisition - Requisition"/>
+    <window id="800092" entity-name="ADWindow" identifier="Requisition"/>
+    <docstatusTo>CO</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.porting.RequisitionActionHandler</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="3D9EF5548F0B40F89B123ED82A8BBC98" identifier="3D9EF5548F0B40F89B123ED82A8BBC98">
+    <id>3D9EF5548F0B40F89B123ED82A8BBC98</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T16:25:02.976Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T16:25:02.976Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="F87F1EB7EB404F1F916EBAFAD1A0A334" entity-name="ADTab" identifier="Header - Sales Quotation"/>
+    <window id="6CB5B67ED33F47DFA334079D3EA2340E" entity-name="ADWindow" identifier="Sales Quotation"/>
+    <docstatusTo>CO</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.porting.OrderActionHandler</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="440315A9C84C4A858F84EF6C07699183" identifier="440315A9C84C4A858F84EF6C07699183">
+    <id>440315A9C84C4A858F84EF6C07699183</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T12:08:56.974Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T12:09:03.765Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="5A6F0ED7230C462BA4010653BA3F816A" entity-name="ADTab" identifier="Header - Simple G/L Journal"/>
+    <window id="B917E8A7B0864ACEA9D941E3B7494E53" entity-name="ADWindow" identifier="Simple G/L Journal"/>
+    <docstatusTo>CO</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.porting.GLJournalActionHandler</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="445AC6ED07F246D0B077CFF4F91761C9" identifier="445AC6ED07F246D0B077CFF4F91761C9">
+    <id>445AC6ED07F246D0B077CFF4F91761C9</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T16:38:33.499Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T16:38:33.499Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="220" entity-name="ADTab" identifier="Business Partner - Business Partner"/>
+    <window id="123" entity-name="ADWindow" identifier="Business Partner"/>
+    <docstatusTo>CO</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.event.ActivateDocumentHandlerAction</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="53C2F3F2449342CCB980B68870027DBC" identifier="53C2F3F2449342CCB980B68870027DBC">
+    <id>53C2F3F2449342CCB980B68870027DBC</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T16:34:45.298Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T16:34:45.298Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="259" entity-name="ADTab" identifier="Header - Goods Movements"/>
+    <window id="170" entity-name="ADWindow" identifier="Goods Movements"/>
+    <docstatusTo>CO</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.porting.GoodsMovementActionHandler</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="64CA7456E65C43CC973C10B899A938D4" identifier="64CA7456E65C43CC973C10B899A938D4">
+    <id>64CA7456E65C43CC973C10B899A938D4</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T16:32:29.417Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T16:32:29.417Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="800249" entity-name="ADTab" identifier="Requisition - Requisition"/>
+    <window id="800092" entity-name="ADWindow" identifier="Requisition"/>
+    <docstatusTo>RE</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.porting.RequisitionActionHandler</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="67CEC4B66410405AA8E47B8B305FB2E8" identifier="67CEC4B66410405AA8E47B8B305FB2E8">
+    <id>67CEC4B66410405AA8E47B8B305FB2E8</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T16:23:50.706Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T16:23:50.706Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="AF4090093CFF1431E040007F010048A5" entity-name="ADTab" identifier="Header - Return from Customer"/>
+    <window id="FF808081330213E60133021822E40007" entity-name="ADWindow" identifier="Return from Customer"/>
+    <docstatusTo>CO</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.porting.OrderActionHandler</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="6DB6D5655D544703B29FA7042496E943" identifier="6DB6D5655D544703B29FA7042496E943">
+    <id>6DB6D5655D544703B29FA7042496E943</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T16:24:53.883Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T16:24:53.883Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="F87F1EB7EB404F1F916EBAFAD1A0A334" entity-name="ADTab" identifier="Header - Sales Quotation"/>
+    <window id="6CB5B67ED33F47DFA334079D3EA2340E" entity-name="ADWindow" identifier="Sales Quotation"/>
+    <docstatusTo>RE</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.porting.OrderActionHandler</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="7A4EBBF69C5F4426933906522D1BE5AB" identifier="7A4EBBF69C5F4426933906522D1BE5AB">
+    <id>7A4EBBF69C5F4426933906522D1BE5AB</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T13:23:47.613Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T13:23:47.613Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="186" entity-name="ADTab" identifier="Header - Sales Order"/>
+    <window id="143" entity-name="ADWindow" identifier="Sales Order"/>
+    <docstatusTo>CO</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.porting.OrderActionHandler</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="7A67715DA76740C2A56B17438AA67EA7" identifier="7A67715DA76740C2A56B17438AA67EA7">
+    <id>7A67715DA76740C2A56B17438AA67EA7</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T16:38:22.625Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T16:38:22.625Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="180" entity-name="ADTab" identifier="Product - Product"/>
+    <window id="140" entity-name="ADWindow" identifier="Product"/>
+    <docstatusTo>RE</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.event.ActivateDocumentHandlerAction</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="9814D821D5FF4AD98DBD1F25C519DB13" identifier="9814D821D5FF4AD98DBD1F25C519DB13">
+    <id>9814D821D5FF4AD98DBD1F25C519DB13</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T16:30:40.921Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T16:30:40.921Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="728DBD16A1F14A4D82335E37BA433E33" entity-name="ADTab" identifier="Header - Return to Vendor Shipment"/>
+    <window id="273673D2ED914C399A6C51DB758BE0F9" entity-name="ADWindow" identifier="Return to Vendor Shipment"/>
+    <docstatusTo>CO</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.porting.InoutActionHandler</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="9858F3DC7B224F3D9CA32DC042C4E86C" identifier="9858F3DC7B224F3D9CA32DC042C4E86C">
+    <id>9858F3DC7B224F3D9CA32DC042C4E86C</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T16:24:22.549Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T16:24:22.549Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="5A5CCFC8359B4D79BA705DC487FE8173" entity-name="ADTab" identifier="Header - Return to Vendor"/>
+    <window id="C50A8AEE6F044825B5EF54FAAE76826F" entity-name="ADWindow" identifier="Return to Vendor"/>
+    <docstatusTo>CO</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.porting.OrderActionHandler</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="9B7E46B8D17048C38EE4CE59DEBFB887" identifier="9B7E46B8D17048C38EE4CE59DEBFB887">
+    <id>9B7E46B8D17048C38EE4CE59DEBFB887</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T14:39:32.815Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T14:39:32.815Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="263" entity-name="ADTab" identifier="Header - Sales Invoice"/>
+    <window id="167" entity-name="ADWindow" identifier="Sales Invoice"/>
+    <docstatusTo>CO</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.porting.InvoiceActionHandler</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="9D63275F158A4982A011BEB58DF7B11F" identifier="9D63275F158A4982A011BEB58DF7B11F">
+    <id>9D63275F158A4982A011BEB58DF7B11F</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T16:26:36.807Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T16:26:36.807Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="290" entity-name="ADTab" identifier="Header - Purchase Invoice"/>
+    <window id="183" entity-name="ADWindow" identifier="Purchase Invoice"/>
+    <docstatusTo>RE</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.porting.InvoiceActionHandler</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="A5B937E26B144D4C98E72CE1A74B49FD" identifier="A5B937E26B144D4C98E72CE1A74B49FD">
+    <id>A5B937E26B144D4C98E72CE1A74B49FD</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T16:30:51.670Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T16:30:51.670Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="728DBD16A1F14A4D82335E37BA433E33" entity-name="ADTab" identifier="Header - Return to Vendor Shipment"/>
+    <window id="273673D2ED914C399A6C51DB758BE0F9" entity-name="ADWindow" identifier="Return to Vendor Shipment"/>
+    <docstatusTo>VO</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.porting.InoutActionHandler</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="AD25F478968F45C69ACCCB1993D6E5DE" identifier="AD25F478968F45C69ACCCB1993D6E5DE">
+    <id>AD25F478968F45C69ACCCB1993D6E5DE</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T16:38:48.333Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T16:38:48.333Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="220" entity-name="ADTab" identifier="Business Partner - Business Partner"/>
+    <window id="123" entity-name="ADWindow" identifier="Business Partner"/>
+    <docstatusTo>RE</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.event.ActivateDocumentHandlerAction</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="B94D6AD6C82A48F29C8214EBCA9273AA" identifier="B94D6AD6C82A48F29C8214EBCA9273AA">
+    <id>B94D6AD6C82A48F29C8214EBCA9273AA</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T12:36:41.383Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T12:36:41.383Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="160" entity-name="ADTab" identifier="Header - G/L Journal"/>
+    <window id="132" entity-name="ADWindow" identifier="G/L Journal"/>
+    <docstatusTo>RE</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.porting.GLJournalActionHandler</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="BA3B55EF429E40408E9FCA772115E311" identifier="BA3B55EF429E40408E9FCA772115E311">
+    <id>BA3B55EF429E40408E9FCA772115E311</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T16:29:07.86Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T16:29:07.86Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="296" entity-name="ADTab" identifier="Header - Goods Receipt"/>
+    <window id="184" entity-name="ADWindow" identifier="Goods Receipt"/>
+    <docstatusTo>CO</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.porting.InoutActionHandler</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="CF5341FABB3D407A9ECC178084B3F96A" identifier="CF5341FABB3D407A9ECC178084B3F96A">
+    <id>CF5341FABB3D407A9ECC178084B3F96A</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T12:36:14.991Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T12:36:21.857Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="5A6F0ED7230C462BA4010653BA3F816A" entity-name="ADTab" identifier="Header - Simple G/L Journal"/>
+    <window id="B917E8A7B0864ACEA9D941E3B7494E53" entity-name="ADWindow" identifier="Simple G/L Journal"/>
+    <docstatusTo>RE</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.porting.GLJournalActionHandler</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="DDA6AF036D2145C582D0EAE59A2DCC6E" identifier="DDA6AF036D2145C582D0EAE59A2DCC6E">
+    <id>DDA6AF036D2145C582D0EAE59A2DCC6E</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T13:23:58.431Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T13:23:58.431Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="186" entity-name="ADTab" identifier="Header - Sales Order"/>
+    <window id="143" entity-name="ADWindow" identifier="Sales Order"/>
+    <docstatusTo>RE</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.porting.OrderActionHandler</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="E951C1C5C6744B6B85360B01340DCF94" identifier="E951C1C5C6744B6B85360B01340DCF94">
+    <id>E951C1C5C6744B6B85360B01340DCF94</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T16:30:09.463Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T16:30:09.463Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="30576C6ABD12419F9D19D497216FC9B8" entity-name="ADTab" identifier="Header - Return Material Receipt"/>
+    <window id="123271B9AD60469BAE8A924841456B63" entity-name="ADWindow" identifier="Return Material Receipt"/>
+    <docstatusTo>CO</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.porting.InoutActionHandler</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="EAD04E49B0E74729973999BF6B04A358" identifier="EAD04E49B0E74729973999BF6B04A358">
+    <id>EAD04E49B0E74729973999BF6B04A358</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T16:33:07.393Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T16:34:15.404Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="319" entity-name="ADTab" identifier="BOM Production - Bill of Materials Production"/>
+    <window id="191" entity-name="ADWindow" identifier="Bill of Materials Production"/>
+    <docstatusTo>CO</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.porting.ProductionActionHandler</navigationBarClassname>
+  </oez_documentroutingaction>
+  <oez_documentroutingaction id="FDB5F1C7408A442CB40B49108891DB1B" identifier="FDB5F1C7408A442CB40B49108891DB1B">
+    <id>FDB5F1C7408A442CB40B49108891DB1B</id>
+    <active>true</active>
+    <creationDate transient="true">2015-11-11T16:29:28.2Z</creationDate>
+    <createdBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <updated transient="true">2015-11-11T16:29:28.2Z</updated>
+    <updatedBy transient="true" id="AB10E00B167844159CD56C48C861C43D" entity-name="ADUser" identifier="Zaien Aji Trahutomo"/>
+    <description xsi:nil="true"/>
+    <tab id="296" entity-name="ADTab" identifier="Header - Goods Receipt"/>
+    <window id="184" entity-name="ADWindow" identifier="Goods Receipt"/>
+    <docstatusTo>VO</docstatusTo>
+    <navigationBarClassname>org.wirabumi.gen.oez.porting.InoutActionHandler</navigationBarClassname>
+  </oez_documentroutingaction>
+</ob:Openbravo>

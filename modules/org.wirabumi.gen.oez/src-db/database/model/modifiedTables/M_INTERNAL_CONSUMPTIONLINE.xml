@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+  <database name="MODIFIED TABLE M_INTERNAL_CONSUMPTIONLINE">
+    <table name="M_INTERNAL_CONSUMPTIONLINE" primaryKey="M_INTERNAL_CONSUMPTIONLINE_KEY">
+      <column name="EM_OEZ_REQUISITIONLINE_ID" primaryKey="false" required="false" type="VARCHAR" size="32" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <foreign-key foreignTable="M_REQUISITIONLINE" name="EM_OEZ_IC_LINE_REQUISITION">
+        <reference local="EM_OEZ_REQUISITIONLINE_ID" foreign="M_REQUISITIONLINE_ID"/>
+      </foreign-key>
+    </table>
+  </database>

@@ -1,0 +1,305 @@
+<?xml version="1.0"?>
+  <database name="FUNCTION OEZ_IMP_M_INOUT">
+    <function name="OEZ_IMP_M_INOUT" type="NULL">
+      <parameter name="p_pinstance_id" type="VARCHAR" mode="in">
+        <default/>
+      </parameter>
+      <body><![CDATA[v_ResultStr VARCHAR2(2000):='';
+  v_Message VARCHAR2(2000):='';
+  v_Result NUMBER:= 1; -- 0=failure
+  v_Record_ID VARCHAR2(32);
+  v_User_ID VARCHAR2(32);
+
+  --Imp GL Journal Parameter
+  v_tmpAD_OrgDoc_ID VARCHAR(32);
+  v_DocNoInout VARCHAR(60);
+  v_DocNoGLJournal VARCHAR(60);
+  v_UUIDInout VARCHAR(32);
+  v_UUIDInoutLine VARCHAR(32);
+  v_RecGenerated NUMBER;
+  v_RecTotal NUMBER;
+  v_RecFailed NUMBER;
+  v_CurrInvoice_ID VARCHAR(32);   
+  v_CurrBase_ID VARCHAR(32);
+  v_convRate NUMBER;
+  v_MultiplyRate NUMBER:= 0;
+  v_numRec NUMBER:= 0;
+  v_strError VARCHAR(60);
+  TYPE RECORD IS REF CURSOR;
+    Cur_Parameter RECORD;
+    Cur_M_Inout RECORD;
+  BEGIN    
+    --  Update AD_PInstance
+    DBMS_OUTPUT.PUT_LINE('Updating PInstance - Processing ' || p_PInstance_ID) ;
+    v_ResultStr:='PInstanceNotFound';
+    AD_UPDATE_PINSTANCE(p_PInstance_ID, NULL, 'Y', NULL, NULL) ;
+  BEGIN --BODY    
+    -- Get PARAMETERS
+    v_ResultStr:='ReadingParameters';
+    FOR Cur_Parameter IN
+      (SELECT i.Record_ID, i.AD_User_ID, i.AD_Client_ID, i.AD_Org_ID, p.ParameterName,
+        p.P_String, p.P_Number, p.P_Date, p.P_Date_To
+      FROM AD_PINSTANCE i
+      LEFT JOIN AD_PINSTANCE_PARA p ON i.AD_PInstance_ID=p.AD_PInstance_ID
+      WHERE i.AD_PInstance_ID=p_PInstance_ID
+      ORDER BY p.SeqNo
+      )
+    LOOP
+      v_Record_ID:= Cur_Parameter.Record_ID; --save the asset primary key
+      v_User_ID:= Cur_Parameter.AD_User_ID;
+      IF (Cur_Parameter.ParameterName = 'AD_Org_ID') THEN
+        v_tmpAD_OrgDoc_ID:= Cur_Parameter.P_String;
+      END IF;
+    END LOOP; -- Get Parameter   
+       
+    DBMS_OUTPUT.PUT_LINE( 'Record_ID = ' || v_Record_ID);
+
+    --Upating Import Invoices
+    FOR Cur_M_Inout IN
+      (
+        SELECT oez_i_inout_id, ad_client_id, ad_org_id, DocTypeName,
+          (SELECT m_warehouse_id FROM m_warehouse WHERE value=oez_i_inout.Warehousevalue) AS m_warehouse_id,
+          (SELECT c_bpartner_id FROM c_bpartner WHERE value=oez_i_inout.BPartnerValue) AS c_bpartner_id,
+          (SELECT c_country_id FROM c_country WHERE countrycode=oez_i_inout.Countryname) AS c_country_id,
+          (SELECT c_location_id FROM c_location WHERE ((address1=oez_i_inout.Address1)
+            OR (address2=oez_i_inout.Address2)) AND city=oez_i_inout.City AND postal=oez_i_inout.Postal
+            AND c_country_id=(SELECT c_country_id FROM c_country WHERE countrycode=oez_i_inout.Countryname) LIMIT 1) AS c_location_id,
+          (SELECT c_bpartner_location_id FROM c_bpartner_location
+          LEFT JOIN c_location ON ((address1=oez_i_inout.Address1)
+            OR (address2=oez_i_inout.Address2)) AND city=oez_i_inout.City AND postal=oez_i_inout.Postal
+            AND c_country_id=(SELECT c_country_id FROM c_country WHERE countrycode=oez_i_inout.Countryname)
+          WHERE c_bpartner_id=(SELECT c_bpartner_id FROM c_bpartner WHERE value=oez_i_inout.BPartnerValue) LIMIT 1) AS c_bpartner_location_id,
+          (SELECT c_country_id FROM c_country WHERE countrycode=oez_i_inout.Countryname) AS c_ship_country_id,
+          (SELECT c_location_id FROM c_location WHERE ((address1=oez_i_inout.Address1)
+            OR (address2=oez_i_inout.Address2)) AND city=oez_i_inout.City AND postal=oez_i_inout.Postal
+            AND c_country_id=(SELECT c_country_id FROM c_country WHERE countrycode=oez_i_inout.Countryname) LIMIT 1) AS c_ship_location_id,
+          (SELECT c_bpartner_location_id FROM c_bpartner_location
+          LEFT JOIN c_location ON ((address1=oez_i_inout.Address1)
+            OR (address2=oez_i_inout.Address2)) AND city=oez_i_inout.City AND postal=oez_i_inout.Postal
+            AND c_country_id=(SELECT c_country_id FROM c_country WHERE countrycode=oez_i_inout.Countryname)
+          WHERE c_bpartner_id=(SELECT c_bpartner_id FROM c_bpartner WHERE value=oez_i_inout.BPartnerValue) LIMIT 1) AS delivery_location_id,
+          (SELECT m_product_id FROM m_product WHERE Value=oez_i_inout.ProductValue LIMIT 1) AS m_product_id,
+          (SELECT c_uom_id FROM c_uom WHERE x12de355=oez_i_inout.edicode LIMIT 1) AS c_uom_id,
+          (SELECT m_locator_id FROM m_locator WHERE value=oez_i_inout.Storagebinvalue LIMIT 1) AS m_locator_id
+        FROM oez_i_inout
+        WHERE ad_client_id=(SELECT ad_client_id FROM oez_i_inout WHERE oez_i_inout_id=v_Record_ID)
+          AND i_isimported='N'
+        ORDER BY DocumentNo ASC
+      )
+    LOOP
+      --Update fix record each row
+      UPDATE oez_i_inout SET
+        AD_Org_ID=v_tmpAD_OrgDoc_ID,
+        C_DocType_ID=(SELECT C_DocType_ID FROM C_DocType WHERE upper(name)=upper(Cur_M_Inout.DocTypeName)
+          AND AD_Client_ID=Cur_M_Inout.ad_client_id LIMIT 1),
+        M_Warehouse_ID=Cur_M_Inout.M_Warehouse_ID,
+        C_BPartner_ID=Cur_M_Inout.C_BPartner_ID,
+        c_country_id=Cur_M_Inout.c_country_id,
+        C_Location_ID=Cur_M_Inout.C_Location_ID,
+        c_bpartner_location_id=Cur_M_Inout.c_bpartner_location_id,
+        c_ship_country_id=Cur_M_Inout.c_ship_country_id,
+        C_Ship_Location_ID=Cur_M_Inout.C_Ship_Location_ID,
+        delivery_location_id=Cur_M_Inout.delivery_location_id,
+        M_Product_ID=Cur_M_Inout.M_Product_ID,
+        C_UOM_ID=Cur_M_Inout.C_UOM_ID,
+        m_locator_id=Cur_M_Inout.m_locator_id
+      WHERE oez_i_inout_id=Cur_M_Inout.oez_i_inout_id;
+    END LOOP;
+
+    v_strError:= '';
+    --Generated Invoice
+    FOR Cur_M_Inout IN
+      (
+        SELECT oez_i_inout_id, ad_client_id, ad_org_id, DocTypeName, DocumentNo, issotrx, c_doctype_id,
+          description, movementdate, dateacct, c_bpartner_id, c_bpartner_location_id, m_warehouse_id,
+          m_product_id, Movementqty, line, product_description, m_locator_id, m_product_id,
+          c_uom_id, movementqty, (SELECT m_attributesetinstance_id FROM m_product
+          WHERE m_product_id=oez_i_inout.m_product_id) AS m_attributesetinstance_id,
+          C_Country_ID, Delivery_Location_ID, C_Ship_Country_ID
+        FROM oez_i_inout
+        WHERE ad_client_id=(SELECT ad_client_id FROM oez_i_inout WHERE oez_i_inout_id=v_Record_ID)
+          AND i_isimported='N'
+        ORDER BY DocumentNo ASC
+      )
+    LOOP 
+      --Get and Upating Error when Import Invoice (Null Value)
+      IF (SELECT COALESCE(Cur_M_Inout.DocumentNo, 'NULL')='NULL') THEN
+        SELECT v_strError || 'Document No, ' INTO v_strError;
+      END IF;
+      IF (SELECT COALESCE(Cur_M_Inout.C_Doctype_ID, 'NULL')='NULL') THEN
+        SELECT v_strError || 'Document Type, ' INTO v_strError;
+      END IF;
+      IF (SELECT COALESCE(Cur_M_Inout.M_Warehouse_ID, 'NULL')='NULL') THEN
+        SELECT v_strError || 'Warehouse, ' INTO v_strError;
+      END IF;
+      IF (SELECT COALESCE(Cur_M_Inout.C_Bpartner_ID, 'NULL')='NULL') THEN
+        SELECT v_strError || 'Business Partner, ' INTO v_strError;
+      END IF;
+      IF (SELECT COALESCE(Cur_M_Inout.C_Bpartner_Location_ID, 'NULL')='NULL') THEN
+        SELECT v_strError || 'Partner Address, ' INTO v_strError;
+      END IF;
+      IF (SELECT COALESCE(Cur_M_Inout.C_Country_ID, 'NULL')='NULL') THEN
+        SELECT v_strError || 'Country, ' INTO v_strError;
+      END IF;
+      IF (SELECT COALESCE(Cur_M_Inout.Delivery_Location_ID, 'NULL')='NULL') THEN
+        SELECT v_strError || 'Delivery Location, ' INTO v_strError;
+      END IF;
+      IF (SELECT COALESCE(Cur_M_Inout.C_Ship_Country_ID, 'NULL')='NULL') THEN
+        SELECT v_strError || 'Ship Country, ' INTO v_strError;
+      END IF;
+      IF (SELECT COALESCE(Cur_M_Inout.M_Product_ID, 'NULL')='NULL') THEN
+        SELECT v_strError || '"Product, ' INTO v_strError;
+      END IF;
+      IF (SELECT COALESCE(Cur_M_Inout.C_Uom_ID, 'NULL')='NULL') THEN
+        SELECT v_strError || 'UOM, ' INTO v_strError;
+      END IF;
+      IF (SELECT COALESCE(Cur_M_Inout.M_Locator_ID, 'NULL')='NULL') THEN
+        SELECT v_strError || 'Storage Bin, ' INTO v_strError;
+      END IF;
+      
+      --Update message error to gl_journal each row
+      IF (v_strError<>'') THEN
+        UPDATE oez_i_inout SET
+          i_errormsg=(SELECT SUBSTRING(v_strError, 1, length(v_strError)-2) || ' has no value.')
+        WHERE oez_i_inout_id=Cur_M_Inout.oez_i_inout_id;
+      END IF;
+
+      IF (SELECT COALESCE(Cur_M_Inout.DocumentNo, 'NULL')<>'NULL')
+        AND (SELECT COALESCE(Cur_M_Inout.C_Doctype_ID, 'NULL')<>'NULL')
+        AND (SELECT COALESCE(Cur_M_Inout.M_Warehouse_ID, 'NULL')<>'NULL')
+        AND (SELECT COALESCE(Cur_M_Inout.C_Bpartner_ID, 'NULL')<>'NULL')
+        AND (SELECT COALESCE(Cur_M_Inout.C_Bpartner_Location_ID, 'NULL')<>'NULL')
+        AND (SELECT COALESCE(Cur_M_Inout.C_Country_ID, 'NULL')<>'NULL')
+        AND (SELECT COALESCE(Cur_M_Inout.Delivery_Location_ID, 'NULL')<>'NULL')
+        AND (SELECT COALESCE(Cur_M_Inout.C_Ship_Country_ID, 'NULL')<>'NULL')
+        AND (SELECT COALESCE(Cur_M_Inout.M_Product_ID, 'NULL')<>'NULL')
+        AND (SELECT COALESCE(Cur_M_Inout.C_Uom_ID, 'NULL')<>'NULL')
+        AND (SELECT COALESCE(Cur_M_Inout.M_Locator_ID, 'NULL')<>'NULL') THEN
+      
+      v_numRec:= v_numRec+1;
+      --Get next documentno
+      SELECT Cur_M_Inout.DocumentNo INTO v_DocNoInout;      
+
+      IF ((SELECT COALESCE(m_inout_id, 'NULL') FROM m_inout WHERE documentno=v_DocNoInout)<>'NULL') THEN
+        SELECT m_inout_id INTO v_UUIDInout FROM m_inout WHERE documentno=v_DocNoInout;
+      ELSE
+        SELECT get_uuid() INTO v_UUIDInout;
+
+        --Create Inout (Header)
+        INSERT INTO m_inout
+          (
+            m_inout_id, ad_client_id, ad_org_id, isactive, created, createdby, updated, updatedby, issotrx,
+            documentno, docaction, docstatus, posted, processing, processed, c_doctype_id, description, c_order_id,
+            dateordered, isprinted, movementtype, movementdate, dateacct, c_bpartner_id, c_bpartner_location_id,
+            m_warehouse_id, poreference, deliveryrule, freightcostrule, freightamt, deliveryviarule, m_shipper_id,
+            c_charge_id, chargeamt, priorityrule, dateprinted, c_invoice_id, createfrom, generateto, ad_user_id,
+            salesrep_id, nopackages, pickdate, shipdate, trackingno, ad_orgtrx_id, c_project_id, c_campaign_id,
+            c_activity_id, user1_id, user2_id, updatelines, islogistic, generatelines, calculate_freight,
+            delivery_location_id, m_freightcategory_id, freight_currency_id, rm_receipt_pickedit, rm_shipment_pickedit,
+            m_condition_goods_id, a_asset_id, c_costcenter_id, process_goods_java
+          )
+        VALUES
+          (
+            v_UUIDInout, Cur_M_Inout.ad_client_id, Cur_M_Inout.ad_org_id, 'Y', now(), v_User_ID, now(), v_User_ID, Cur_M_Inout.issotrx,
+            Cur_M_Inout.documentno, 'CO', 'DR', 'N', 'N', 'N', Cur_M_Inout.c_doctype_id, Cur_M_Inout.description, NULL,
+            NULL, 'N', (SELECT CASE WHEN Cur_M_Inout.issotrx='Y' THEN 'C-' ELSE 'V+' END), Cur_M_Inout.movementdate, Cur_M_Inout.dateacct, Cur_M_Inout.c_bpartner_id, Cur_M_Inout.c_bpartner_location_id,
+            Cur_M_Inout.m_warehouse_id, NULL, 'A', 'I', 0, 'P', NULL,
+            NULL, 0, '5', NULL, NULL, 'N', 'N', v_User_ID,
+            NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+            NULL, NULL, NULL, 'N', 'N', 'N', 'N',
+            NULL, NULL, NULL, 'N', 'N',
+            NULL, NULL, NULL, 'CO'
+          );
+      END IF;
+
+      --Create Inout (Line)
+      IF ((SELECT COALESCE(m_inoutline_id, 'NULL') FROM m_inoutline WHERE m_inout_id=v_UUIDInout
+        AND m_product_id=Cur_M_Inout.m_product_id AND Movementqty=Cur_M_Inout.Movementqty
+        AND m_inout_id=v_UUIDInout)<>'NULL') THEN
+        SELECT m_inoutline_id INTO v_UUIDInoutLine FROM m_inoutline WHERE m_inout_id=v_UUIDInout
+        AND m_product_id=Cur_M_Inout.m_product_id AND Movementqty=Cur_M_Inout.Movementqty
+        AND m_inout_id=v_UUIDInout;
+      ELSE
+        SELECT get_uuid() INTO v_UUIDInoutLine;
+
+        --Create Header for GL Journal
+        INSERT INTO m_inoutline
+          (
+            m_inoutline_id, ad_client_id, ad_org_id, isactive, created, createdby, updated, updatedby,
+            line, description, m_inout_id, c_orderline_id, m_locator_id, m_product_id, c_uom_id, movementqty,
+            isinvoiced, m_attributesetinstance_id, isdescription, quantityorder, m_product_uom_id,
+            m_condition_goods_id, canceled_inoutline_id, a_asset_id, manage_prereservation, user1_id, user2_id,
+            c_project_id, c_costcenter_id, c_bpartner_id, explode, bom_parent_id
+          )
+        VALUES
+          (
+            v_UUIDInoutLine, Cur_M_Inout.ad_client_id, Cur_M_Inout.ad_org_id, 'Y', now(), v_User_ID, now(), v_User_ID,
+            Cur_M_Inout.line, Cur_M_Inout.product_description, v_UUIDInout, NULL, Cur_M_Inout.m_locator_id, Cur_M_Inout.m_product_id, Cur_M_Inout.c_uom_id, Cur_M_Inout.movementqty,
+
+            'N', Cur_M_Inout.m_attributesetinstance_id, 'N', NULL, NULL,
+            NULL, NULL, NULL, 'N', NULL, NULL,
+            NULL, NULL, Cur_M_Inout.c_bpartner_id, 'N', NULL
+          );
+      END IF;
+
+      --Update linked invoice to record each row
+      UPDATE oez_i_inout SET
+        m_inout_ID=v_UUIDInout, m_inoutLine_ID=v_UUIDInoutLine, processed='Y',
+        I_IsImported='Y'
+      WHERE oez_i_inout_id=Cur_M_Inout.oez_i_inout_id;
+      END IF;
+    END LOOP;
+
+    --Get Generated Record
+    SELECT COUNT(ArrayBatch.DocumentNo) INTO v_RecGenerated
+    FROM (SELECT DISTINCT DocumentNo FROM oez_i_inout
+    WHERE ad_client_id=(SELECT ad_client_id FROM oez_i_inout WHERE oez_i_inout_id=v_Record_ID)
+      AND i_isimported='Y'
+    ORDER BY DocumentNo ASC) AS ArrayBatch;
+    
+    --Get Total Record
+    SELECT COUNT(ArrayBatch.DocumentNo) INTO v_RecTotal
+    FROM (SELECT DISTINCT DocumentNo FROM oez_i_inout
+    WHERE ad_client_id=(SELECT ad_client_id FROM oez_i_inout WHERE oez_i_inout_id=v_Record_ID)
+    ORDER BY DocumentNo ASC) AS ArrayBatch;
+           
+    --Get Fail Record
+    SELECT COUNT(ArrayBatch.DocumentNo) INTO v_RecFailed
+    FROM (SELECT DISTINCT DocumentNo FROM oez_i_inout
+    WHERE ad_client_id=(SELECT ad_client_id FROM oez_i_inout WHERE oez_i_inout_id=v_Record_ID)
+      AND i_isimported='N'
+    ORDER BY DocumentNo ASC) AS ArrayBatch;
+    
+    --Sorting Invoice No generated
+    SELECT REGEXP_REPLACE(SUBSTRING(array_agg(ArrayBatch.DocumentNo)::varchar, 2, (SELECT length(array_agg(ArrayBatch.DocumentNo)::varchar)-2))
+      , ',', ', ', 'g') INTO v_DocNoInout
+    FROM (SELECT DISTINCT DocumentNo FROM oez_i_inout
+    WHERE ad_client_id=(SELECT ad_client_id FROM oez_i_inout WHERE oez_i_inout_id=v_Record_ID)
+      AND i_isimported='Y'
+    ORDER BY DocumentNo ASC) AS ArrayBatch;
+        
+    v_Result:= 1;
+    IF (v_numRec=0) THEN
+      v_Message:= 'There is no receipt/shipment to be generated. Generated: (' || v_RecGenerated || '/'|| v_RecTotal || '), Failed: ' || v_RecFailed;
+    ELSE
+      v_Message:= 'Receipt/shipment No. ' || v_DocNoInout || ' has been generated. Generated: (' || v_RecGenerated || '/'|| v_RecTotal || '), Failed: ' || v_RecFailed;
+    END IF;
+    
+    --<<FINISH_PROCESS>>
+    --Update AD_PInstance
+    DBMS_OUTPUT.PUT_LINE('Updating PInstance - Finished ' || v_Message) ;
+    AD_UPDATE_PINSTANCE(p_PInstance_ID, NULL, 'N', v_Result, v_Message) ;
+    RETURN;
+  END; --BODY
+  
+EXCEPTION
+WHEN OTHERS THEN
+  v_ResultStr:= '@ERROR=' || SQLERRM;
+  DBMS_OUTPUT.PUT_LINE(v_ResultStr) ;
+  ROLLBACK;
+  AD_UPDATE_PINSTANCE(p_PInstance_ID, NULL, 'N', 0, v_ResultStr) ;
+  RETURN;
+END OEZ_IMP_M_INOUT
+]]></body>
+    </function>
+  </database>

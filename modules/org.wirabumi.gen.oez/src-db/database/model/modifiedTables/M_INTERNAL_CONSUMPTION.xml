@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+  <database name="MODIFIED TABLE M_INTERNAL_CONSUMPTION">
+    <table name="M_INTERNAL_CONSUMPTION" primaryKey="M_INTERNAL_CONSUMPTION_KEY">
+      <column name="EM_OEZ_DOCTYPE" primaryKey="false" required="false" type="VARCHAR" size="32" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <column name="EM_OEZ_DOCUMENTNO" primaryKey="false" required="false" type="VARCHAR" size="60" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <foreign-key foreignTable="C_DOCTYPE" name="EM_OEZ_IC_DOCTYPE">
+        <reference local="EM_OEZ_DOCTYPE" foreign="C_DOCTYPE_ID"/>
+      </foreign-key>
+    </table>
+  </database>

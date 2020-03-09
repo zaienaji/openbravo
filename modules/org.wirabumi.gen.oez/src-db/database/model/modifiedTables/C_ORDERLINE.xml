@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+  <database name="MODIFIED TABLE C_ORDERLINE">
+    <table name="C_ORDERLINE" primaryKey="C_ORDERLINE_KEY">
+      <column name="EM_OEZ_ORDERLINE_ID_LINK" primaryKey="false" required="false" type="VARCHAR" size="32" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <foreign-key foreignTable="C_ORDERLINE" name="EM_OEZ_ORDERLINE_SELF_LINK">
+        <reference local="EM_OEZ_ORDERLINE_ID_LINK" foreign="C_ORDERLINE_ID"/>
+      </foreign-key>
+    </table>
+  </database>

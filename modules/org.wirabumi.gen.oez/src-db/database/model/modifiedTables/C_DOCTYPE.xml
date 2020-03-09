@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+  <database name="MODIFIED TABLE C_DOCTYPE">
+    <table name="C_DOCTYPE" primaryKey="C_DOCTYPE_KEY">
+      <column name="EM_OEZ_CODOCSEQUENCE_ID" primaryKey="false" required="false" type="VARCHAR" size="32" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <foreign-key foreignTable="AD_SEQUENCE" name="EM_OEZ_DOCTYPE_CO_SEQUENCE">
+        <reference local="EM_OEZ_CODOCSEQUENCE_ID" foreign="AD_SEQUENCE_ID"/>
+      </foreign-key>
+    </table>
+  </database>

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+  <database name="FUNCTION OEZ_INOUT_POST0">
+    <function name="OEZ_INOUT_POST0" type="NULL">
+      <parameter name="pinstance_id" type="VARCHAR" mode="in">
+        <default/>
+      </parameter>
+      <body><![CDATA[BEGIN OEZ_INOUT_POST(PInstance_ID, NULL) ;
+END OEZ_INOUT_POST0
+]]></body>
+    </function>
+  </database>

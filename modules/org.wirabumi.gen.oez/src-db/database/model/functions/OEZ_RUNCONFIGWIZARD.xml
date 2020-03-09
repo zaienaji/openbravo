@@ -1,0 +1,435 @@
+<?xml version="1.0"?>
+  <database name="FUNCTION OEZ_RUNCONFIGWIZARD">
+    <function name="OEZ_RUNCONFIGWIZARD" type="NULL">
+      <parameter name="p_pinstance_id" type="VARCHAR" mode="in">
+        <default/>
+      </parameter>
+      <body><![CDATA[/*
+function oez_org_ready is created based on ad_org_ready for 2.50MP29
+function oez_yearperiods is created based on c_yearperiods for 2.50MP29
+function oez_period_process is created based on c_period_process for 2.50MP29
+*/
+
+
+  -- Logistice
+  v_ResultStr VARCHAR2(2000):='';
+  v_Message VARCHAR2(2000):='';
+  v_Result NUMBER:=1; -- 0=failure
+  v_count integer:=0;
+  v_Record_ID VARCHAR(32);
+  v_AD_User_ID VARCHAR(32);
+  v_AD_Client_ID VARCHAR(32);
+  v_AD_Org_ID VARCHAR(32);
+  v_inout_id VARCHAR(32);
+  cur_org RECORD;
+  cur_elementlevel_c RECORD;
+  v_calendar_id VARCHAR(32);
+  
+  v_name VARCHAR(255);
+  v_year VARCHAR(255);
+  v_obperiod_id VARCHAR(32);
+  v_periodcontrol_log VARCHAR(32);
+  v_lastperiod VARCHAR(32);
+  v_bank_id VARCHAR(32);
+  v_warehouse_id VARCHAR(32);
+  v_setup_id VARCHAR(32);
+  v_obdate timestamp without time zone;
+  v_reportgroup_id VARCHAR(32);
+
+  
+  --  Parameter
+  TYPE RECORD IS REF CURSOR;
+    Cur_Parameter RECORD;
+ 
+  BEGIN
+   DBMS_OUTPUT.PUT_LINE('Updating PInstance - Processing ' || p_PInstance_ID) ;
+    v_ResultStr:='PInstanceNotFound';
+    AD_UPDATE_PINSTANCE(p_PInstance_ID, NULL, 'Y', NULL, NULL) ;
+  BEGIN --BODY
+
+  v_Message:='Configuration Wizard Log:<br>';
+
+    -- Get Parameters
+    v_ResultStr:='ReadingParameters';
+    FOR Cur_Parameter IN
+      (SELECT i.Record_ID, i.AD_User_ID, i.AD_Client_ID, i.AD_Org_ID, p.ParameterName, p.P_String, p.P_Number, p.P_Date
+      FROM AD_PInstance i
+      LEFT JOIN AD_PInstance_Para p
+        ON i.AD_PInstance_ID=p.AD_PInstance_ID
+      WHERE i.AD_PInstance_ID=p_PInstance_ID
+      ORDER BY p.SeqNo
+      )
+    LOOP
+      v_Record_ID:=Cur_Parameter.Record_ID;
+      v_AD_User_ID:=Cur_Parameter.AD_User_ID;
+      v_AD_Client_ID:=Cur_Parameter.AD_Client_ID;
+      v_AD_Org_ID:=Cur_Parameter.AD_org_ID;
+      
+    END LOOP; -- Get Parameter
+
+    --function definition here
+
+    --get wizard data into local variable:
+    select * into cur_org
+    from ad_org where ad_org_id=v_Record_ID;
+
+    --wizard data validation
+    if (cur_org.em_oez_createfiscalcalendar='Y') then
+      if (cur_org.em_oez_ficalcalendarname is null or cur_org.em_oez_ficalcalendarname='') then
+        raise exception 'You decide to create fiscal calendar, but no calendar name provided';
+      elseif (cur_org.em_oez_createobperiod='Y' and cur_org.em_oez_intialobdate is null) then
+        raise exception 'You decide to create opening balance period, but no initial opening balance date provided';
+      elseif (cur_org.em_oez_activateallacctdoc='Y' and cur_org.em_oez_acctschema is null) then
+        raise exception 'You decide to activate all transaction document, but no accounting schema provided';
+      end if;
+    end if;
+
+    if (cur_org.em_oez_createwarehouse='Y') then
+      if (cur_org.em_oez_warehousekey is null or cur_org.em_oez_warehousekey='') then
+        raise exception 'You decide to create warehouse, but no warehouse search key provided';
+      elseif (cur_org.em_oez_warehousename is null or cur_org.em_oez_warehousename='') then
+        raise exception 'You decide to create warehouse, but no warehouse name provided';
+      elseif (cur_org.em_oez_warehouseaddress is null) then
+        raise exception 'You decide to create warehouse, but no warehouse address provided';
+      end if;
+    end if;
+
+    if (cur_org.em_oez_createbalancesheet='Y') then
+      if (cur_org.em_oez_balancesheetname is null or cur_org.em_oez_balancesheetname='') then
+        raise exception 'You decide to create balance sheet, but no balance sheet name provided';
+      elseif (cur_org.em_oez_bs_acctschme_id is null) then
+        raise exception 'You decide to create balance sheet, but no accounting schema for balance sheet provided';
+      end if;
+    end if;
+
+    if (cur_org.em_oez_createincomestatement='Y') then
+      if (cur_org.em_oez_incomestatementname is null or cur_org.em_oez_incomestatementname='') then
+        raise exception 'You decide to create income statement, but no income statement name provided';
+      elseif (cur_org.em_oez_is_acctschema_id is null) then
+        raise exception 'You decide to create income statement, but no accounting schema for income statement provided';
+      end if;
+    end if;
+
+    
+    if cur_org.em_oez_createfiscalcalendar='Y' then
+      --create fiscal calendar
+      v_calendar_id:=get_uuid();
+      INSERT INTO c_calendar(
+            c_calendar_id, ad_client_id, ad_org_id, isactive, created, createdby, 
+            updated, updatedby, "name", description)
+      VALUES (v_calendar_id, v_AD_Client_ID, v_Record_ID, 'Y', now(), v_AD_User_ID, 
+            now(), v_AD_User_ID, cur_org.em_oez_ficalcalendarname, null);
+      if FOUND then
+        v_Message:=v_Message||'<br>:: '||'Create fiscal calendar: '||cur_org.em_oez_ficalcalendarname;
+      end if;
+
+      
+      if cur_org.em_oez_assigncaltoorg='Y' then
+        --assign fiscal calendar to organization
+        UPDATE ad_org
+	   SET isperiodcontrolallowed='Y', c_calendar_id=v_calendar_id
+	   WHERE ad_org_id=v_Record_ID;
+        if FOUND then
+          select name into v_name from ad_org where ad_org_id=v_Record_ID;
+          v_Message:=v_Message||'<br>:: '||'Assign '||cur_org.em_oez_ficalcalendarname||' to '||v_name;
+        else
+          v_Result:=0;
+          v_Message:=v_Message||'<br># '||'Failed to assign '||cur_org.em_oez_ficalcalendarname||' to '||v_name;
+        end if;
+
+        --set organization ready
+        if cur_org.em_oez_setreadyorg='Y' then
+          OEZ_ORG_READY(v_Record_ID);
+          if FOUND then
+            v_Message:=v_Message||'<br>:: '||'Set '||v_name||' as ready organization';
+          else
+            v_Result:=0;
+            v_Message:=v_Message||'<br># '||'Failed to set '||v_name||' as ready organization';
+          end if;
+        end if;
+        
+      end if;
+
+      if (cur_org.em_oez_createobperiod='Y' or cur_org.em_oez_createdefacctperiod='Y') then
+        --create Year for create opening balance period='Y' or create default period = 'Y'
+        select extract(year from cur_org.em_oez_intialobdate)::character varying into v_name;
+        v_year:=get_uuid();
+        INSERT INTO c_year(
+            c_year_id, ad_client_id, ad_org_id, isactive, created, createdby, 
+            updated, updatedby, "year", description, c_calendar_id, processing, 
+            create_reg_fact_acct, drop_reg_fact_acct)
+	    VALUES (v_year, v_AD_Client_ID, v_Record_ID, 'Y', now(), v_AD_User_ID, 
+		    now(), v_AD_User_ID, v_name, null, v_calendar_id, 'N', 
+		    'N', 'N');
+	if FOUND then
+	  v_Message:=v_Message||'<br>:: '||'Create year '||v_name||' for fiscal year '||cur_org.em_oez_ficalcalendarname;
+	else
+	  v_Result:=0;
+	  v_Message:=v_Message||'<br># '||'Failed to create year '||v_name||' for fiscal year '||cur_org.em_oez_ficalcalendarname;
+	end if;
+
+	--create opening balance period
+	v_obdate:=cur_org.em_oez_intialobdate-'1 Day'::interval;
+	v_obperiod_id:=get_uuid();
+	INSERT INTO c_period(
+            c_period_id, ad_client_id, ad_org_id, isactive, created, createdby, 
+            updated, updatedby, "name",
+            periodno, c_year_id, startdate, enddate, 
+            periodtype, processing, close_fact_acct_group_id, reg_fact_acct_group_id, 
+            divideup_fact_acct_group_id, open_fact_acct_group_id)
+	    VALUES (v_obperiod_id, v_AD_Client_ID, v_Record_ID, 'Y', now(), v_AD_User_ID, 
+		    now(), v_AD_User_ID, 'Opening Balance - '||(v_obdate::date)::character varying,
+		    0, v_year, v_obdate, v_obdate, 
+		    'S', 'N', null, null, 
+		    null, null);
+	if FOUND then
+	  v_Message:=v_Message||'<br>:: '||'Create period Opening Balance - '||(v_obdate::date)::character varying;
+	else
+	  v_Result:=0;
+	  v_Message:=v_Message||'<br># '||'Failed to create period Opening Balance - '||(v_obdate::date)::character varying;
+	end if;
+
+	--open accounting period for opening balance
+	v_periodcontrol_log:=get_uuid();
+	INSERT INTO c_periodcontrol_log(
+            c_periodcontrol_log_id, ad_client_id, ad_org_id, isactive, created, 
+            createdby, updated, updatedby, description, processing, processed, 
+            c_calendar_id, isrecursive, c_year_id, periodno, docbasetype, 
+            periodaction)
+	    VALUES (v_periodcontrol_log, v_AD_Client_ID, v_Record_ID, 'Y', now(), 
+		    v_AD_User_ID, now(), v_AD_User_ID, null, 'N', 'N', 
+		    v_calendar_id, 'N', v_year, v_obperiod_id, null, 
+		    'O');
+	if FOUND then
+	  v_Message:=v_Message||'<br>:: '||'Create open accounting period control log for Opening Balance - '||(v_obdate::date)::character varying;
+	else
+	  v_Result:=0;
+	  v_Message:=v_Message||'<br># '||'Failed to create open accounting period control log for Opening Balance - '||(v_obdate::date)::character varying;
+	end if;
+
+ OEZ_PERIOD_PROCESS(v_periodcontrol_log);
+	if FOUND then
+	  v_Message:=v_Message||'<br>:: '||'Open accounting period for Opening Balance - '||(v_obdate::date)::character varying;
+	else
+	  v_Result:=0;
+	  v_Message:=v_Message||'<br># '||'Failed to open accounting period for Opening Balance - '||(v_obdate::date)::character varying;
+	end if;
+
+	--create default accounting period
+	if(cur_org.em_oez_createdefacctperiod='Y') then
+	  select year into v_name from c_year where c_year_id=v_year;
+	  OEZ_YEARPERIODS(v_year);
+	  if FOUND then
+            v_Message:=v_Message||'<br>:: '||'Created default accounting period for Year '||v_name;
+          else
+            v_Result:=0;
+            v_Message:=v_Message||'<br># '||'Failed to created default accounting period for Year '||v_name;
+          end if;
+
+          --open accounting period for opening balance
+	  v_periodcontrol_log:=get_uuid();
+	  select c_period_id into v_lastperiod
+		from c_period
+		where c_year_id=v_year
+		and enddate=
+		(select max(enddate) from c_period
+		where c_year_id=v_year)
+		order by periodno desc limit 1;
+	  if v_lastperiod is null then
+	    v_Result:=0;
+	    v_Message:=v_Message||'<br># '||'Failed to find latest default accounting period when opening default accounting period';
+	  end if;
+	  
+	  INSERT INTO c_periodcontrol_log(
+            c_periodcontrol_log_id, ad_client_id, ad_org_id, isactive, created, 
+            createdby, updated, updatedby, description, processing, processed, 
+            c_calendar_id, isrecursive, c_year_id, periodno, docbasetype, 
+            periodaction)
+	    VALUES (v_periodcontrol_log, v_AD_Client_ID, v_Record_ID, 'Y', now(), 
+		    v_AD_User_ID, now(), v_AD_User_ID, null, 'N', 'N', 
+		    v_calendar_id, 'N', v_year, v_lastperiod, null, 
+		    'O');
+	  if FOUND then
+	    v_Message:=v_Message||'<br>:: '||'Create open accounting period control log for Opening Balance - '||(v_obdate::date)::character varying;
+	  else
+	    v_Result:=0;
+	    v_Message:=v_Message||'<br># '||'Failed to create open accounting period control log for Opening Balance - '||(v_obdate::date)::character varying;
+	  end if;
+
+	  OEZ_PERIOD_PROCESS(v_periodcontrol_log);
+	  if FOUND then
+	    v_Message:=v_Message||'<br>:: '||'Open accounting period for Opening Balance - '||(v_obdate::date)::character varying;
+	  else
+	    v_Result:=0;
+	    v_Message:=v_Message||'<br># '||'Failed to open accounting period for Opening Balance - '||(v_obdate::date)::character varying;
+	  end if;
+	end if;
+      end if; --end if create opening balance period
+    end if; --end if crate fiscal calendar
+
+    --activate all transaction document
+    if(cur_org.em_oez_activateallacctdoc='Y') then
+      update c_acctschema_table
+       set isactive='Y'
+       where c_acctschema_id=cur_org.em_oez_acctschema
+       and isactive='N';
+      GET DIAGNOSTICS v_count = ROW_COUNT;
+      if v_count is null or v_count=0 then
+        v_Result:=0;
+	v_Message:=v_Message||'<br># '||'Failed to activate transaction document';
+      else
+        v_Message:=v_Message||'<br>:: '||'Activate '||v_count||' transaction document(s)';
+      end if;
+    end if; --endif activate all transaction document
+
+    --create warehouse
+    if(cur_org.em_oez_createwarehouse='Y') then
+      v_warehouse_id:=get_uuid();
+      INSERT INTO m_warehouse(
+            m_warehouse_id, ad_client_id, ad_org_id, isactive, created, createdby, 
+            updated, updatedby, "value", "name", description, c_location_id, 
+            separator, isshipper, shippercode, fromdocumentno, todocumentno)
+	    VALUES (v_warehouse_id, v_ad_client_id, v_Record_ID, 'Y', now(), v_ad_client_id, 
+		    now(), v_ad_user_id, cur_org.em_oez_warehousekey, cur_org.em_oez_warehousename, null, cur_org.em_oez_warehouseaddress, 
+		    '*', 'N', null, null, null);
+      INSERT INTO m_locator(
+            m_locator_id, ad_client_id, ad_org_id, isactive, created, createdby, 
+            updated, updatedby, "value", m_warehouse_id, priorityno, isdefault, 
+            x, y, z)
+	    VALUES (get_uuid(), v_ad_client_id, v_Record_ID, 'Y', now(), v_ad_user_id, 
+		    now(), v_ad_user_id, cur_org.em_oez_warehousekey||' 000', v_warehouse_id, 50, 'Y', 
+		    '0', '0', '0');
+      if FOUND then
+        v_Message:=v_Message||'<br>:: '||'Create warehouse: '||cur_org.em_oez_warehousename;
+      else
+        v_Result:=0;
+	v_Message:=v_Message||'<br># '||'Failed to create warehouse: '||cur_org.em_oez_warehousename;
+      end if;
+    end if;
+
+    --create balance sheet
+    if(cur_org.em_oez_createbalancesheet='Y') then
+      v_setup_id:=get_uuid();
+      INSERT INTO c_acct_rpt(
+            c_acct_rpt_id, ad_client_id, ad_org_id, isactive, created, createdby, 
+            updated, updatedby, "name", description, c_acctschema_id, isorgbalanced, 
+            reporttype)
+	    VALUES (v_setup_id, v_ad_client_id, v_Record_ID, 'Y', now(), v_ad_user_id,
+		    now(), v_ad_user_id, cur_org.em_oez_balancesheetname, null, cur_org.em_oez_bs_acctschme_id, 'Y',
+		    'Y');
+      if FOUND then
+        v_Message:=v_Message||'<br>:: '||'Create balance sheet: '||cur_org.em_oez_balancesheetname;
+      else
+        v_Result:=0;
+	v_Message:=v_Message||'<br># '||'Failed to balance sheet: '||cur_org.em_oez_balancesheetname;
+      end if;
+      
+      --insert grouping: all asset, liability, owner equity with account level='C'
+      v_count:=0;
+      for cur_elementlevel_c in (select	(select seqno from ad_treenode where node_id=c_elementvalue.c_elementvalue_id) as seqno,
+						c_elementvalue_id, value, name, accounttype from c_elementvalue
+							where ad_client_id=v_ad_client_id
+							and elementlevel='C'
+							and accounttype in ('A', 'L', 'O')
+							order by seqno asc, value asc, name asc)
+      loop --loop for element level C
+        v_reportgroup_id:=get_uuid();
+        v_count:=v_count+10;
+
+        --insert group
+	INSERT INTO c_acct_rpt_group(
+            c_acct_rpt_group_id, c_acct_rpt_id, ad_client_id, ad_org_id, 
+            isactive, created, createdby, updated, updatedby, "name", description, 
+            line)
+	    VALUES (v_reportgroup_id, v_setup_id, v_ad_client_id, v_Record_ID, 
+		    'Y', now(), v_ad_user_id, now(), v_ad_user_id, cur_elementlevel_c.name, null, 
+		    v_count);
+	--insert node
+	INSERT INTO c_acct_rpt_node(
+            c_acct_rpt_node_id, c_acct_rpt_group_id, ad_client_id, ad_org_id, 
+            isactive, created, createdby, updated, updatedby, "name", description, 
+            c_elementvalue_id, line)
+	    VALUES (get_uuid(), v_reportgroup_id, v_ad_client_id, v_Record_ID, 
+		    'Y', now(), v_ad_user_id, now(), v_ad_user_id, cur_elementlevel_c.name, null, 
+		    cur_elementlevel_c.c_elementvalue_id, v_count);
+      end loop; --end loop for element level C
+    end if;
+
+    --create income statement
+    if(cur_org.em_oez_createincomestatement='Y') then
+      v_setup_id:=get_uuid();
+      INSERT INTO c_acct_rpt(
+            c_acct_rpt_id, ad_client_id, ad_org_id, isactive, created, createdby, 
+            updated, updatedby, "name", description, c_acctschema_id, isorgbalanced, 
+            reporttype)
+	    VALUES (v_setup_id, v_ad_client_id, v_Record_ID, 'Y', now(), v_ad_user_id,
+		    now(), v_ad_user_id, cur_org.em_oez_incomestatementname, null, cur_org.em_oez_is_acctschema_id, 'N',
+		    'N');
+      if FOUND then
+        v_Message:=v_Message||'<br>:: '||'Create income statement: '||cur_org.em_oez_incomestatementname;
+      else
+        v_Result:=0;
+	v_Message:=v_Message||'<br># '||'Failed to income statement: '||cur_org.em_oez_incomestatementname;
+      end if;
+      
+      --insert grouping: all revenue, expenses with account level='C'
+      v_count:=0;
+      for cur_elementlevel_c in (select	(select seqno from ad_treenode where node_id=c_elementvalue.c_elementvalue_id) as seqno,
+						c_elementvalue_id, value, name, accounttype from c_elementvalue
+							where ad_client_id=v_ad_client_id
+							and elementlevel='C'
+							and accounttype in ('R', 'E')
+							order by seqno asc, value asc, name asc)
+      loop --loop for element level C
+        v_reportgroup_id:=get_uuid();
+        v_count:=v_count+10;
+
+        --insert group
+	INSERT INTO c_acct_rpt_group(
+            c_acct_rpt_group_id, c_acct_rpt_id, ad_client_id, ad_org_id, 
+            isactive, created, createdby, updated, updatedby, "name", description, 
+            line)
+	    VALUES (v_reportgroup_id, v_setup_id, v_ad_client_id, v_Record_ID, 
+		    'Y', now(), v_ad_user_id, now(), v_ad_user_id, cur_elementlevel_c.name, null, 
+		    v_count);
+
+	--insert node
+	INSERT INTO c_acct_rpt_node(
+            c_acct_rpt_node_id, c_acct_rpt_group_id, ad_client_id, ad_org_id, 
+            isactive, created, createdby, updated, updatedby, "name", description, 
+            c_elementvalue_id, line)
+	    VALUES (get_uuid(), v_reportgroup_id, v_ad_client_id, v_Record_ID, 
+		    'Y', now(), v_ad_user_id, now(), v_ad_user_id, cur_elementlevel_c.name, null, 
+		    cur_elementlevel_c.c_elementvalue_id, v_count);
+      end loop; --end loop for element level C
+    end if;
+
+    --set button to Y
+    update ad_org
+     set em_oez_runconfigwizard='Y'
+     where ad_org_id=v_Record_ID;
+    if not FOUND then
+      v_Result:=0;
+      v_Message:=v_Message||'<br># '||'Failed to set run configuration wizard button as a clicked button';
+    end if;
+
+
+    IF(p_PInstance_ID IS NOT NULL) THEN
+      DBMS_OUTPUT.PUT_LINE('Updating PInstance - Finished ' || v_Message) ;
+      AD_UPDATE_PINSTANCE(p_PInstance_ID, NULL, 'N', v_Result, v_Message) ;
+    ELSE
+      DBMS_OUTPUT.PUT_LINE('Finished ' || v_Message) ;
+    END IF;
+    RETURN;
+  END; --BODY
+EXCEPTION
+WHEN OTHERS THEN
+  v_ResultStr:= '@ERROR=' || SQLERRM;
+  DBMS_OUTPUT.PUT_LINE(v_ResultStr) ;
+  IF(p_PInstance_ID IS NOT NULL) THEN
+    AD_UPDATE_PINSTANCE(p_PInstance_ID, NULL, 'N', 0, v_ResultStr) ;
+  END IF;
+END OEZ_RUNCONFIGWIZARD
+]]></body>
+    </function>
+  </database>

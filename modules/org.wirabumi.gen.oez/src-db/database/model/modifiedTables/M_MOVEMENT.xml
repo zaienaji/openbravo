@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+  <database name="MODIFIED TABLE M_MOVEMENT">
+    <table name="M_MOVEMENT" primaryKey="M_MOVEMENT_KEY">
+      <column name="EM_OEZ_DOCACTION" primaryKey="false" required="false" type="VARCHAR" size="60" autoIncrement="false">
+        <default><![CDATA[AP]]></default>
+        <onCreateDefault/>
+      </column>
+      <column name="EM_OEZ_DOCSTATUS" primaryKey="false" required="false" type="VARCHAR" size="60" autoIncrement="false">
+        <default><![CDATA[DR]]></default>
+        <onCreateDefault/>
+      </column>
+    </table>
+  </database>

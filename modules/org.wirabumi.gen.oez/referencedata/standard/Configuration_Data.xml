@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ob:Openbravo xmlns:ob="http://www.openbravo.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <FinancialMgmtPaymentTerm id="D1DA9EA7AC60432293250681BA197529" identifier="Cash">
+    <id>D1DA9EA7AC60432293250681BA197529</id>
+    <active>true</active>
+    <name>Cash</name>
+    <description xsi:nil="true"/>
+    <comments xsi:nil="true"/>
+    <fixedDueDate>false</fixedDueDate>
+    <overduePaymentDaysRule>0</overduePaymentDaysRule>
+    <maturityDate1 xsi:nil="true"/>
+    <offsetMonthDue>0</offsetMonthDue>
+    <nextBusinessDay>false</nextBusinessDay>
+    <default>true</default>
+    <searchKey>Cash</searchKey>
+    <overduePaymentDayRule xsi:nil="true"/>
+    <valid>false</valid>
+    <maturityDate2 xsi:nil="true"/>
+    <maturityDate3>0</maturityDate3>
+  </FinancialMgmtPaymentTerm>
+  <PricingPriceListSchema id="7175740D24F74A11932B02C2E4665082" identifier="Increase 10%">
+    <id>7175740D24F74A11932B02C2E4665082</id>
+    <active>true</active>
+    <name>Increase 10%</name>
+    <description>increase list and unit price 10%</description>
+    <validFromDate xsi:nil="true"/>
+    <discountType>P</discountType>
+    <script xsi:nil="true"/>
+    <flatDiscount xsi:nil="true"/>
+    <quantityBased>true</quantityBased>
+    <cumulativeLevel>L</cumulativeLevel>
+    <processNow>false</processNow>
+  </PricingPriceListSchema>
+  <PricingPriceListSchema id="FC1555FD870F47A09D10E8F0CF43F6BC" identifier="Default">
+    <id>FC1555FD870F47A09D10E8F0CF43F6BC</id>
+    <active>true</active>
+    <name>Default</name>
+    <description>Default</description>
+    <validFromDate xsi:nil="true"/>
+    <discountType>P</discountType>
+    <script xsi:nil="true"/>
+    <flatDiscount xsi:nil="true"/>
+    <quantityBased>true</quantityBased>
+    <cumulativeLevel>L</cumulativeLevel>
+    <processNow>false</processNow>
+  </PricingPriceListSchema>
+  <FinancialMgmtTaxCategory id="0B92CEA4F9E54F40AEB24F5F58633C64" identifier="Non Tax">
+    <id>0B92CEA4F9E54F40AEB24F5F58633C64</id>
+    <active>true</active>
+    <name>Non Tax</name>
+    <description>tax free item</description>
+    <default>true</default>
+  </FinancialMgmtTaxCategory>
+  <InvoiceSchedule id="7ECADE92A70B497FBD2303BEEB6910B8" identifier="Weekly">
+    <id>7ECADE92A70B497FBD2303BEEB6910B8</id>
+    <active>true</active>
+    <name>Weekly</name>
+    <description xsi:nil="true"/>
+    <limitAmount>false</limitAmount>
+    <amount>0</amount>
+    <invoiceFrequency>W</invoiceFrequency>
+    <dayOfTheWeek>1</dayOfTheWeek>
+    <dayOfTheWeekCutoff xsi:nil="true"/>
+    <invoiceOnEvenWeeks>false</invoiceOnEvenWeeks>
+    <dayOfTheMonth>1</dayOfTheMonth>
+    <invoiceCutOffDay xsi:nil="true"/>
+    <default>false</default>
+  </InvoiceSchedule>
+  <InvoiceSchedule id="BD8B8A83F0C74C4EB8BD6B1954424DD6" identifier="Monthly">
+    <id>BD8B8A83F0C74C4EB8BD6B1954424DD6</id>
+    <active>true</active>
+    <name>Monthly</name>
+    <description xsi:nil="true"/>
+    <limitAmount>false</limitAmount>
+    <amount>0</amount>
+    <invoiceFrequency>M</invoiceFrequency>
+    <dayOfTheWeek>1</dayOfTheWeek>
+    <dayOfTheWeekCutoff xsi:nil="true"/>
+    <invoiceOnEvenWeeks>false</invoiceOnEvenWeeks>
+    <dayOfTheMonth>1</dayOfTheMonth>
+    <invoiceCutOffDay xsi:nil="true"/>
+    <default>true</default>
+  </InvoiceSchedule>
+  <InvoiceSchedule id="EA1739BC478B4142A7D3C0BF43838677" identifier="Daily">
+    <id>EA1739BC478B4142A7D3C0BF43838677</id>
+    <active>true</active>
+    <name>Daily</name>
+    <description xsi:nil="true"/>
+    <limitAmount>false</limitAmount>
+    <amount>0</amount>
+    <invoiceFrequency>D</invoiceFrequency>
+    <dayOfTheWeek>1</dayOfTheWeek>
+    <dayOfTheWeekCutoff xsi:nil="true"/>
+    <invoiceOnEvenWeeks>false</invoiceOnEvenWeeks>
+    <dayOfTheMonth>1</dayOfTheMonth>
+    <invoiceCutOffDay xsi:nil="true"/>
+    <default>false</default>
+  </InvoiceSchedule>
+  <BusinessPartnerCategory id="683257FBEA484068860A405ABCCBFB1F" identifier="Supplier">
+    <id>683257FBEA484068860A405ABCCBFB1F</id>
+    <active>true</active>
+    <searchKey>Supplier</searchKey>
+    <name>Supplier</name>
+    <description xsi:nil="true"/>
+    <default>false</default>
+  </BusinessPartnerCategory>
+  <BusinessPartnerCategory id="FCC6869C0F984277B83D22AF17B36143" identifier="Customer">
+    <id>FCC6869C0F984277B83D22AF17B36143</id>
+    <active>true</active>
+    <searchKey>Customer</searchKey>
+    <name>Customer</name>
+    <description xsi:nil="true"/>
+    <default>true</default>
+  </BusinessPartnerCategory>
+  <ProductCategory id="A2E43D3773C4437E82131B2E4E90BE17" identifier="Finished Good">
+    <id>A2E43D3773C4437E82131B2E4E90BE17</id>
+    <active>true</active>
+    <searchKey>Finished Good</searchKey>
+    <name>Finished Good</name>
+    <description xsi:nil="true"/>
+    <default>true</default>
+    <plannedMargin>0</plannedMargin>
+    <assetCategory xsi:nil="true"/>
+    <image xsi:nil="true"/>
+    <summaryLevel>false</summaryLevel>
+  </ProductCategory>
+  <PricingPriceList id="69DAEF46D5C24B65B920124CC990A8EE" identifier="Purchase Price List IDR">
+    <id>69DAEF46D5C24B65B920124CC990A8EE</id>
+    <active>true</active>
+    <name>Purchase Price List IDR</name>
+    <description xsi:nil="true"/>
+    <basePricelist xsi:nil="true"/>
+    <priceIncludesTax>false</priceIncludesTax>
+    <salesPriceList>false</salesPriceList>
+    <default>true</default>
+    <currency id="303" entity-name="Currency" identifier="IDR"/>
+    <enforcePriceLimit>false</enforcePriceLimit>
+    <costBasedPriceList>false</costBasedPriceList>
+  </PricingPriceList>
+  <PricingPriceList id="F8F24F2E6656433D969136364A9F7EC9" identifier="Sales Price List IDR">
+    <id>F8F24F2E6656433D969136364A9F7EC9</id>
+    <active>true</active>
+    <name>Sales Price List IDR</name>
+    <description xsi:nil="true"/>
+    <basePricelist xsi:nil="true"/>
+    <priceIncludesTax>false</priceIncludesTax>
+    <salesPriceList>true</salesPriceList>
+    <default>true</default>
+    <currency id="303" entity-name="Currency" identifier="IDR"/>
+    <enforcePriceLimit>false</enforcePriceLimit>
+    <costBasedPriceList>false</costBasedPriceList>
+  </PricingPriceList>
+  <FinancialMgmtTaxRate id="06ED3622EBFC40F6ADB97E138FB75544" identifier="Non Tax - Non Tax">
+    <id>06ED3622EBFC40F6ADB97E138FB75544</id>
+    <active>true</active>
+    <name>Non Tax</name>
+    <description xsi:nil="true"/>
+    <taxSearchKey xsi:nil="true"/>
+    <validFromDate>1900-01-01T00:00:00.0Z</validFromDate>
+    <summaryLevel>false</summaryLevel>
+    <rate>0</rate>
+    <parentTaxRate xsi:nil="true"/>
+    <country xsi:nil="true"/>
+    <region xsi:nil="true"/>
+    <destinationCountry xsi:nil="true"/>
+    <destinationRegion xsi:nil="true"/>
+    <taxCategory id="0B92CEA4F9E54F40AEB24F5F58633C64" entity-name="FinancialMgmtTaxCategory" identifier="Non Tax"/>
+    <default>false</default>
+    <taxExempt>false</taxExempt>
+    <salesPurchaseType>B</salesPurchaseType>
+    <cascade>false</cascade>
+    <businessPartnerTaxCategory xsi:nil="true"/>
+    <lineNo>10</lineNo>
+    <withholdingTax>false</withholdingTax>
+    <notTaxable>false</notTaxable>
+    <deductableRate xsi:nil="true"/>
+    <originalRate xsi:nil="true"/>
+    <notTaxdeductable>false</notTaxdeductable>
+    <istaxdeductable>false</istaxdeductable>
+    <noVAT>false</noVAT>
+    <baseAmount>LNA</baseAmount>
+    <taxBase xsi:nil="true"/>
+    <docTaxAmount>D</docTaxAmount>
+  </FinancialMgmtTaxRate>
+  <FIN_PaymentMethod id="45F8D6CBC34444D59F773A2805C5CECD" identifier="Cash">
+    <id>45F8D6CBC34444D59F773A2805C5CECD</id>
+    <active>true</active>
+    <name>Cash</name>
+    <description xsi:nil="true"/>
+    <automaticReceipt>false</automaticReceipt>
+    <automaticPayment>false</automaticPayment>
+    <automaticDeposit>true</automaticDeposit>
+    <automaticWithdrawn>true</automaticWithdrawn>
+    <payinAllow>true</payinAllow>
+    <payoutAllow>true</payoutAllow>
+    <payinExecutionType>M</payinExecutionType>
+    <payoutExecutionType>M</payoutExecutionType>
+    <payinExecutionProcess xsi:nil="true"/>
+    <payoutExecutionProcess xsi:nil="true"/>
+    <payinDeferred>false</payinDeferred>
+    <payoutDeferred>false</payoutDeferred>
+    <uponReceiptUse xsi:nil="true"/>
+    <uponDepositUse>DEP</uponDepositUse>
+    <iNUponClearingUse xsi:nil="true"/>
+    <uponPaymentUse xsi:nil="true"/>
+    <uponWithdrawalUse>WIT</uponWithdrawalUse>
+    <oUTUponClearingUse xsi:nil="true"/>
+    <payinIsMulticurrency>false</payinIsMulticurrency>
+    <payoutIsMulticurrency>false</payoutIsMulticurrency>
+  </FIN_PaymentMethod>
+  <ReturnReason id="928C0AD1EFD54E78B0EB774FCBF5BABF" identifier="Defect">
+    <id>928C0AD1EFD54E78B0EB774FCBF5BABF</id>
+    <active>true</active>
+    <searchKey>Defect</searchKey>
+    <name>Defect</name>
+    <description>Defect found in goods received/shipped</description>
+    <isrfc>true</isrfc>
+    <isrtv>true</isrtv>
+  </ReturnReason>
+  <PricingPriceListVersion id="D791AE53FBE04925BC8A913FE605BD12" identifier="Purchase Price List IDR">
+    <id>D791AE53FBE04925BC8A913FE605BD12</id>
+    <active>true</active>
+    <name>Purchase Price List IDR</name>
+    <description xsi:nil="true"/>
+    <priceList id="69DAEF46D5C24B65B920124CC990A8EE" entity-name="PricingPriceList" identifier="Purchase Price List IDR"/>
+    <priceListSchema id="FC1555FD870F47A09D10E8F0CF43F6BC" entity-name="PricingPriceListSchema" identifier="Default"/>
+    <validFromDate>2013-01-01T00:00:00.0Z</validFromDate>
+    <create>false</create>
+    <basePriceListVersion xsi:nil="true"/>
+    <generatePriceListVersion>false</generatePriceListVersion>
+  </PricingPriceListVersion>
+  <PricingPriceListVersion id="D7F76DEEC54F44F28ADE50A94F049DD8" identifier="Sales Price List IDR">
+    <id>D7F76DEEC54F44F28ADE50A94F049DD8</id>
+    <active>true</active>
+    <name>Sales Price List IDR</name>
+    <description xsi:nil="true"/>
+    <priceList id="F8F24F2E6656433D969136364A9F7EC9" entity-name="PricingPriceList" identifier="Sales Price List IDR"/>
+    <priceListSchema id="FC1555FD870F47A09D10E8F0CF43F6BC" entity-name="PricingPriceListSchema" identifier="Default"/>
+    <validFromDate>2013-01-01T00:00:00.0Z</validFromDate>
+    <create>false</create>
+    <basePriceListVersion xsi:nil="true"/>
+    <generatePriceListVersion>false</generatePriceListVersion>
+  </PricingPriceListVersion>
+  <PricingPriceListSchemeLine id="68A23881D58A4753AA55F333B5300E5C" identifier="10">
+    <id>68A23881D58A4753AA55F333B5300E5C</id>
+    <active>true</active>
+    <priceListSchema id="7175740D24F74A11932B02C2E4665082" entity-name="PricingPriceListSchema" identifier="Increase 10%"/>
+    <sequenceNumber>10</sequenceNumber>
+    <productCategory xsi:nil="true"/>
+    <businessPartner xsi:nil="true"/>
+    <product xsi:nil="true"/>
+    <conversionRateType>S</conversionRateType>
+    <conversionDate>2013-06-06T00:00:00.0Z</conversionDate>
+    <baseListPrice>L</baseListPrice>
+    <surchargeListPriceAmount>0</surchargeListPriceAmount>
+    <listPriceDiscount>-10</listPriceDiscount>
+    <listPriceRounding>C</listPriceRounding>
+    <minListPriceMargin>0</minListPriceMargin>
+    <maxListPriceMargin>0</maxListPriceMargin>
+    <fixedListPrice>0</fixedListPrice>
+    <standardBasePrice>S</standardBasePrice>
+    <surchargeStandardPriceAmount>0</surchargeStandardPriceAmount>
+    <standardPriceDiscount>-10</standardPriceDiscount>
+    <standardPriceRounding>C</standardPriceRounding>
+    <minStandardPriceMargin>0</minStandardPriceMargin>
+    <maxStandardMargin>0</maxStandardMargin>
+    <fixedStandardPrice>0</fixedStandardPrice>
+    <baseLimitPrice>X</baseLimitPrice>
+    <surchargePriceLimitAmount>0</surchargePriceLimitAmount>
+    <priceLimitDiscount>0</priceLimitDiscount>
+    <priceLimitRounding>C</priceLimitRounding>
+    <limitPriceMinMargin>0</limitPriceMinMargin>
+    <maxPriceLimitMargin>0</maxPriceLimitMargin>
+    <fixedLimitPrice>0</fixedLimitPrice>
+    <listPriceMargin>0</listPriceMargin>
+    <unitPriceMargin>0</unitPriceMargin>
+    <limitPriceMargin>0</limitPriceMargin>
+  </PricingPriceListSchemeLine>
+</ob:Openbravo>

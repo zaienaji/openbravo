@@ -1,0 +1,350 @@
+<?xml version="1.0"?>
+  <database name="FUNCTION OEZ_IMPORT_INVOICE">
+    <function name="OEZ_IMPORT_INVOICE" type="NULL">
+      <parameter name="p_pinstance_id" type="VARCHAR" mode="in">
+        <default/>
+      </parameter>
+      <body><![CDATA[v_ResultStr VARCHAR2(2000):='';
+  v_Message VARCHAR2(2000):='';
+  v_Result NUMBER:= 1; -- 0=failure
+  v_Record_ID VARCHAR2(32);
+  v_User_ID VARCHAR2(32);
+
+  --Imp GL Journal Parameter
+  v_tmpAD_OrgDoc_ID VARCHAR(32);
+  v_DocNoInvoice VARCHAR(60);
+  v_DocNoGLJournal VARCHAR(60);
+  v_UUIDInvoice VARCHAR(32);
+  v_UUIDInvoiceLine VARCHAR(32);
+  v_UUIDLineGLJ VARCHAR(32);
+  v_RecGenerated NUMBER;
+  v_RecTotal NUMBER;
+  v_RecFailed NUMBER;
+  v_CurrInvoice_ID VARCHAR(32);   
+  v_CurrBase_ID VARCHAR(32);
+  v_convRate NUMBER;
+  v_MultiplyRate NUMBER:= 0;
+  v_numRec NUMBER:= 0;
+  v_strError VARCHAR(2000);
+  v_location_id VARCHAR(60);
+  v_bpartner_location_id VARCHAR(60);
+  TYPE RECORD IS REF CURSOR;
+    Cur_Parameter RECORD;
+    Cur_C_Invoice RECORD;
+  BEGIN    
+    --  Update AD_PInstance
+    DBMS_OUTPUT.PUT_LINE('Updating PInstance - Processing ' || p_PInstance_ID) ;
+    v_ResultStr:='PInstanceNotFound';
+    AD_UPDATE_PINSTANCE(p_PInstance_ID, NULL, 'Y', NULL, NULL) ;
+  BEGIN --BODY    
+    -- Get PARAMETERS
+    v_ResultStr:='ReadingParameters';
+    FOR Cur_Parameter IN
+      (SELECT i.Record_ID, i.AD_User_ID, i.AD_Client_ID, i.AD_Org_ID, p.ParameterName,
+        p.P_String, p.P_Number, p.P_Date, p.P_Date_To
+      FROM AD_PINSTANCE i
+      LEFT JOIN AD_PINSTANCE_PARA p ON i.AD_PInstance_ID=p.AD_PInstance_ID
+      WHERE i.AD_PInstance_ID=p_PInstance_ID
+      ORDER BY p.SeqNo
+      )
+    LOOP
+      v_Record_ID:= Cur_Parameter.Record_ID; --save the asset primary key
+      v_User_ID:= Cur_Parameter.AD_User_ID;
+      IF (Cur_Parameter.ParameterName = 'ad_org_id') THEN
+        v_tmpAD_OrgDoc_ID:= Cur_Parameter.P_String;
+      END IF;
+    END LOOP; -- Get Parameter   
+       
+    DBMS_OUTPUT.PUT_LINE( 'Record_ID = ' || v_Record_ID);
+
+    --Upating Import Invoices
+    FOR Cur_C_Invoice IN
+      (
+        select	i.i_invoice_id, i.ad_client_id, i.ad_org_id, i.DocTypeName, i.taxindicator,
+		i.address1,i.address2,i.City,i.Postal,i.CountryCode,
+		c.c_currency_id,
+		(select m_pricelist_id from m_pricelist
+		 where m_pricelist.ad_client_id=i.ad_client_id
+		 and m_pricelist.c_currency_id=c.c_currency_id
+		 order by isdefault desc limit 1) as m_pricelist_id,
+		pt.c_paymentterm_id,
+		bp.c_bpartner_id,
+		r.c_region_id,
+		cr.c_country_id,
+		(SELECT ad_user_id FROM ad_user
+		 WHERE upper(name)=upper(i.ContactName)
+		 LIMIT 1) as ad_user_id,
+		p.m_product_id
+	from i_invoice i
+	  left join c_currency c on i.em_oez_currencyiso=c.iso_code
+	  left join c_paymentterm pt on i.PaymentTermValue=pt.value and pt.ad_client_id=i.ad_client_id
+	  left join c_bpartner bp on i.BPartnerValue=bp.value and bp.ad_client_id=i.ad_client_id
+	  left join c_region r on i.RegionName=r.name
+	  left join c_country cr on i.CountryCode=cr.countrycode
+	  left join m_product p on i.ProductValue=p.value and i.ad_client_id=p.ad_client_id
+        ORDER BY DocumentNo ASC
+      )
+    LOOP
+
+    --get location_id
+    select l.c_location_id into v_location_id
+    from c_location l
+    inner join c_bpartner_location bpl on bpl.c_location_id=l.c_location_id and bpl.c_bpartner_id=Cur_C_Invoice.c_bpartner_id
+    where (case when Cur_C_Invoice.address1 is not null then l.address1=Cur_C_Invoice.address1 else 1=1 end)
+    and	  (case when Cur_C_Invoice.address2 is not null then l.address2=Cur_C_Invoice.address2 else 1=1 end)
+    and   (case when Cur_C_Invoice.City is not null then l.city=Cur_C_Invoice.City else 1=1 end)
+    and   (case when Cur_C_Invoice.Postal is not null then l.postal=Cur_C_Invoice.Postal else 1=1 end)
+    and   (case when Cur_C_Invoice.CountryCode is not null then l.c_country_id=(select c_country_id
+									   from c_country
+									   where countrycode=Cur_C_Invoice.CountryCode)
+							   else 1=1 end)
+    limit 1;
+
+    --get bpartner_location_id
+    select c_bpartner_location_id into v_bpartner_location_id
+    from c_bpartner_location
+    where c_bpartner_id=Cur_C_Invoice.c_bpartner_id
+    and c_location_id=v_location_id
+    limit 1;
+         
+      --Update fix record each row
+      UPDATE i_invoice SET
+        AD_Org_ID=v_tmpAD_OrgDoc_ID,
+        C_DocType_ID=(SELECT C_DocType_ID
+		      FROM C_DocType WHERE upper(name)=upper(Cur_C_Invoice.DocTypeName)
+		      AND AD_Client_ID=Cur_C_Invoice.ad_client_id
+		      LIMIT 1),
+        C_Currency_ID=Cur_C_Invoice.C_Currency_ID,
+        M_PriceList_ID=Cur_C_Invoice.M_PriceList_ID,
+        C_Paymentterm_ID=Cur_C_Invoice.C_Paymentterm_ID,
+        C_BPartner_ID=Cur_C_Invoice.C_BPartner_ID,
+        c_country_id=Cur_C_Invoice.c_country_id,
+        c_region_id=Cur_C_Invoice.c_region_id,
+        ad_user_id=Cur_C_Invoice.ad_user_id,
+        C_Location_ID=v_location_id,
+        c_bpartner_location_id=v_bpartner_location_id,
+        M_Product_ID=Cur_C_Invoice.M_Product_ID,
+        C_Tax_ID=(SELECT C_Tax_ID FROM C_Tax
+        WHERE upper(trim(taxindicator))=upper(trim(Cur_C_Invoice.taxindicator)) LIMIT 1)
+      WHERE i_invoice_id=Cur_C_Invoice.i_invoice_id;
+    END LOOP;
+        
+    v_strError:= '';
+    --Generated Invoice
+    FOR Cur_C_Invoice IN
+      (
+        SELECT i_invoice_id, ad_client_id, ad_org_id, DocTypeName, DocumentNo, taxindicator, c_currency_id,
+          m_pricelist_id, c_paymentterm_id, c_bpartner_id, c_region_id, c_country_id, ad_user_id, c_location_id,
+          c_bpartner_location_id, m_product_id, issotrx, c_doctype_id, c_project_id, c_activity_id,
+          qtyordered, priceactual, c_tax_id, LineDescription, (SELECT c_uom_id FROM m_product
+          WHERE m_product_id=i_invoice.m_product_id) AS c_uom_id, (SELECT m_attributesetinstance_id FROM m_product
+          WHERE m_product_id=i_invoice.m_product_id) AS m_attributesetinstance_id, c_project_id
+        FROM i_invoice
+        WHERE ad_client_id=(SELECT ad_client_id FROM i_invoice WHERE i_invoice_id=v_Record_ID)
+          AND i_isimported='N'
+        ORDER BY DocumentNo ASC
+      )
+    LOOP 
+      --Get and Upating Error when Import Invoice (Null Value)
+      IF (SELECT COALESCE(Cur_C_Invoice.DocumentNo, 'NULL')='NULL') THEN
+        SELECT v_strError || 'Document No, ' INTO v_strError;
+      END IF;
+      IF (SELECT COALESCE(Cur_C_Invoice.C_DocType_ID, 'NULL')='NULL') THEN
+        SELECT v_strError || 'Document Type, ' INTO v_strError;
+      END IF;
+      IF (SELECT COALESCE(Cur_C_Invoice.C_PaymentTerm_ID, 'NULL')='NULL') THEN
+        SELECT v_strError || 'Payment Terms, ' INTO v_strError;
+      END IF;
+      IF (SELECT COALESCE(Cur_C_Invoice.C_BPartner_ID, 'NULL')='NULL') THEN
+        SELECT v_strError || 'Business Partner, ' INTO v_strError;
+      END IF;
+      IF (SELECT COALESCE(Cur_C_Invoice.C_BPartner_Location_ID, 'NULL')='NULL') THEN
+        SELECT v_strError || 'Partner Address, ' INTO v_strError;
+      END IF;
+      IF (SELECT COALESCE(Cur_C_Invoice.C_Country_ID, 'NULL')='NULL') THEN
+        SELECT v_strError || 'Country, ' INTO v_strError;
+      END IF;
+      IF (SELECT COALESCE(Cur_C_Invoice.M_Product_ID, 'NULL')='NULL') THEN
+        SELECT v_strError || 'Product, ' INTO v_strError;
+      END IF;
+      
+      --Update message error to gl_journal each row
+      IF (v_strError<>'') THEN
+        UPDATE i_invoice SET
+          i_errormsg=(SELECT SUBSTRING(v_strError, 1, length(v_strError)-2) || ' has no value.')
+        WHERE i_invoice_id=Cur_C_Invoice.i_invoice_id;
+      END IF;
+
+      IF (SELECT COALESCE(Cur_C_Invoice.DocumentNo, 'NULL')<>'NULL')
+        AND (SELECT COALESCE(Cur_C_Invoice.C_DocType_ID, 'NULL')<>'NULL')
+        AND (SELECT COALESCE(Cur_C_Invoice.C_PaymentTerm_ID, 'NULL')<>'NULL')
+        AND (SELECT COALESCE(Cur_C_Invoice.C_BPartner_ID, 'NULL')<>'NULL')
+        AND (SELECT COALESCE(Cur_C_Invoice.C_BPartner_Location_ID, 'NULL')<>'NULL')
+        AND (SELECT COALESCE(Cur_C_Invoice.C_Country_ID, 'NULL')<>'NULL')
+        AND (SELECT COALESCE(Cur_C_Invoice.M_Product_ID, 'NULL')<>'NULL') THEN
+      
+      v_numRec:= v_numRec+1;
+      -----------------------------------------------------------------------
+      --Get currency on header (Imp GL Journal) and base currency on client--
+      -----------------------------------------------------------------------
+      SELECT Cur_C_Invoice.c_currency_id INTO v_CurrInvoice_ID;
+      SELECT c_currency_id INTO v_CurrBase_ID FROM ad_client WHERE ad_client_id=Cur_C_Invoice.ad_client_id;
+
+      IF (v_CurrInvoice_ID = v_CurrBase_ID) THEN
+        v_convRate:= 0;
+      ELSE        
+        SELECT COALESCE((SELECT multiplyrate FROM c_conversion_rate WHERE c_currency_id = v_CurrInvoice_ID
+        AND c_currency_id_to = v_CurrBase_ID AND (validfrom <= now())
+        AND (validto >= now() OR validto IS NULL)
+        ORDER BY validfrom DESC LIMIT 1), 0) INTO v_MultiplyRate;
+     
+        IF (v_MultiplyRate = 0) THEN
+          v_convRate:= 0;
+        ELSE
+          v_convRate:= v_MultiplyRate;
+        END IF;
+      END IF;
+
+      --Get next documentno
+      SELECT Cur_C_Invoice.DocumentNo INTO v_DocNoInvoice;      
+
+      IF ((SELECT COALESCE(c_invoice_id, 'NULL') FROM c_invoice WHERE documentno=v_DocNoInvoice)<>'NULL') THEN
+        SELECT c_invoice_id INTO v_UUIDInvoice FROM c_invoice WHERE documentno=v_DocNoInvoice;
+      ELSE
+        SELECT get_uuid() INTO v_UUIDInvoice;
+
+        --Create Invoice (Header)
+        INSERT INTO c_invoice
+          (
+            c_invoice_id, ad_client_id, ad_org_id, isactive, created, createdby, updated, updatedby, issotrx,
+            documentno, docstatus, docaction, processing, processed, posted, c_doctype_id, c_doctypetarget_id,
+            c_order_id, description, isprinted, salesrep_id, dateinvoiced, dateprinted, dateacct, c_bpartner_id,
+            c_bpartner_location_id, poreference, isdiscountprinted, dateordered, c_currency_id, paymentrule,
+            c_paymentterm_id, c_charge_id, chargeamt, totallines, grandtotal, m_pricelist_id, istaxincluded,
+            c_campaign_id, c_project_id, c_activity_id, createfrom, generateto, ad_user_id, copyfrom, isselfservice,
+            ad_orgtrx_id, user1_id, user2_id, withholdingamount, taxdate, c_withholding_id, ispaid, totalpaid,
+            outstandingamt, daystilldue, dueamt, lastcalculatedondate, updatepaymentmonitor, fin_paymentmethod_id,
+            fin_payment_priority_id, finalsettlement, daysoutstanding, percentageoverdue, c_costcenter_id,
+            calculate_promotions, a_asset_id, em_aprm_addpayment, em_aprm_processinvoice
+          )
+        VALUES
+          (
+            v_UUIDInvoice, Cur_C_Invoice.ad_client_id, Cur_C_Invoice.ad_org_id, 'Y', now(), v_User_ID, now(), v_User_ID, Cur_C_Invoice.issotrx,
+            Cur_C_Invoice.documentno, 'DR', 'CO', 'N', 'N', 'N', '0', Cur_C_Invoice.c_doctype_id,
+            NULL, NULL, 'N', NULL, now(), NULL, now(), Cur_C_Invoice.c_bpartner_id,
+            Cur_C_Invoice.c_bpartner_location_id, NULL, 'N', NULL, Cur_C_Invoice.c_currency_id, NULL,
+            Cur_C_Invoice.c_paymentterm_id, NULL, 0, 0, 0, Cur_C_Invoice.m_pricelist_id, 'N',
+            NULL, Cur_C_Invoice.c_project_id, Cur_C_Invoice.c_activity_id, 'N', 'N', Cur_C_Invoice.ad_user_id, 'N', 'N',
+            NULL, NULL, NULL, NULL, NULL, NULL, 'N', 0,
+            0, 0, 0, NULL, 'N', (SELECT COALESCE((SELECT fin_paymentmethod_id FROM fin_financial_account fa
+            LEFT JOIN fin_finacc_paymentmethod fapm ON fapm.fin_financial_account_id=fa.fin_financial_account_id
+            WHERE fa.ad_client_id=Cur_C_Invoice.ad_client_id AND fa.isdefault='Y' AND fapm.isdefault='Y' LIMIT 1), (SELECT fin_paymentmethod_id FROM fin_financial_account fa
+            LEFT JOIN fin_finacc_paymentmethod fapm ON fapm.fin_financial_account_id=fa.fin_financial_account_id
+            WHERE fa.ad_client_id=Cur_C_Invoice.ad_client_id AND fa.isdefault='Y' LIMIT 1), (SELECT fin_paymentmethod_id FROM fin_financial_account fa
+            LEFT JOIN fin_finacc_paymentmethod fapm ON fapm.fin_financial_account_id=fa.fin_financial_account_id
+            WHERE fa.ad_client_id=Cur_C_Invoice.ad_client_id AND fapm.isdefault='Y' LIMIT 1), (SELECT fin_paymentmethod_id FROM fin_financial_account fa
+            LEFT JOIN fin_finacc_paymentmethod fapm ON fapm.fin_financial_account_id=fa.fin_financial_account_id
+            WHERE fa.ad_client_id=Cur_C_Invoice.ad_client_id LIMIT 1))),
+            NULL, NULL, NULL, NULL, NULL,
+            'N', NULL, 'Y', 'CO'
+          );
+      END IF;
+      
+      --Create Invoice (Line)
+      IF ((SELECT COALESCE(c_invoiceline_id, 'NULL') FROM c_invoiceline WHERE c_invoice_id=v_UUIDInvoice
+        AND m_product_id=Cur_C_Invoice.m_product_id AND qtyinvoiced=Cur_C_Invoice.qtyordered
+        AND priceactual=Cur_C_Invoice.priceactual AND c_tax_id=Cur_C_Invoice.c_tax_id
+        AND c_invoice_id=v_UUIDInvoice)<>'NULL') THEN
+        SELECT c_invoiceline_id INTO v_UUIDInvoiceLine FROM c_invoiceline WHERE c_invoice_id=v_UUIDInvoice
+        AND m_product_id=Cur_C_Invoice.m_product_id AND qtyinvoiced=Cur_C_Invoice.qtyordered
+        AND priceactual=Cur_C_Invoice.priceactual AND c_tax_id=Cur_C_Invoice.c_tax_id
+        AND c_invoice_id=v_UUIDInvoice;
+      ELSE
+        SELECT get_uuid() INTO v_UUIDInvoiceLine;
+
+        --Create Header for GL Journal
+        INSERT INTO c_invoiceline
+          (
+            c_invoiceline_id, ad_client_id, ad_org_id, isactive, created, createdby, updated, updatedby,
+            c_invoice_id, c_orderline_id, m_inoutline_id, line, description, financial_invoice_line,
+            account_id, m_product_id, qtyinvoiced, pricelist, priceactual, pricelimit, linenetamt, c_charge_id,
+            chargeamt, c_uom_id, c_tax_id, s_resourceassignment_id, taxamt, m_attributesetinstance_id, isdescription,
+            quantityorder, m_product_uom_id, c_invoice_discount_id, c_projectline_id, m_offer_id, pricestd,
+            excludeforwithholding, iseditlinenetamt, taxbaseamt, line_gross_amount, gross_unit_price, c_bpartner_id,
+            periodnumber, grosspricestd, a_asset_id, defplantype, grosspricelist, c_project_id, isdeferred, c_period_id,
+            c_costcenter_id, user1_id, user2_id, explode, bom_parent_id
+          )
+        VALUES
+          (
+            v_UUIDInvoiceLine, Cur_C_Invoice.ad_client_id, Cur_C_Invoice.ad_org_id, 'Y', now(), v_User_ID, now(), v_User_ID,
+            v_UUIDInvoice, NULL, NULL, (SELECT COALESCE(MAX(Line),0)+10 FROM c_invoiceline WHERE c_invoice_id=v_UUIDInvoice), Cur_C_Invoice.LineDescription, 'N',
+            NULL, Cur_C_Invoice.m_product_id, Cur_C_Invoice.qtyordered, Cur_C_Invoice.priceactual, Cur_C_Invoice.priceactual, 0, (SELECT Cur_C_Invoice.priceactual*Cur_C_Invoice.qtyordered), NULL,
+            0, Cur_C_Invoice.c_uom_id, Cur_C_Invoice.c_tax_id, NULL, 0, Cur_C_Invoice.m_attributesetinstance_id, 'N',
+            NULL, NULL, NULL, NULL, NULL, Cur_C_Invoice.priceactual,
+            NULL, 'N', NULL, 0, 0, NULL,
+            NULL, 0, NULL, NULL, 0, Cur_C_Invoice.c_project_id, 'N', NULL,
+            NULL, NULL, NULL, 'N', NULL
+          );
+      END IF;
+
+      --Update linked invoice to record each row
+      UPDATE i_invoice SET
+        C_Invoice_ID=v_UUIDInvoice, C_InvoiceLine_ID=v_UUIDInvoiceLine, processed='Y',
+        I_IsImported='Y'
+      WHERE i_invoice_id=Cur_C_Invoice.i_invoice_id;
+      END IF;
+    END LOOP;
+
+    --Get Generated Record
+    SELECT COUNT(ArrayBatch.DocumentNo) INTO v_RecGenerated
+    FROM (SELECT DISTINCT DocumentNo FROM i_invoice
+    WHERE ad_client_id=(SELECT ad_client_id FROM i_invoice WHERE i_invoice_id=v_Record_ID)
+      AND i_isimported='Y'
+    ORDER BY DocumentNo ASC) AS ArrayBatch;
+    
+    --Get Total Record
+    SELECT COUNT(ArrayBatch.DocumentNo) INTO v_RecTotal
+    FROM (SELECT DISTINCT DocumentNo FROM i_invoice
+    WHERE ad_client_id=(SELECT ad_client_id FROM i_invoice WHERE i_invoice_id=v_Record_ID)
+    ORDER BY DocumentNo ASC) AS ArrayBatch;
+           
+    --Get Fail Record
+    SELECT COUNT(ArrayBatch.DocumentNo) INTO v_RecFailed
+    FROM (SELECT DISTINCT DocumentNo FROM i_invoice
+    WHERE ad_client_id=(SELECT ad_client_id FROM i_invoice WHERE i_invoice_id=v_Record_ID)
+      AND i_isimported='N'
+    ORDER BY DocumentNo ASC) AS ArrayBatch;
+    
+    --Sorting Invoice No generated
+    SELECT REGEXP_REPLACE(SUBSTRING(array_agg(ArrayBatch.DocumentNo)::varchar, 2, (SELECT length(array_agg(ArrayBatch.DocumentNo)::varchar)-2))
+      , ',', ', ', 'g') INTO v_DocNoInvoice
+    FROM (SELECT DISTINCT DocumentNo FROM i_invoice
+    WHERE ad_client_id=(SELECT ad_client_id FROM i_invoice WHERE i_invoice_id=v_Record_ID)
+      AND i_isimported='Y'
+    ORDER BY DocumentNo ASC) AS ArrayBatch;
+        
+    v_Result:= 1;
+    IF (v_numRec=0) THEN
+      v_Message:= 'There is no invoice to be generated. Generated: (' || v_RecGenerated || '/'|| v_RecTotal || '), Failed: ' || v_RecFailed;
+    ELSE
+      v_Message:= 'Invoice No. ' || v_DocNoInvoice || ' has been generated. Generated: (' || v_RecGenerated || '/'|| v_RecTotal || '), Failed: ' || v_RecFailed;
+    END IF;
+    
+    --<<FINISH_PROCESS>>
+    --Update AD_PInstance
+    DBMS_OUTPUT.PUT_LINE('Updating PInstance - Finished ' || v_Message) ;
+    AD_UPDATE_PINSTANCE(p_PInstance_ID, NULL, 'N', v_Result, v_Message) ;
+    RETURN;
+  END; --BODY
+  
+EXCEPTION
+WHEN OTHERS THEN
+  v_ResultStr:= '@ERROR=' || SQLERRM;
+  DBMS_OUTPUT.PUT_LINE(v_ResultStr) ;
+  ROLLBACK;
+  AD_UPDATE_PINSTANCE(p_PInstance_ID, NULL, 'N', 0, v_ResultStr) ;
+  RETURN;
+END OEZ_IMPORT_INVOICE
+]]></body>
+    </function>
+  </database>

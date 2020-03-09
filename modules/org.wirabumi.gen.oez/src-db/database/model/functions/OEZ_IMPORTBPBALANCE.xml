@@ -1,0 +1,162 @@
+<?xml version="1.0"?>
+  <database name="FUNCTION OEZ_IMPORTBPBALANCE">
+    <function name="OEZ_IMPORTBPBALANCE" type="NULL">
+      <parameter name="p_pinstance_id" type="VARCHAR" mode="in">
+        <default/>
+      </parameter>
+      <body><![CDATA[--generate product value list that have suspect of duplicity
+  -- Logistice
+  v_ResultStr VARCHAR2(2000):='';
+  v_Message VARCHAR2(2000):='';
+  v_Result NUMBER:=1; -- 0=failure
+  v_count integer:=0;
+  v_Record_ID VARCHAR(32);
+  v_AD_User_ID VARCHAR(32);
+  v_AD_Client_ID VARCHAR(32);
+  v_AD_Org_ID VARCHAR(32);
+  v_inout_id VARCHAR(32);
+
+  v_settlement_id VARCHAR(32);
+  v_debt_payment_id VARCHAR(32);
+  v_doctype_id VARCHAR(32);
+  v_documentno VARCHAR(60);
+  cur_bpbalance RECORD;
+
+  
+  --  Parameter
+  TYPE RECORD IS REF CURSOR;
+    Cur_Parameter RECORD;
+ 
+  BEGIN
+   DBMS_OUTPUT.PUT_LINE('Updating PInstance - Processing ' || p_PInstance_ID) ;
+    v_ResultStr:='PInstanceNotFound';
+    AD_UPDATE_PINSTANCE(p_PInstance_ID, NULL, 'Y', NULL, NULL) ;
+  BEGIN --BODY
+
+    -- Get Parameters
+    v_ResultStr:='ReadingParameters';
+    FOR Cur_Parameter IN
+      (SELECT i.Record_ID, i.AD_User_ID, p.ParameterName, p.P_String, p.P_Number, p.P_Date
+      FROM AD_PInstance i
+      LEFT JOIN AD_PInstance_Para p
+        ON i.AD_PInstance_ID=p.AD_PInstance_ID
+      WHERE i.AD_PInstance_ID=p_PInstance_ID
+      ORDER BY p.SeqNo
+      )
+    LOOP
+      v_Record_ID:=Cur_Parameter.Record_ID;
+      v_AD_User_ID:=Cur_Parameter.AD_User_ID;
+    END LOOP;
+
+    select ad_client_id, ad_org_id into v_ad_client_id, v_ad_org_id from oez_i_bpartnerbalance
+      where oez_i_bpartnerbalance_id=v_Record_ID;
+    -- Get Parameter
+
+    --update product
+    update oez_i_bpartnerbalance
+     set c_bpartner_id=(select c_bpartner_id from c_bpartner where value=oez_i_bpartnerbalance.value
+				and ad_client_id=v_ad_client_id)
+    where ad_client_id=v_ad_client_id;
+
+    --update currency
+    update oez_i_bpartnerbalance
+     set c_currency_id=(select c_currency_id from c_currency where iso_code=oez_i_bpartnerbalance.currencycode)
+    where ad_client_id=v_ad_client_id;
+
+    --update GL Item
+    update oez_i_bpartnerbalance
+     set c_glitem_id=(select c_glitem_id from c_glitem where name=oez_i_bpartnerbalance.glitemname
+			and ad_client_id=v_ad_client_id
+			limit 1)
+    where ad_client_id=v_ad_client_id;
+
+    --loop for import business partner balance
+    for cur_bpbalance in (select * from oez_i_bpartnerbalance where ad_client_id=v_ad_client_id
+				and c_bpartner_id is not null
+				and c_glitem_id is not null
+				and dateplanned is not null
+				and amount is not null
+				and c_currency_id is not null
+				and c_settlement_id is null
+				and processed='N')
+    loop --start loop for import business partner balance
+
+      --get doctype
+      select c_doctype_id into v_doctype_id from c_doctype
+	where ad_client_id=v_ad_client_id
+	and C_DocType.DocBaseType='STM'
+	AND AD_ISORGINCLUDED(v_ad_org_id,C_DocType.AD_Org_ID, v_ad_client_id) <> '-1'
+	limit 1;
+      --get documentno
+      ad_sequence_doctype(v_doctype_id, 'Y', v_documentno, v_documentno);
+
+      --insert manual settlement
+      v_settlement_id:=get_uuid();
+      INSERT INTO c_settlement(
+            c_settlement_id, ad_client_id, ad_org_id, isactive, created, 
+            createdby, updated, updatedby, documentno, datetrx, c_doctype_id, 
+            processing, processed, posted, c_project_id, c_campaign_id, c_activity_id, 
+            user1_id, user2_id, createfrom, c_currency_id, cancelednotchargeamt, 
+            generatedamt, chargedamt, description, createfile, dateacct, 
+            settlementtype, settlementopen, copyfrom, isgenerated, istemplate)
+	    VALUES (v_settlement_id, v_ad_client_id, v_ad_org_id, 'Y', now(), 
+		    v_ad_user_id, now(), v_ad_user_id, v_documentno, cur_bpbalance.dateplanned, v_doctype_id, 
+		    'N', 'N', 'N', null, null, null, 
+		    null, null, 'N', cur_bpbalance.c_currency_id, 0.00,
+		    0.00, 0.00, null, 'N', cur_bpbalance.dateplanned, 
+		    'I', 'N', 'N', 'N', 'N');
+
+      --insert payment created
+      v_debt_payment_id:=get_uuid();
+      INSERT INTO c_debt_payment(
+            c_debt_payment_id, ad_client_id, ad_org_id, isactive, created, 
+            createdby, updated, updatedby, isreceipt, c_settlement_cancel_id, 
+            c_settlement_generate_id, description, c_invoice_id, c_bpartner_id, 
+            c_currency_id, c_cashline_id, c_bankaccount_id, c_cashbook_id, 
+            paymentrule, ispaid, amount, writeoffamt, dateplanned, ismanual, 
+            isvalid, c_bankstatementline_id, changesettlementcancel, cancel_processed, 
+            generate_processed, glitemamt, isdirectposting, c_glitem_id, 
+            c_order_id, c_project_id, isautomaticgenerated, status, status_initial, 
+            c_withholding_id, withholdingamount)
+	    VALUES (v_debt_payment_id, v_ad_client_id, v_ad_org_id, 'Y', now(), 
+		    v_ad_user_id, now(), v_ad_user_id, cur_bpbalance.isreceipt, null, 
+		    v_settlement_id, null, null, cur_bpbalance.c_bpartner_id,
+		    cur_bpbalance.c_currency_id, null, null, null,
+		    '5', 'N', cur_bpbalance.amount, 0.00, cur_bpbalance.dateplanned, 'Y', --payment rule hardcoded bank deposit
+		    'N', null, 'N', 'N', 
+		    'N', null, 'Y', cur_bpbalance.c_glitem_id, 
+		    null, null, null, 'DE', 'DE', 
+		    null, null);
+
+      --process manual settlement
+      C_SETTLEMENT_POST(null, v_settlement_id);
+
+      --update product price record
+      update oez_i_bpartnerbalance
+        set c_settlement_id=v_settlement_id,
+        Processed='Y'
+      where oez_i_bpartnerbalance_id=cur_bpbalance.oez_i_bpartnerbalance_id;
+     
+    end loop; --end loop for import business partner balance
+    
+    
+
+    IF(p_PInstance_ID IS NOT NULL) THEN
+      DBMS_OUTPUT.PUT_LINE('Updating PInstance - Finished ' || v_Message) ;
+      AD_UPDATE_PINSTANCE(p_PInstance_ID, NULL, 'N', v_Result, v_Message) ;
+    ELSE
+      DBMS_OUTPUT.PUT_LINE('Finished ' || v_Message) ;
+    END IF;
+    RETURN;
+  END; --BODY
+EXCEPTION
+WHEN OTHERS THEN
+  v_ResultStr:= '@ERROR=' || SQLERRM;
+  DBMS_OUTPUT.PUT_LINE(v_ResultStr) ;
+  IF(p_PInstance_ID IS NOT NULL) THEN
+    AD_UPDATE_PINSTANCE(p_PInstance_ID, NULL, 'N', 0, v_ResultStr) ;
+  END IF;
+END OEZ_IMPORTBPBALANCE
+]]></body>
+    </function>
+  </database>

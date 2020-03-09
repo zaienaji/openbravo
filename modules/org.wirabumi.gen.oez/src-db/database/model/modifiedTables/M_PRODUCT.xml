@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+  <database name="MODIFIED TABLE M_PRODUCT">
+    <table name="M_PRODUCT" primaryKey="M_PRODUCT_KEY">
+      <column name="EM_OEZ_PRODUCTFLAVOUR_ID" primaryKey="false" required="false" type="VARCHAR" size="32" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <column name="EM_OEZ_ACTIVATED" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false">
+        <default><![CDATA[N]]></default>
+        <onCreateDefault/>
+      </column>
+      <column name="EM_OEZ_DOCSTATUS" primaryKey="false" required="true" type="VARCHAR" size="60" autoIncrement="false">
+        <default><![CDATA[DR]]></default>
+        <onCreateDefault/>
+      </column>
+      <foreign-key foreignTable="OEZ_PRODUCTFLAVOUR" name="EM_OEZ_PRD_FLAVOUR_FK">
+        <reference local="EM_OEZ_PRODUCTFLAVOUR_ID" foreign="OEZ_PRODUCTFLAVOUR_ID"/>
+      </foreign-key>
+    </table>
+  </database>

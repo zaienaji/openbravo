@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+  <database name="MODIFIED TABLE M_INOUTLINE">
+    <table name="M_INOUTLINE" primaryKey="M_INOUTLINE_KEY">
+      <column name="EM_OEZ_REIMBURSEFROM_ID" primaryKey="false" required="false" type="VARCHAR" size="32" autoIncrement="false">
+        <default/>
+        <onCreateDefault/>
+      </column>
+      <foreign-key foreignTable="M_INOUTLINE" name="EM_OEZ_INOUTLINE_REIMBURSEFROM">
+        <reference local="EM_OEZ_REIMBURSEFROM_ID" foreign="M_INOUTLINE_ID"/>
+      </foreign-key>
+    </table>
+  </database>
