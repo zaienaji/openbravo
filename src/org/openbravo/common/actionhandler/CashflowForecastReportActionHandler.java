@@ -126,7 +126,7 @@ public class CashflowForecastReportActionHandler extends BaseReportActionHandler
   private Map<String, Object> obtainLinesFieldProvider(CashflowForecastData[] dataSummary,
       String strDatePlanned, boolean breakByDate, VariablesSecureApp vars, ConnectionProvider conn)
       throws ServletException {
-    Vector<Object> vDatas = new Vector<Object>();
+    Vector<CashflowForecastData[]> vDatas = new Vector<>();
     Vector<Object> vHeader = new Vector<Object>();
     CashflowForecastData[] dataDetail = null;
     CashflowForecastData[][] data = null;

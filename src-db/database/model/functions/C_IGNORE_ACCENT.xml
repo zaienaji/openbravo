@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
   <database name="FUNCTION C_IGNORE_ACCENT">
-    <function name="C_IGNORE_ACCENT" type="VARCHAR">
+    <function name="C_IGNORE_ACCENT" type="VARCHAR" volatility="IMMUTABLE">
       <parameter name="v_str" type="VARCHAR" mode="in">
         <default/>
       </parameter>
@@ -16,7 +16,7 @@
 * under the License.
 * The Original Code is Openbravo ERP.
 * The Initial Developer of the Original Code is Openbravo SLU
-* All portions are Copyright (C) 2001-2008 Openbravo SLU
+* All portions are Copyright (C) 2001-2019 Openbravo SLU
 * All Rights Reserved.
 * Contributor(s):  ______________________________________.
 ************************************************************************/

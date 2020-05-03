@@ -11,7 +11,7 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU
- * All portions are Copyright (C) 2010-2018 Openbravo SLU
+ * All portions are Copyright (C) 2010-2019 Openbravo SLU
  * All Rights Reserved.
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -141,7 +141,7 @@ isc.OBGrid.addProperties({
         return OB.Utilities.getPromptString(cellErrors);
       }
     }
-    if (record && record[isc.OBViewGrid.ERROR_MESSAGE_PROP]) {
+    if (record[isc.OBViewGrid.ERROR_MESSAGE_PROP]) {
       return record[isc.OBViewGrid.ERROR_MESSAGE_PROP];
     }
 
@@ -1054,11 +1054,7 @@ isc.OBGrid.addProperties({
   },
 
   clearFilter: function(keepFilterClause, noPerformAction) {
-    var i = 0,
-      fld,
-      length,
-      groupState,
-      forceRefresh;
+    var i, fld, length, groupState, forceRefresh;
     if (this.lazyFiltering) {
       noPerformAction = true;
       if (this.sorter) {
@@ -1991,7 +1987,7 @@ isc.OBViewGridBody.addProperties({
       newDrawArea = this.getDrawArea();
       drawArea = this._oldDrawArea;
       if (!drawArea) {
-        drawArea = this._oldDrawArea = [0, 0, 0, 0];
+        this._oldDrawArea = [0, 0, 0, 0];
       }
 
       firstRecord = grid.getRecord(newDrawArea[0]);

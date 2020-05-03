@@ -26,8 +26,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openbravo.base.provider.OBProvider;
 import org.openbravo.dal.service.OBDal;
-import org.openbravo.model.ad.utility.DataSet;
-import org.openbravo.service.dataset.DataSetService;
 import org.openbravo.service.importprocess.ImportEntry;
 import org.openbravo.service.importprocess.ImportEntryArchive;
 import org.openbravo.test.base.OBBaseTest;
@@ -42,11 +40,8 @@ import org.openbravo.test.base.OBBaseTest;
 public class ImportEntrySizeTest extends OBBaseTest {
   private static final long SIZE = 1000 * 1000 * 10;
 
-  /**
-   * Test the {@link DataSetService#hasChanged(DataSet, Date)} method.
-   */
   @Test
-  public void testChangedDataSet() {
+  public void doTest() {
     setTestAdminContext();
 
     // create a random string

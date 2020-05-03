@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2009-2016 Openbravo SLU 
+ * All portions are Copyright (C) 2009-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -25,13 +25,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.QueryTimeoutException;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.hibernate.QueryTimeoutException;
 import org.openbravo.authentication.AuthenticationManager;
 import org.openbravo.base.exception.OBException;
 import org.openbravo.base.exception.OBSecurityException;
@@ -238,10 +239,7 @@ public class JsonUtils {
         error.put("message", "OBUIAPP_ActionNotAllowed");
         error.put("type", "user");
         jsonResponse.put(JsonConstants.RESPONSE_ERROR, error);
-      } else if (localThrowable instanceof SQLTimeoutException
-          || localThrowable instanceof QueryTimeoutException
-          || (localThrowable.getCause() instanceof PSQLException && PG_QUERY_CANCELED
-              .equals(((PSQLException) localThrowable.getCause()).getSQLState()))) {
+      } else if (isQueryTimeout(localThrowable)) {
         final JSONObject error = new JSONObject();
         if (vars != null) {
           error.put("message", Utility.messageBD(new DalConnectionProvider(false),
@@ -269,6 +267,22 @@ public class JsonUtils {
     } catch (Exception e) {
       throw new IllegalStateException(e);
     }
+  }
+
+  private static boolean isQueryTimeout(Throwable localThrowable) {
+    // In case of query timeout in Hibernate, Oracle throws javax.persistence.QueryTimeoutException
+    // but PostgreSQL javax.persistence.PersistenceException, in PG the only way to get the root
+    // cause is to get the cause's cause and check SQL state.
+    if (localThrowable instanceof SQLTimeoutException
+        || localThrowable instanceof QueryTimeoutException) {
+      return true;
+    }
+
+    Throwable cause = localThrowable.getCause();
+    cause = cause != null ? cause.getCause() : cause;
+
+    return cause instanceof PSQLException
+        && PG_QUERY_CANCELED.equals(((PSQLException) cause).getSQLState());
   }
 
   /**

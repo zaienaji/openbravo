@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2010-2011 Openbravo SLU 
+ * All portions are Copyright (C) 2010-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -39,9 +39,6 @@ import org.openbravo.erpCommon.ad_process.buildStructure.BuildMainStepTranslatio
 import org.openbravo.erpCommon.ad_process.buildStructure.BuildTranslation;
 import org.openbravo.erpCommon.utility.OBError;
 import org.openbravo.erpCommon.utility.Utility;
-
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
 
 public class ApplyModulesCallServlet extends HttpBaseServlet {
   private static final long serialVersionUID = 1L;
@@ -98,7 +95,7 @@ public class ApplyModulesCallServlet extends HttpBaseServlet {
         ps.setString(1, "%" + state);
         ps.executeQuery();
         ResultSet rs = ps.getResultSet();
-        ArrayList<String> warnings = new ArrayList<String>();
+        ArrayList<String> warnings = new ArrayList<>();
         while (rs.next()) {
           warning = true; // there is at least an warning in this state
           int linenumber = rs.getInt(2);
@@ -109,14 +106,14 @@ public class ApplyModulesCallServlet extends HttpBaseServlet {
             warnings.add(rs.getString(1));
           }
         }
-        resp.setWarnings(warnings.toArray(new String[0]));
+        resp.setWarnings(warnings);
 
         ps2 = getPreparedStatement(
             "SELECT MESSAGE, LINE_NUMBER FROM AD_ERROR_LOG WHERE ERROR_LEVEL='ERROR' AND SYSTEM_STATUS LIKE ?");
         ps2.setString(1, "%" + state);
         ps2.executeQuery();
         ResultSet rs2 = ps2.getResultSet();
-        ArrayList<String> errors = new ArrayList<String>();
+        ArrayList<String> errors = new ArrayList<>();
         while (rs2.next()) {
           error = true; // there is at least an error in this state
           int linenumber = rs2.getInt(2);
@@ -127,9 +124,8 @@ public class ApplyModulesCallServlet extends HttpBaseServlet {
             errors.add(rs2.getString(1));
           }
         }
-        resp.setErrors(errors.toArray(new String[0]));
-        vars.setSessionValue("ApplyModules|Last_Line_Number_Log",
-            Integer.valueOf(newlinenumber).toString());
+        resp.setErrors(errors);
+        vars.setSessionValue("ApplyModules|Last_Line_Number_Log", Integer.toString(newlinenumber));
       }
       ps3 = getPreparedStatement("SELECT MESSAGE FROM AD_ERROR_LOG ORDER BY CREATED DESC");
       ps3.executeQuery();
@@ -172,20 +168,19 @@ public class ApplyModulesCallServlet extends HttpBaseServlet {
     resp.setState(Integer.parseInt(fState.replace("RB", "")));
     PreparedStatement ps2 = null;
     PreparedStatement ps3 = null;
-    boolean warning = false;
     boolean error = false;
     try {
       ps2 = getPreparedStatement(
           "SELECT MESSAGE, SYSTEM_STATUS, LINE_NUMBER FROM AD_ERROR_LOG WHERE ERROR_LEVEL='ERROR' AND MESSAGE NOT LIKE 'Task%' AND MESSAGE NOT LIKE 'Target%' ORDER BY CREATED DESC");
       ps2.executeQuery();
       ResultSet rs2 = ps2.getResultSet();
-      ArrayList<String> errors = new ArrayList<String>();
+      ArrayList<String> errors = new ArrayList<>();
       while (rs2.next()) {
         error = true; // there is at least an error in this state
         errors.add(rs2.getString(1));
         resp.setState(Integer.parseInt(rs2.getString(2).replace("RB", "")));
       }
-      resp.setErrors(errors.toArray(new String[0]));
+      resp.setErrors(errors);
 
       ps3 = getPreparedStatement("SELECT MESSAGE FROM AD_ERROR_LOG ORDER BY CREATED ");
       ps3.executeQuery();
@@ -198,8 +193,6 @@ public class ApplyModulesCallServlet extends HttpBaseServlet {
 
       if (error) {
         resp.setStatusofstate("Error");
-      } else if (warning) {
-        resp.setStatusofstate("Warning");
       } else {
         resp.setStatusofstate(defaultState);
       }
@@ -236,11 +229,7 @@ public class ApplyModulesCallServlet extends HttpBaseServlet {
       ApplyModulesResponse resp = fillResponse(vars, state, "Processing", true);
       response.setContentType("text/plain; charset=UTF-8");
       final PrintWriter out = response.getWriter();
-      String strResult;
-      XStream xs = new XStream(new JettisonMappedXmlDriver());
-      xs.alias("Response", ApplyModulesResponse.class);
-      strResult = xs.toXML(resp);
-      out.print(strResult);
+      out.print(resp.toJSON());
       out.close();
     } catch (Exception e) {
       // We need to use printStackTrace here because if not, the log will not be shown
@@ -275,11 +264,7 @@ public class ApplyModulesCallServlet extends HttpBaseServlet {
     response.setContentType("text/plain; charset=UTF-8");
     try {
       final PrintWriter out = response.getWriter();
-      String strResult;
-      XStream xs = new XStream(new JettisonMappedXmlDriver());
-      xs.alias("Response", ApplyModulesResponse.class);
-      strResult = xs.toXML(resp);
-      out.print(strResult);
+      out.print(resp.toJSON());
       out.close();
     } catch (Exception e) {
       // We need to use printStackTrace here because if not, the log will not be shown
@@ -383,12 +368,9 @@ public class ApplyModulesCallServlet extends HttpBaseServlet {
         error.setMessage(message);
       }
 
-      XStream xs = new XStream(new JettisonMappedXmlDriver());
-      xs.alias("OBError", OBError.class);
-      String strResult = xs.toXML(error);
       response.setContentType("text/html; charset=UTF-8");
       final PrintWriter out = response.getWriter();
-      out.print(strResult);
+      out.print(error.toJSON().toString());
       out.close();
 
       PreparedStatement psErr = getPreparedStatement(

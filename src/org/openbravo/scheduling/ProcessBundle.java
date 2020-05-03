@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2008-2018 Openbravo SLU 
+ * All portions are Copyright (C) 2008-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -31,9 +31,6 @@ import org.openbravo.database.ConnectionProvider;
 import org.openbravo.database.SessionInfo;
 import org.openbravo.erpCommon.ad_process.JasperProcess;
 import org.openbravo.erpCommon.ad_process.PinstanceProcedure;
-
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
 
 /**
  * A ProcessBundle is a 'container' holding all the relevant information required to execute a
@@ -229,13 +226,14 @@ public class ProcessBundle {
   }
 
   /**
-   * Returns the parameters for this process. This is guaranteed not to be null.
+   * Returns the parameters for this process. This is guaranteed not to be null. For the moment only
+   * parameters of type String or JSONObject are supported.
    * 
    * @return the process parameter map
    */
   public Map<String, Object> getParams() {
     if (params == null) {
-      params = new HashMap<String, Object>();
+      params = new HashMap<>();
     }
     return params;
   }
@@ -253,8 +251,7 @@ public class ProcessBundle {
   }
 
   public String getParamsDeflated() {
-    final XStream xstream = new XStream(new JettisonMappedXmlDriver());
-    return xstream.toXML(getParams());
+    return ParameterSerializer.getInstance().serialize(getParams());
   }
 
   /**
@@ -425,9 +422,8 @@ public class ProcessBundle {
    *          a connection to the database
    * @return a new ProcessBundle object based on the information in the request
    * @throws ServletException
-   *           if an error occurrs retrieving the request from the database
+   *           if an error occurs retrieving the request from the database
    */
-  @SuppressWarnings("unchecked")
   public static final ProcessBundle request(String requestId, VariablesSecureApp vars,
       ConnectionProvider conn) throws ServletException {
     final ProcessRequestData data = ProcessRequestData.select(conn, requestId);
@@ -447,8 +443,7 @@ public class ProcessBundle {
     if (paramString == null || paramString.trim().equals("")) {
       bundle.setParams(new HashMap<String, Object>());
     } else {
-      final XStream xstream = new XStream(new JettisonMappedXmlDriver());
-      bundle.setParams((Map<String, Object>) xstream.fromXML(paramString));
+      bundle.setParams(ParameterSerializer.getInstance().deserialize(paramString));
     }
 
     return bundle;

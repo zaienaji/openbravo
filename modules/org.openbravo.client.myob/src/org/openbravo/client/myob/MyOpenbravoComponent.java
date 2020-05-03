@@ -11,7 +11,7 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU
- * All portions are Copyright (C) 2010-2018 Openbravo SLU
+ * All portions are Copyright (C) 2010-2019 Openbravo SLU
  * All Rights Reserved.
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -291,6 +291,10 @@ public class MyOpenbravoComponent extends SessionDynamicTemplateComponent {
     final Organization orgZero = OBDal.getInstance().get(Organization.class, "0");
     boolean copyDone = false;
     for (WidgetInstance defaultWidget : defaultWidgets) {
+      if (!accessibleWidgetClasses.contains(defaultWidget.getWidgetClass().getId())) {
+        // do not copy a widget if its widget class is not accessible
+        continue;
+      }
       boolean defaultWidgetPresent = false;
       for (WidgetInstance copiedWidget : copiedWidgets) {
         if (copiedWidget.getCopiedFrom().getId().equals(defaultWidget.getId())) {

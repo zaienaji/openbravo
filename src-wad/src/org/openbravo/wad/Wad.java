@@ -764,14 +764,11 @@ public class Wad extends DefaultHandler {
       WadData[][] servletParams = null;
       if (servlets != null && servlets.length > 0) {
         servletParams = new WadData[servlets.length][];
-        String loadOnStartup;
         for (int i = 0; i < servlets.length; i++) {
           if (servlets[i].loadonstartup != null && !servlets[i].loadonstartup.equals("")) {
-            loadOnStartup = servlets[i].loadonstartup;
-          } else {
-            loadOnStartup = "9999";
+            servlets[i].loadonstartup = "<load-on-startup>" + servlets[i].loadonstartup
+                + "</load-on-startup>";
           }
-          servlets[i].loadonstartup = "<load-on-startup>" + loadOnStartup + "</load-on-startup>";
           servletParams[i] = WadData.selectParams(pool, "S", servlets[i].classname, servlets[i].id);
         }
       } else {

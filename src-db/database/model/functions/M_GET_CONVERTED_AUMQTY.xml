@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
   <database name="FUNCTION M_GET_CONVERTED_AUMQTY">
-    <function name="M_GET_CONVERTED_AUMQTY" type="NUMERIC">
+    <function name="M_GET_CONVERTED_AUMQTY" type="NUMERIC" volatility="STABLE">
       <parameter name="p_mproductid" type="VARCHAR" mode="in">
         <default/>
       </parameter>
@@ -22,7 +22,7 @@
 * under the License.
 * The Original Code is Openbravo ERP.
 * The Initial Developer of the Original Code is Openbravo SLU
-* All portions are Copyright (C) 2016 Openbravo SLU
+* All portions are Copyright (C) 2016-2019 Openbravo SLU
 * All Rights Reserved.
 * Contributor(s):  ______________________________________.
 *

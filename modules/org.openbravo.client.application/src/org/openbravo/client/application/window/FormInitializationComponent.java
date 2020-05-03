@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2010-2018 Openbravo SLU 
+ * All portions are Copyright (C) 2010-2019 Openbravo SLU
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -35,15 +35,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.hibernate.criterion.Restrictions;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.NativeArray;
-import org.mozilla.javascript.Scriptable;
 import org.openbravo.base.exception.OBException;
 import org.openbravo.base.model.Entity;
 import org.openbravo.base.model.ModelProvider;
@@ -1481,9 +1479,9 @@ public class FormInitializationComponent extends BaseActionHandler {
         }
 
         if (!(calloutObject instanceof HttpServlet) && !(calloutObject instanceof SimpleCallout)) {
-          log.info("Callout " + calloutClassName
-              + " only allows reference instances of type SimpleCallout and HttpServlet but the callout is an instance of "
-              + calloutObject.getClass().getName());
+          log.info(
+              "Callout {} only allows reference instances of type SimpleCallout and HttpServlet but the callout is an instance of {}",
+              calloutClassName, calloutObject.getClass().getName());
           continue;
         }
 
@@ -1509,7 +1507,9 @@ public class FormInitializationComponent extends BaseActionHandler {
 
           calloutResponseManager = new SimpleCalloutInformationProvider(result);
         } else {
-          // We then execute the callout
+          log.debug(
+              "Callout {} executed in tab {} does not implement SimpleCallout. This is deprecated, consider reimplementing it.",
+              calloutClassName, tab);
           HttpServlet calloutInstance = (HttpServlet) calloutObject;
           CalloutHttpServletResponse fakeResponse = new CalloutHttpServletResponse(
               request.getResponse());
@@ -1517,7 +1517,6 @@ public class FormInitializationComponent extends BaseActionHandler {
           if (isCalloutInitialized) {
             Method doPost = calloutClass.getMethod("doPost", HttpServletRequest.class,
                 HttpServletResponse.class);
-            doPost.setAccessible(true);
             doPost.invoke(calloutInstance, request.getRequest(), fakeResponse);
           } else {
             calloutInstance.init(config);
@@ -1525,18 +1524,19 @@ public class FormInitializationComponent extends BaseActionHandler {
           }
 
           String calloutResponse = fakeResponse.getOutputFromWriter();
-          // Now we parse the callout response and modify the stored values of the columns modified
-          // by the callout
-          ArrayList<NativeArray> returnedArray = new ArrayList<NativeArray>();
-          String calloutNameJS = parseCalloutResponse(calloutResponse, returnedArray);
-          if (calloutNameJS != null && calloutNameJS != "") {
+
+          HttpServletCalloutInformationProvider httpCalloutManager = new HttpServletCalloutInformationProvider(
+              calloutResponse);
+          httpCalloutManager.parseResponse();
+          String calloutNameJS = httpCalloutManager.getCalloutName();
+          if (StringUtils.isNotBlank(calloutClassName)) {
             calledCallouts.add(calloutNameJS);
           }
 
-          calloutResponseManager = new HttpServletCalloutInformationProvider(returnedArray);
+          calloutResponseManager = httpCalloutManager;
         }
 
-        managesUpdatedValuesForCallout(columnValues, tab, calloutsToCall, lastfieldChangedList,
+        manageUpdatedValuesForCallout(columnValues, tab, calloutsToCall, lastfieldChangedList,
             messages, dynamicCols, jsExecuteCode, hiddenInputs, overwrittenAuxiliaryInputs,
             changedCols, inpFields, calloutClassName, request, calloutResponseManager);
 
@@ -1553,7 +1553,7 @@ public class FormInitializationComponent extends BaseActionHandler {
 
   }
 
-  private void managesUpdatedValuesForCallout(Map<String, JSONObject> columnValues, Tab tab,
+  private void manageUpdatedValuesForCallout(Map<String, JSONObject> columnValues, Tab tab,
       List<String> calloutsToCall, List<String> lastfieldChangedList, List<JSONObject> messages,
       List<String> dynamicCols, List<String> jsExecuteCode, Map<String, Object> hiddenInputs,
       List<String> overwrittenAuxiliaryInputs, List<String> changedCols,
@@ -1561,7 +1561,7 @@ public class FormInitializationComponent extends BaseActionHandler {
       CalloutInformationProvider calloutInformationProvider) throws JSONException {
     Object element = calloutInformationProvider.getNextElement();
     while (element != null) {
-      String name = (String) calloutInformationProvider.getCurrentElementName();
+      String name = calloutInformationProvider.getCurrentElementName();
       if (name.equals("MESSAGE") || name.equals("INFO") || name.equals("WARNING")
           || name.equals("ERROR") || name.equals("SUCCESS")) {
         log.debug("Callout message: " + calloutInformationProvider.getCurrentElementValue(element));
@@ -1723,31 +1723,6 @@ public class FormInitializationComponent extends BaseActionHandler {
       listOfCallouts.add(calloutClassNameToCall);
       lastFieldChangedList.add("inp" + Sqlc.TransformaNombreColumna(col.getDBColumnName()));
     }
-  }
-
-  private String parseCalloutResponse(String calloutResponse, List<NativeArray> returnedArray) {
-    String initS = "id=\"paramArray\">";
-    String resp = calloutResponse.substring(calloutResponse.indexOf(initS) + initS.length());
-    resp = resp.substring(0, resp.indexOf("</SCRIPT")).trim();
-    if (!resp.contains("new Array(") && !resp.contains("[[")) {
-      return null;
-    }
-    try {
-      Context cx = Context.enter();
-      Scriptable scope = cx.initStandardObjects();
-      cx.evaluateString(scope, resp, "<cmd>", 1, null);
-      NativeArray array = (NativeArray) scope.get("respuesta", scope);
-      Object calloutName = scope.get("calloutName", scope);
-      String calloutNameS = calloutName == null ? null : calloutName.toString();
-      log.debug("Callout Name: " + calloutNameS);
-      for (int i = 0; i < array.getLength(); i++) {
-        returnedArray.add((NativeArray) array.get(i, null));
-      }
-      return calloutNameS;
-    } catch (Exception e) {
-      log.error("Couldn't parse callout response. The parsed response was: " + resp, e);
-    }
-    return null;
   }
 
   private String pickDependantColumn(List<String> sortedColumns, List<String> columns,

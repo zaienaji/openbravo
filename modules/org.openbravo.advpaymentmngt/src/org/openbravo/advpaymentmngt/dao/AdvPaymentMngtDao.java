@@ -20,7 +20,6 @@
 package org.openbravo.advpaymentmngt.dao;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -44,7 +43,6 @@ import org.openbravo.advpaymentmngt.utility.Value;
 import org.openbravo.base.exception.OBException;
 import org.openbravo.base.provider.OBProvider;
 import org.openbravo.base.secureApp.VariablesSecureApp;
-import org.openbravo.base.session.OBPropertiesProvider;
 import org.openbravo.base.structure.BaseOBObject;
 import org.openbravo.dal.core.DalUtil;
 import org.openbravo.dal.core.OBContext;
@@ -60,7 +58,6 @@ import org.openbravo.model.common.businesspartner.BusinessPartner;
 import org.openbravo.model.common.currency.Currency;
 import org.openbravo.model.common.enterprise.DocumentType;
 import org.openbravo.model.common.enterprise.Organization;
-import org.openbravo.model.common.enterprise.OrganizationInformation;
 import org.openbravo.model.common.invoice.Invoice;
 import org.openbravo.model.common.order.Order;
 import org.openbravo.model.common.plm.Product;
@@ -81,7 +78,6 @@ import org.openbravo.model.financialmgmt.payment.FIN_Reconciliation;
 import org.openbravo.model.financialmgmt.payment.FinAccPaymentMethod;
 import org.openbravo.model.financialmgmt.payment.PaymentExecutionProcess;
 import org.openbravo.model.financialmgmt.payment.PaymentExecutionProcessParameter;
-import org.openbravo.model.financialmgmt.payment.PaymentPriority;
 import org.openbravo.model.financialmgmt.payment.PaymentRun;
 import org.openbravo.model.financialmgmt.payment.PaymentRunParameter;
 import org.openbravo.model.financialmgmt.payment.PaymentRunPayment;
@@ -175,305 +171,6 @@ public class AdvPaymentMngtDao {
       final OBQuery<FIN_PaymentScheduleDetail> obqPSD = OBDal.getInstance()
           .createQuery(FIN_PaymentScheduleDetail.class, whereClause.toString());
 
-      return obqPSD.list();
-
-    } finally {
-      OBContext.restorePreviousMode();
-    }
-  }
-
-  public List<FIN_PaymentScheduleDetail> getFilteredScheduledPaymentDetails(
-      Organization organization, BusinessPartner businessPartner, Currency currency,
-      Date dueDateFrom, Date dueDateTo, String strTransactionType, FIN_PaymentMethod paymentMethod,
-      List<FIN_PaymentScheduleDetail> selectedScheduledPaymentDetails, boolean isReceipt) {
-    return getFilteredScheduledPaymentDetails(organization, businessPartner, currency, dueDateFrom,
-        dueDateTo, null, null, strTransactionType, "", paymentMethod,
-        selectedScheduledPaymentDetails, isReceipt);
-  }
-
-  public List<FIN_PaymentScheduleDetail> getFilteredScheduledPaymentDetails(
-      Organization organization, BusinessPartner businessPartner, Currency currency,
-      Date dueDateFrom, Date dueDateTo, Date transactionDateFrom, Date transactionDateTo,
-      String strTransactionType, String strDocumentNo, FIN_PaymentMethod paymentMethod,
-      List<FIN_PaymentScheduleDetail> selectedScheduledPaymentDetails, boolean isReceipt) {
-    return getFilteredScheduledPaymentDetails(organization, businessPartner, currency, dueDateFrom,
-        dueDateTo, null, null, transactionDateFrom, transactionDateTo, strTransactionType, "",
-        paymentMethod, selectedScheduledPaymentDetails, isReceipt, "", "");
-  }
-
-  public List<FIN_PaymentScheduleDetail> getFilteredScheduledPaymentDetails(
-      Organization organization, BusinessPartner businessPartner, Currency currency,
-      Date dueDateFrom, Date dueDateTo, Date transactionDateFrom, Date transactionDateTo,
-      String strTransactionType, String strDocumentNo, FIN_PaymentMethod paymentMethod,
-      List<FIN_PaymentScheduleDetail> selectedScheduledPaymentDetails, boolean isReceipt,
-      String strAmountFrom, String strAmountTo) {
-    return getFilteredScheduledPaymentDetails(organization, businessPartner, currency, dueDateFrom,
-        dueDateTo, null, null, transactionDateFrom, transactionDateTo, strTransactionType, "",
-        paymentMethod, selectedScheduledPaymentDetails, isReceipt, strAmountFrom, strAmountTo);
-  }
-
-  public List<FIN_PaymentScheduleDetail> getFilteredScheduledPaymentDetails(
-      Organization organization, BusinessPartner businessPartner, Currency currency,
-      Date dueDateFrom, Date dueDateTo, Date expectedDateFrom, Date expectedDateTo,
-      Date transactionDateFrom, Date transactionDateTo, String strTransactionType,
-      String strDocumentNo, FIN_PaymentMethod paymentMethod,
-      List<FIN_PaymentScheduleDetail> selectedScheduledPaymentDetails, boolean isReceipt) {
-    return getFilteredScheduledPaymentDetails(organization, businessPartner, currency, dueDateFrom,
-        dueDateTo, expectedDateFrom, expectedDateTo, null, null, strTransactionType, "",
-        paymentMethod, selectedScheduledPaymentDetails, isReceipt, "", "");
-  }
-
-  public List<FIN_PaymentScheduleDetail> getFilteredScheduledPaymentDetails(
-      Organization organization, BusinessPartner businessPartner, Currency currency,
-      Date dueDateFrom, Date dueDateTo, Date expectedDateFrom, Date expectedDateTo,
-      Date transactionDateFrom, Date transactionDateTo, String strTransactionType,
-      String strDocumentNo, FIN_PaymentMethod paymentMethod,
-      List<FIN_PaymentScheduleDetail> selectedScheduledPaymentDetails, boolean isReceipt,
-      String strAmountFrom, String strAmountTo) {
-
-    final StringBuilder whereClause = new StringBuilder();
-    final Map<String, Object> parameters = new HashMap<>();
-
-    // FIXME: added to access the FIN_PaymentSchedule and FIN_PaymentScheduleDetail tables to be
-    // removed when new security implementation is done
-    OBContext.setAdminMode();
-    try {
-
-      whereClause.append(" as psd "); // pending scheduled payments //
-      whereClause.append(" left outer join psd.orderPaymentSchedule as ops ");
-      whereClause.append(" left outer join ops.order as ord");
-      whereClause.append(" left outer join ops.fINPaymentPriority as opriority");
-      whereClause.append(" left outer join psd.invoicePaymentSchedule as ips ");
-      whereClause.append(" left outer join ips.invoice as inv");
-      whereClause.append(" left outer join ips.fINPaymentPriority as ipriority");
-      whereClause.append(" left outer join psd.organization as org");
-      whereClause.append(" left outer join org.organizationInformationList as oinfo");
-      whereClause.append(" where psd.");
-      whereClause.append(FIN_PaymentScheduleDetail.PROPERTY_PAYMENTDETAILS);
-      whereClause.append(" is null");
-      whereClause.append(" and psd.");
-      whereClause.append(FIN_PaymentSchedule.PROPERTY_ORGANIZATION);
-      whereClause.append(".id in (");
-      whereClause.append(Utility.getInStrSet(OBContext.getOBContext()
-          .getOrganizationStructureProvider()
-          .getNaturalTree(organization.getId())));
-      whereClause.append(")");
-      whereClause.append(" and (oinfo is null or oinfo.active = true)");
-
-      // remove selected payments
-      if (selectedScheduledPaymentDetails != null && !selectedScheduledPaymentDetails.isEmpty()) {
-        String strSelectedPaymentDetails = Utility.getInStrList(selectedScheduledPaymentDetails);
-        whereClause.append(" and psd not in (");
-        whereClause.append(strSelectedPaymentDetails);
-        whereClause.append(")");
-      }
-
-      // block schedule payments in other payment proposal
-      final OBCriteria<FIN_PaymentPropDetail> obc = OBDal.getInstance()
-          .createCriteria(FIN_PaymentPropDetail.class);
-      obc.add(Restrictions.isNotNull(FIN_PaymentPropDetail.PROPERTY_FINPAYMENTSCHEDULEDETAIL));
-      List<FIN_PaymentPropDetail> paymentPropDetailList = obc.list();
-      if (paymentPropDetailList != null && !paymentPropDetailList.isEmpty()) {
-        List<FIN_PaymentScheduleDetail> aux = new ArrayList<>();
-        for (FIN_PaymentPropDetail ppd : paymentPropDetailList) {
-          aux.add(ppd.getFINPaymentScheduledetail());
-        }
-        whereClause.append(" and psd.id not in (" + Utility.getInStrList(aux) + ")");
-      }
-      if (!StringUtils.isEmpty(strAmountFrom)) {
-        whereClause.append(" and psd.");
-        whereClause.append(FIN_PaymentScheduleDetail.PROPERTY_AMOUNT);
-        whereClause.append(" >= ");
-        whereClause.append(strAmountFrom);
-        whereClause.append(" ");
-      }
-      if (!StringUtils.isEmpty(strAmountTo)) {
-        whereClause.append(" and psd.");
-        whereClause.append(FIN_PaymentScheduleDetail.PROPERTY_AMOUNT);
-        whereClause.append(" <= ");
-        whereClause.append(strAmountTo);
-        whereClause.append(" ");
-      }
-      // Transaction type filter
-      whereClause.append(" and (");
-      if (strTransactionType.equals("I") || strTransactionType.equals("B")) {
-        whereClause.append(" (inv is not null");
-        if (businessPartner != null) {
-          whereClause.append(" and inv.");
-          whereClause.append(Invoice.PROPERTY_BUSINESSPARTNER);
-          whereClause.append(".id = '");
-          whereClause.append(businessPartner.getId());
-          whereClause.append("'");
-        }
-        if (paymentMethod != null) {
-          whereClause.append(" and inv.");
-          whereClause.append(Invoice.PROPERTY_PAYMENTMETHOD);
-          whereClause.append(".id = '");
-          whereClause.append(paymentMethod.getId());
-          whereClause.append("'");
-        }
-        if (transactionDateFrom != null) {
-          whereClause.append(" and inv.");
-          whereClause.append(Invoice.PROPERTY_INVOICEDATE);
-          whereClause.append(" >= :transactionDateFrom");
-          parameters.put("transactionDateFrom", transactionDateFrom);
-        }
-        if (transactionDateTo != null) {
-          whereClause.append(" and inv.");
-          whereClause.append(Invoice.PROPERTY_INVOICEDATE);
-          whereClause.append(" < :transactionDateTo");
-          parameters.put("transactionDateTo", transactionDateTo);
-        }
-        whereClause.append(" and inv.");
-        whereClause.append(Invoice.PROPERTY_SALESTRANSACTION);
-        whereClause.append(" = ");
-        whereClause.append(isReceipt);
-
-        // Invoice Document No. filter
-        if (!StringUtils.isEmpty(strDocumentNo)) {
-          whereClause.append(" and (case when");
-          whereClause.append(" (inv.");
-          whereClause.append(Invoice.PROPERTY_SALESTRANSACTION);
-          whereClause.append(" = false");
-          whereClause.append(" and oinfo is not null");
-          whereClause.append(" and oinfo.");
-          whereClause.append(OrganizationInformation.PROPERTY_APRMPAYMENTDESCRIPTION);
-          whereClause.append(" like 'Supplier Reference')");
-          whereClause.append(" then ");
-          // When the Organization of the Invoice sets that the Invoice Document No. is the
-          // supplier's
-          whereClause.append(" inv.");
-          whereClause.append(Invoice.PROPERTY_ORDERREFERENCE);
-          whereClause.append(" else ");
-          // When the Organization of the Invoice sets that the Invoice Document No. is the default
-          // Invoice Number
-          whereClause.append(" inv.");
-          whereClause.append(Invoice.PROPERTY_DOCUMENTNO);
-          whereClause.append(" end) ");
-          whereClause.append(" like '%");
-          whereClause.append(strDocumentNo);
-          whereClause.append("%' ");
-        }
-
-        whereClause.append(" and inv.");
-        whereClause.append(Invoice.PROPERTY_CURRENCY);
-        whereClause.append(".id = '");
-        whereClause.append(currency.getId());
-        whereClause.append("')");
-
-      }
-      if (strTransactionType.equals("B")) {
-        whereClause.append(" or ");
-      }
-      if (strTransactionType.equals("O") || strTransactionType.equals("B")) {
-        whereClause.append(" (ord is not null");
-        if (businessPartner != null) {
-          whereClause.append(" and ord.");
-          whereClause.append(Order.PROPERTY_BUSINESSPARTNER);
-          whereClause.append(".id = '");
-          whereClause.append(businessPartner.getId());
-          whereClause.append("'");
-        }
-        if (paymentMethod != null) {
-          whereClause.append(" and ord.");
-          whereClause.append(Order.PROPERTY_PAYMENTMETHOD);
-          whereClause.append(".id = '");
-          whereClause.append(paymentMethod.getId());
-          whereClause.append("'");
-        }
-        if (transactionDateFrom != null) {
-          whereClause.append(" and ord.");
-          whereClause.append(Order.PROPERTY_ORDERDATE);
-          whereClause.append(" >= :transactionDateFrom");
-          parameters.put("transactionDateFrom", transactionDateFrom);
-        }
-        if (transactionDateTo != null) {
-          whereClause.append(" and ord.");
-          whereClause.append(Order.PROPERTY_ORDERDATE);
-          whereClause.append(" < :transactionDateTo");
-          parameters.put("transactionDateTo", transactionDateTo);
-        }
-        if (!StringUtils.isEmpty(strDocumentNo)) {
-          whereClause.append(" and ord.");
-          whereClause.append(Order.PROPERTY_DOCUMENTNO);
-          whereClause.append(" like '%");
-          whereClause.append(strDocumentNo);
-          whereClause.append("%' ");
-        }
-        whereClause.append(" and ord.");
-        whereClause.append(Order.PROPERTY_SALESTRANSACTION);
-        whereClause.append(" = ");
-        whereClause.append(isReceipt);
-        whereClause.append(" and ord.");
-        whereClause.append(Order.PROPERTY_CURRENCY);
-        whereClause.append(".id = '");
-        whereClause.append(currency.getId());
-        whereClause.append("')");
-      }
-      whereClause.append(")");
-      // dateFrom
-      if (dueDateFrom != null) {
-        whereClause.append(" and COALESCE(ips.");
-        whereClause.append(FIN_PaymentSchedule.PROPERTY_DUEDATE);
-        whereClause.append(", ops.");
-        whereClause.append(FIN_PaymentSchedule.PROPERTY_DUEDATE);
-        whereClause.append(") >= :dueDateFrom");
-        parameters.put("dueDateFrom", dueDateFrom);
-      }
-      // dateTo
-      if (dueDateTo != null) {
-        whereClause.append(" and COALESCE(ips.");
-        whereClause.append(FIN_PaymentSchedule.PROPERTY_DUEDATE);
-        whereClause.append(", ops.");
-        whereClause.append(FIN_PaymentSchedule.PROPERTY_DUEDATE);
-        whereClause.append(") < :dueDateTo");
-        parameters.put("dueDateTo", dueDateTo);
-      }
-
-      // expecteddateFrom
-      if (expectedDateFrom != null) {
-        whereClause.append(" and COALESCE(ips.");
-        whereClause.append(FIN_PaymentSchedule.PROPERTY_EXPECTEDDATE);
-        whereClause.append(", ops.");
-        whereClause.append(FIN_PaymentSchedule.PROPERTY_EXPECTEDDATE);
-        whereClause.append(") >= :expectedDateFrom");
-        parameters.put("expectedDateFrom", expectedDateFrom);
-      }
-      // expecteddateTo
-      if (expectedDateTo != null) {
-        whereClause.append(" and COALESCE(ips.");
-        whereClause.append(FIN_PaymentSchedule.PROPERTY_EXPECTEDDATE);
-        whereClause.append(", ops.");
-        whereClause.append(FIN_PaymentSchedule.PROPERTY_EXPECTEDDATE);
-        whereClause.append(") < :expectedDateTo");
-        parameters.put("expectedDateTo", expectedDateTo);
-      }
-
-      // TODO: Add order to show first scheduled payments from invoices and later scheduled payments
-      // from not invoiced orders.
-      whereClause.append(" order by");
-      whereClause.append(" COALESCE(ipriority.");
-      whereClause.append(PaymentPriority.PROPERTY_PRIORITY);
-      whereClause.append(", opriority.");
-      whereClause.append(PaymentPriority.PROPERTY_PRIORITY);
-      whereClause.append(")");
-      whereClause.append(", ");
-      whereClause.append(" COALESCE(ips.");
-      whereClause.append(FIN_PaymentSchedule.PROPERTY_EXPECTEDDATE);
-      whereClause.append(", ops.");
-      whereClause.append(FIN_PaymentSchedule.PROPERTY_EXPECTEDDATE);
-      whereClause.append(")");
-      whereClause.append(", COALESCE(inv.");
-      whereClause.append(Invoice.PROPERTY_DOCUMENTNO);
-      whereClause.append(", ord.");
-      whereClause.append(Order.PROPERTY_DOCUMENTNO);
-      whereClause.append(")");
-      whereClause.append(", psd.");
-      whereClause.append(FIN_PaymentScheduleDetail.PROPERTY_AMOUNT);
-      final OBQuery<FIN_PaymentScheduleDetail> obqPSD = OBDal.getInstance()
-          .createQuery(FIN_PaymentScheduleDetail.class, whereClause.toString());
-
-      obqPSD.setNamedParameters(parameters);
       return obqPSD.list();
 
     } finally {
@@ -822,17 +519,6 @@ public class AdvPaymentMngtDao {
     return transaction;
   }
 
-  @Deprecated
-  public FIN_FinaccTransaction getNewFinancialTransaction(Organization organization,
-      Currency currency, FIN_FinancialAccount account, Long line, FIN_Payment payment,
-      String description, Date accountingDate, GLItem glItem, String status,
-      BigDecimal depositAmount, BigDecimal paymentAmount, Project project, Campaign campaing,
-      ABCActivity activity, String transactionType, Date statementDate) {
-    return getNewFinancialTransaction(organization, account, line, payment, description,
-        accountingDate, glItem, status, depositAmount, paymentAmount, project, campaing, activity,
-        transactionType, statementDate, null, null, null, null, null, null);
-  }
-
   public FIN_FinaccTransaction getNewFinancialTransaction(Organization organization,
       FIN_FinancialAccount account, Long line, FIN_Payment payment, String description,
       Date accountingDate, GLItem glItem, String status, BigDecimal depositAmount,
@@ -1003,6 +689,7 @@ public class AdvPaymentMngtDao {
       BigDecimal writeoffAmount, BigDecimal debtAmount) {
     final FIN_PaymentScheduleDetail newPaymentScheduleDetail = (FIN_PaymentScheduleDetail) DalUtil
         .copy(paymentScheduleDetail);
+    newPaymentScheduleDetail.setCreationDate(new Date());
     newPaymentScheduleDetail.setAmount(writeoffAmount);
     newPaymentScheduleDetail.setDoubtfulDebtAmount(debtAmount);
     OBDal.getInstance().save(newPaymentScheduleDetail);
@@ -1136,370 +823,6 @@ public class AdvPaymentMngtDao {
     }
   }
 
-  public int getTrxGridRowCount(FIN_FinancialAccount financialAccount, Boolean hideReconciledTrx,
-      int maxrowspergridpage, int offset) {
-    final StringBuilder whereClause = new StringBuilder();
-
-    OBContext.setAdminMode();
-    try {
-      whereClause.append(" as fatrx ");
-      whereClause.append(" left outer join fatrx.")
-          .append(FIN_FinaccTransaction.PROPERTY_RECONCILIATION)
-          .append(" as reconciliation");
-      whereClause.append(" where fatrx.");
-      whereClause.append(FIN_FinaccTransaction.PROPERTY_ACCOUNT);
-      whereClause.append(".id='");
-      whereClause.append(financialAccount.getId());
-      whereClause.append("'");
-      if (hideReconciledTrx) {
-        whereClause.append(" and (fatrx.")
-            .append(FIN_FinaccTransaction.PROPERTY_RECONCILIATION)
-            .append(" is null ");
-        whereClause.append(" or reconciliation.")
-            .append(FIN_Reconciliation.PROPERTY_PROCESSED)
-            .append(" = 'N') ");
-      }
-      final OBQuery<FIN_FinaccTransaction> obqFATrx = OBDal.getInstance()
-          .createQuery(FIN_FinaccTransaction.class, whereClause.toString());
-      obqFATrx.setFirstResult(offset);
-      obqFATrx.setMaxResult(maxrowspergridpage);
-      return obqFATrx.count();
-
-    } finally {
-      OBContext.restorePreviousMode();
-    }
-
-  }
-
-  public List<FIN_FinaccTransaction> getTrxGridRows(FIN_FinancialAccount financialAccount,
-      Boolean hideReconciledTrx, int pageSize, int offset, String orderBy) {
-    final StringBuilder whereClause = new StringBuilder();
-
-    OBContext.setAdminMode();
-    try {
-
-      whereClause.append(" as fatrx ");
-      whereClause.append(" left outer join fatrx.")
-          .append(FIN_FinaccTransaction.PROPERTY_RECONCILIATION)
-          .append(" as reconciliation");
-      whereClause.append(" where fatrx.");
-      whereClause.append(FIN_FinaccTransaction.PROPERTY_ACCOUNT);
-      whereClause.append(".id='");
-      whereClause.append(financialAccount.getId());
-      whereClause.append("'");
-      if (hideReconciledTrx) {
-        whereClause.append(" and (fatrx.")
-            .append(FIN_FinaccTransaction.PROPERTY_RECONCILIATION)
-            .append(" is null ");
-        whereClause.append(" or reconciliation.")
-            .append(FIN_Reconciliation.PROPERTY_PROCESSED)
-            .append(" = 'N') ");
-      }
-      whereClause.append(" order by ");
-      whereClause.append(orderBy);
-      if (!"".equals(orderBy)) {
-        whereClause.append(", ");
-      }
-      whereClause.append(" fatrx.").append(FIN_FinaccTransaction.PROPERTY_LINENO);
-      final OBQuery<FIN_FinaccTransaction> obqFATrx = OBDal.getInstance()
-          .createQuery(FIN_FinaccTransaction.class, whereClause.toString());
-      obqFATrx.setFirstResult(offset);
-      obqFATrx.setMaxResult(pageSize);
-      return obqFATrx.list();
-
-    } finally {
-      OBContext.restorePreviousMode();
-    }
-  }
-
-  public FieldProvider[] getPaymentsNotDeposited(FIN_FinancialAccount account, Date fromDate,
-      Date toDate, boolean isReceipt) {
-
-    String dateFormat = OBPropertiesProvider.getInstance()
-        .getOpenbravoProperties()
-        .getProperty("dateFormat.java");
-    SimpleDateFormat dateFormater = new SimpleDateFormat(dateFormat);
-    OBContext.setAdminMode();
-    try {
-      final StringBuilder whereClause = new StringBuilder();
-      final Map<String, Object> parameters = new HashMap<>();
-
-      whereClause.append(" as p ");
-      whereClause.append(" where p.");
-      whereClause.append(FIN_Payment.PROPERTY_ID);
-      whereClause.append(" not in ");
-      whereClause.append(" ( select coalesce(ft.");
-      whereClause.append(FIN_FinaccTransaction.PROPERTY_FINPAYMENT);
-      whereClause.append(".");
-      whereClause.append(FIN_Payment.PROPERTY_ID);
-      whereClause.append(", '-1') ");
-      whereClause.append(" from ");
-      whereClause.append(FIN_FinaccTransaction.TABLE_NAME);
-      whereClause.append(" as ft");
-      whereClause.append(" where ft.");
-      whereClause.append(FIN_FinaccTransaction.PROPERTY_ACCOUNT);
-      whereClause.append(".id = :accountId ");
-      whereClause.append(" and ft.");
-      whereClause.append(FIN_FinaccTransaction.PROPERTY_PROCESSED);
-      whereClause.append(" = true) ");
-      whereClause.append(" and p.");
-      whereClause.append(FIN_Payment.PROPERTY_ACCOUNT);
-      whereClause.append(".id = :accountId ");
-      whereClause.append(" and p.");
-      whereClause.append(FIN_Payment.PROPERTY_STATUS);
-      whereClause.append(" IN ('RPR', 'PPM')");
-      parameters.put("accountId", account.getId());
-      // IsReceipt
-      whereClause.append(" and p.");
-      whereClause.append(FIN_Payment.PROPERTY_RECEIPT);
-      whereClause.append(" = ");
-      whereClause.append(isReceipt);
-
-      whereClause.append(" and p.");
-      whereClause.append(FIN_Payment.PROPERTY_AMOUNT);
-      whereClause.append(" != ");
-      whereClause.append(BigDecimal.ZERO);
-
-      // From Date
-      if (fromDate != null) {
-        whereClause.append(" and p.");
-        whereClause.append(FIN_Payment.PROPERTY_PAYMENTDATE);
-        whereClause.append(" >= :fromDate ");
-        parameters.put("fromDate", fromDate);
-      }
-      // To Date
-      if (toDate != null) {
-        whereClause.append(" AND p.");
-        whereClause.append(FIN_Payment.PROPERTY_PAYMENTDATE);
-        whereClause.append(" < :toDate");
-        parameters.put("toDate", toDate);
-      }
-      // Order by date and payment no
-      whereClause.append(" ORDER BY p.");
-      whereClause.append(FIN_Payment.PROPERTY_PAYMENTDATE);
-      whereClause.append(", p.");
-      whereClause.append(FIN_Payment.PROPERTY_DOCUMENTNO);
-
-      final OBQuery<FIN_Payment> obqP = OBDal.getInstance()
-          .createQuery(FIN_Payment.class, whereClause.toString(), parameters);
-
-      List<FIN_Payment> paymentOBList = obqP.list();
-
-      FIN_Payment[] FIN_Payments = new FIN_Payment[0];
-      FIN_Payments = paymentOBList.toArray(FIN_Payments);
-      FieldProvider[] data = FieldProviderFactory.getFieldProviderArray(paymentOBList);
-
-      for (int i = 0; i < data.length; i++) {
-        Boolean paymentIsReceipt = FIN_Payments[i].isReceipt();
-
-        BigDecimal depositAmt = FIN_Utility.getDepositAmount(paymentIsReceipt,
-            FIN_Payments[i].getFinancialTransactionAmount());
-        BigDecimal paymentAmt = FIN_Utility.getPaymentAmount(paymentIsReceipt,
-            FIN_Payments[i].getFinancialTransactionAmount());
-        BigDecimal foreignDepositAmt = FIN_Utility.getDepositAmount(paymentIsReceipt,
-            FIN_Payments[i].getAmount());
-        BigDecimal foreignPaymentAmt = FIN_Utility.getPaymentAmount(paymentIsReceipt,
-            FIN_Payments[i].getAmount());
-
-        final Currency foreignCurrency = FIN_Payments[i].getCurrency();
-        FieldProviderFactory.setField(data[i], "finAcc", FIN_Payments[i].getAccount().getName());
-        FieldProviderFactory.setField(data[i], "paymentId", FIN_Payments[i].getId());
-        FieldProviderFactory.setField(data[i], "paymentInfo",
-            FIN_Payments[i].getDocumentNo() + " - "
-                + ((FIN_Payments[i].getBusinessPartner() != null)
-                    ? FIN_Payments[i].getBusinessPartner().getName()
-                    : "")
-                + " - " + FIN_Payments[i].getCurrency().getISOCode());
-
-        // Truncate description
-        String description = FIN_Payments[i].getDescription();
-        String truncateDescription = "";
-        if (description != null) {
-          truncateDescription = (description.length() > 57)
-              ? description.substring(0, 54).concat("...").toString()
-              : description;
-        }
-        FieldProviderFactory.setField(data[i], "paymentDescription",
-            (description != null && description.length() > 57) ? description : "");
-        FieldProviderFactory.setField(data[i], "paymentDescriptionTrunc", truncateDescription);
-
-        FieldProviderFactory.setField(data[i], "paymentDate",
-            dateFormater.format(FIN_Payments[i].getPaymentDate()).toString());
-        FieldProviderFactory.setField(data[i], "depositAmount",
-            FIN_Utility.multiCurrencyAmountToDisplay(depositAmt, account.getCurrency(),
-                foreignDepositAmt, foreignCurrency));
-        FieldProviderFactory.setField(data[i], "paymentAmount",
-            FIN_Utility.multiCurrencyAmountToDisplay(paymentAmt, account.getCurrency(),
-                foreignPaymentAmt, foreignCurrency));
-
-        FieldProviderFactory.setField(data[i], "rownum", "" + i);
-      }
-
-      return data;
-
-    } catch (Exception e) {
-      throw new OBException(e);
-    } finally {
-      OBContext.restorePreviousMode();
-    }
-  }
-
-  public FieldProvider[] getAlternativePaymentsNotDeposited(FIN_FinancialAccount account,
-      Date fromDate, Date toDate, boolean isReceipt) {
-
-    String dateFormat = OBPropertiesProvider.getInstance()
-        .getOpenbravoProperties()
-        .getProperty("dateFormat.java");
-    SimpleDateFormat dateFormater = new SimpleDateFormat(dateFormat);
-    OBContext.setAdminMode();
-    try {
-      final StringBuilder whereClause = new StringBuilder();
-      final Map<String, Object> parameters = new HashMap<>();
-
-      whereClause.append(" as p ");
-      whereClause.append(" where p.");
-      whereClause.append(FIN_Payment.PROPERTY_PAYMENTMETHOD);
-      whereClause.append(".id");
-      whereClause.append(" in ");
-      whereClause.append(" ( select ft.");
-      whereClause.append(FinAccPaymentMethod.PROPERTY_PAYMENTMETHOD);
-      whereClause.append(".id");
-      whereClause.append(" from ");
-      whereClause.append("FinancialMgmtFinAccPaymentMethod ");
-      whereClause.append(" as ft");
-      whereClause.append(" where ft.");
-      whereClause.append(FinAccPaymentMethod.PROPERTY_ACCOUNT);
-      whereClause.append(".id = :accountId) ");
-      whereClause.append(" and p.");
-      whereClause.append(FIN_Payment.PROPERTY_STATUS);
-      whereClause.append(" IN ('RPR', 'PPM')");
-      whereClause.append(" and p.");
-      whereClause.append(FIN_Payment.PROPERTY_CURRENCY);
-      whereClause.append(".id");
-      whereClause.append(" in ");
-      whereClause.append(" ( select fa.");
-      whereClause.append(FIN_FinancialAccount.PROPERTY_CURRENCY);
-      whereClause.append(".id");
-      whereClause.append(" from ");
-      whereClause.append(" FIN_Financial_Account as fa");
-      whereClause.append(" where fa.id = :accountId )");
-      parameters.put("accountId", account.getId());
-      // IsReceipt
-      whereClause.append(" and p.");
-      whereClause.append(FIN_Payment.PROPERTY_RECEIPT);
-      whereClause.append(" = ");
-      whereClause.append(isReceipt);
-
-      whereClause.append(" and p.");
-      whereClause.append(FIN_Payment.PROPERTY_AMOUNT);
-      whereClause.append(" != ");
-      whereClause.append(BigDecimal.ZERO);
-
-      // From Date
-      if (fromDate != null) {
-        whereClause.append(" and p.");
-        whereClause.append(FIN_Payment.PROPERTY_PAYMENTDATE);
-        whereClause.append(" >= :fromDate ");
-        parameters.put("fromDate", fromDate);
-      }
-      // To Date
-      if (toDate != null) {
-        whereClause.append(" AND p.");
-        whereClause.append(FIN_Payment.PROPERTY_PAYMENTDATE);
-        whereClause.append(" < :toDate");
-        parameters.put("toDate", toDate);
-      }
-      // Order by date and payment no
-      whereClause.append(" ORDER BY p.");
-      whereClause.append(FIN_Payment.PROPERTY_PAYMENTDATE);
-      whereClause.append(", p.");
-      whereClause.append(FIN_Payment.PROPERTY_DOCUMENTNO);
-
-      final OBQuery<FIN_Payment> obqP = OBDal.getInstance()
-          .createQuery(FIN_Payment.class, whereClause.toString(), parameters);
-
-      List<FIN_Payment> paymentOBList = obqP.list();
-
-      FIN_Payment[] FIN_Payments = new FIN_Payment[0];
-      FIN_Payments = paymentOBList.toArray(FIN_Payments);
-      FieldProvider[] data = FieldProviderFactory.getFieldProviderArray(paymentOBList);
-
-      for (int i = 0; i < data.length; i++) {
-        Boolean paymentIsReceipt = FIN_Payments[i].isReceipt();
-
-        BigDecimal depositAmt = FIN_Utility.getDepositAmount(paymentIsReceipt,
-            FIN_Payments[i].getFinancialTransactionAmount());
-        BigDecimal paymentAmt = FIN_Utility.getPaymentAmount(paymentIsReceipt,
-            FIN_Payments[i].getFinancialTransactionAmount());
-        BigDecimal foreignDepositAmt = FIN_Utility.getDepositAmount(paymentIsReceipt,
-            FIN_Payments[i].getAmount());
-        BigDecimal foreignPaymentAmt = FIN_Utility.getPaymentAmount(paymentIsReceipt,
-            FIN_Payments[i].getAmount());
-
-        final Currency foreignCurrency = FIN_Payments[i].getCurrency();
-
-        FieldProviderFactory.setField(data[i], "finAcc", FIN_Payments[i].getAccount().getName());
-        FieldProviderFactory.setField(data[i], "paymentId", FIN_Payments[i].getId());
-        FieldProviderFactory.setField(data[i], "paymentInfo",
-            FIN_Payments[i].getDocumentNo() + " - "
-                + ((FIN_Payments[i].getBusinessPartner() != null)
-                    ? FIN_Payments[i].getBusinessPartner().getName()
-                    : "")
-                + " - " + FIN_Payments[i].getCurrency().getISOCode());
-
-        // Truncate description
-        String description = FIN_Payments[i].getDescription();
-        String truncateDescription = "";
-        if (description != null) {
-          truncateDescription = (description.length() > 57)
-              ? description.substring(0, 54).concat("...").toString()
-              : description;
-        }
-        FieldProviderFactory.setField(data[i], "paymentDescription",
-            (description != null && description.length() > 57) ? description : "");
-        FieldProviderFactory.setField(data[i], "paymentDescriptionTrunc", truncateDescription);
-
-        FieldProviderFactory.setField(data[i], "paymentDate",
-            dateFormater.format(FIN_Payments[i].getPaymentDate()).toString());
-
-        FieldProviderFactory.setField(data[i], "depositAmount",
-            FIN_Utility.multiCurrencyAmountToDisplay(depositAmt,
-                FIN_Payments[i].getAccount().getCurrency(), foreignDepositAmt, foreignCurrency));
-        FieldProviderFactory.setField(data[i], "paymentAmount",
-            FIN_Utility.multiCurrencyAmountToDisplay(paymentAmt,
-                FIN_Payments[i].getAccount().getCurrency(), foreignPaymentAmt, foreignCurrency));
-
-        FieldProviderFactory.setField(data[i], "rownum", "" + i);
-      }
-
-      return data;
-
-    } catch (Exception e) {
-      throw new OBException(e);
-    } finally {
-      OBContext.restorePreviousMode();
-    }
-  }
-
-  public String getPaymentProposalDetailAmount(FIN_PaymentScheduleDetail finPaymentScheduleDetail,
-      FIN_PaymentProposal paymentProposal) {
-    String amount = "";
-    for (FIN_PaymentPropDetail propDetail : paymentProposal.getFINPaymentPropDetailList()) {
-      if (propDetail.getFINPaymentScheduledetail() == finPaymentScheduleDetail) {
-        amount = propDetail.getAmount().toString();
-      }
-    }
-
-    return amount;
-  }
-
-  @Deprecated
-  public List<FIN_PaymentMethod> getFilteredPaymentMethods(String strFinancialAccountId,
-      String strOrgId, boolean excludePaymentMethodWithoutAccount) {
-    return getFilteredPaymentMethods(strFinancialAccountId, strOrgId,
-        excludePaymentMethodWithoutAccount, PaymentDirection.EITHER);
-  }
-
   public List<FIN_PaymentMethod> getFilteredPaymentMethods(String strFinancialAccountId,
       String strOrgId, boolean excludePaymentMethodWithoutAccount,
       PaymentDirection paymentDirection) {
@@ -1599,13 +922,6 @@ public class AdvPaymentMngtDao {
     if (compoundExp != null) {
       obc.add(compoundExp);
     }
-  }
-
-  @Deprecated
-  public List<FIN_FinancialAccount> getFilteredFinancialAccounts(String strPaymentMethodId,
-      String strOrgId, String strCurrencyId) {
-    return getFilteredFinancialAccounts(strPaymentMethodId, strOrgId, strCurrencyId,
-        PaymentDirection.EITHER);
   }
 
   public List<FIN_FinancialAccount> getFilteredFinancialAccounts(String strPaymentMethodId,
@@ -1957,16 +1273,6 @@ public class AdvPaymentMngtDao {
     return ppfiCriteria.list();
   }
 
-  @Deprecated
-  public BigDecimal getCustomerCredit(BusinessPartner bp, boolean isReceipt) {
-    BigDecimal creditAmount = BigDecimal.ZERO;
-    for (FIN_Payment payment : getCustomerPaymentsWithCredit(bp, isReceipt)) {
-      creditAmount = creditAmount.add(payment.getGeneratedCredit())
-          .subtract(payment.getUsedCredit());
-    }
-    return creditAmount;
-  }
-
   public BigDecimal getCustomerCredit(BusinessPartner bp, boolean isReceipt, Organization Org) {
     return getCustomerCredit(bp, isReceipt, Org, null);
   }
@@ -1980,21 +1286,6 @@ public class AdvPaymentMngtDao {
           .subtract(payment.getUsedCredit());
     }
     return creditAmount;
-  }
-
-  @Deprecated
-  public List<FIN_Payment> getCustomerPaymentsWithCredit(BusinessPartner bp, boolean isReceipt) {
-    OBCriteria<FIN_Payment> obcPayment = OBDal.getInstance().createCriteria(FIN_Payment.class);
-    obcPayment.add(Restrictions.eq(FIN_Payment.PROPERTY_BUSINESSPARTNER, bp));
-    obcPayment.add(Restrictions.eq(FIN_Payment.PROPERTY_RECEIPT, isReceipt));
-    obcPayment.add(Restrictions.ne(FIN_Payment.PROPERTY_GENERATEDCREDIT, BigDecimal.ZERO));
-    obcPayment.add(Restrictions.ne(FIN_Payment.PROPERTY_STATUS, "RPAP"));
-    obcPayment.add(Restrictions.ne(FIN_Payment.PROPERTY_STATUS, "RPVOID"));
-    obcPayment.add(Restrictions.neProperty(FIN_Payment.PROPERTY_GENERATEDCREDIT,
-        FIN_Payment.PROPERTY_USEDCREDIT));
-    obcPayment.addOrderBy(FIN_Payment.PROPERTY_PAYMENTDATE, true);
-    obcPayment.addOrderBy(FIN_Payment.PROPERTY_DOCUMENTNO, true);
-    return obcPayment.list();
   }
 
   /**
@@ -2072,26 +1363,6 @@ public class AdvPaymentMngtDao {
     obcPayment.addOrderBy(FIN_Payment.PROPERTY_PAYMENTDATE, false);
     obcPayment.addOrderBy(FIN_Payment.PROPERTY_DOCUMENTNO, false);
     return obcPayment.list();
-  }
-
-  public Currency getFinancialAccountCurrency(String strFinancialAccountId) {
-    if (strFinancialAccountId != null && !strFinancialAccountId.isEmpty()) {
-      final FIN_FinancialAccount account = OBDal.getInstance()
-          .get(FIN_FinancialAccount.class, strFinancialAccountId);
-      return account.getCurrency();
-    }
-    return null;
-  }
-
-  public FIN_FinancialAccount getDefaultFinancialAccountFor(String strOrgId) {
-    final OBCriteria<FIN_FinancialAccount> obc = OBDal.getInstance()
-        .createCriteria(FIN_FinancialAccount.class, "acc");
-    obc.add(Restrictions.in("organization.id",
-        OBContext.getOBContext().getOrganizationStructureProvider().getNaturalTree(strOrgId)));
-    obc.setFilterOnReadableOrganization(false);
-    obc.add(Restrictions.eq(FIN_FinancialAccount.PROPERTY_DEFAULT, true));
-    obc.setMaxResults(1);
-    return (FIN_FinancialAccount) obc.uniqueResult();
   }
 
   public boolean existsAPRMReadyPreference() {

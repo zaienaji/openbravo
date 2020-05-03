@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2008-2018 Openbravo SLU 
+ * All portions are Copyright (C) 2008-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -71,6 +71,7 @@ import org.openbravo.service.db.DalConnectionProvider;
 // approach is implemented.
 public class OBDal implements OBNotSingleton {
   private static final Logger log = LogManager.getLogger();
+  private static final String ACTIVE_FILTER = "activeFilter";
 
   private static OBDal instance;
 
@@ -145,7 +146,7 @@ public class OBDal implements OBNotSingleton {
   public void enableActiveFilter() {
     SessionHandler.getInstance()
         .getSession(poolName)
-        .enableFilter("activeFilter")
+        .enableFilter(ACTIVE_FILTER)
         .setParameter("activeParam", "Y");
   }
 
@@ -157,7 +158,7 @@ public class OBDal implements OBNotSingleton {
    * @see #enableActiveFilter()
    */
   public void disableActiveFilter() {
-    SessionHandler.getInstance().getSession(poolName).disableFilter("activeFilter");
+    SessionHandler.getInstance().getSession(poolName).disableFilter(ACTIVE_FILTER);
   }
 
   /**
@@ -168,7 +169,7 @@ public class OBDal implements OBNotSingleton {
   public boolean isActiveFilterEnabled() {
     return SessionHandler.getInstance()
         .getSession(poolName)
-        .getEnabledFilter("activeFilter") != null;
+        .getEnabledFilter(ACTIVE_FILTER) != null;
   }
 
   /**
@@ -199,9 +200,7 @@ public class OBDal implements OBNotSingleton {
       flush();
     }
 
-    final Connection connection = ((SessionImplementor) SessionHandler.getInstance()
-        .getSession(poolName)).connection();
-    return connection;
+    return ((SessionImplementor) SessionHandler.getInstance().getSession(poolName)).connection();
   }
 
   /**
@@ -564,7 +563,7 @@ public class OBDal implements OBNotSingleton {
   public <T extends BaseOBObject> OBCriteria<T> createCriteria(Class<T> clz) {
     checkReadAccess(clz);
     final Entity entity = ModelProvider.getInstance().getEntity(clz);
-    final OBCriteria<T> obCriteria = new OBCriteria<T>(clz.getName(),
+    final OBCriteria<T> obCriteria = new OBCriteria<>(clz.getName(),
         (SessionImplementor) SessionHandler.getInstance().getSession(poolName));
     obCriteria.setEntity(entity);
     return obCriteria;
@@ -582,7 +581,7 @@ public class OBDal implements OBNotSingleton {
   public <T extends BaseOBObject> OBCriteria<T> createCriteria(Class<T> clz, String alias) {
     checkReadAccess(clz);
     final Entity entity = ModelProvider.getInstance().getEntity(clz);
-    final OBCriteria<T> obCriteria = new OBCriteria<T>(clz.getName(), alias,
+    final OBCriteria<T> obCriteria = new OBCriteria<>(clz.getName(), alias,
         (SessionImplementor) SessionHandler.getInstance().getSession(poolName));
     obCriteria.setEntity(entity);
     return obCriteria;
@@ -598,7 +597,7 @@ public class OBDal implements OBNotSingleton {
   public <T extends BaseOBObject> OBCriteria<T> createCriteria(String entityName) {
     checkReadAccess(entityName);
     Entity entity = ModelProvider.getInstance().getEntity(entityName);
-    final OBCriteria<T> obCriteria = new OBCriteria<T>(entity.getMappingClass().getName(),
+    final OBCriteria<T> obCriteria = new OBCriteria<>(entity.getMappingClass().getName(),
         (SessionImplementor) SessionHandler.getInstance().getSession(poolName));
     obCriteria.setEntity(entity);
     return obCriteria;
@@ -616,7 +615,7 @@ public class OBDal implements OBNotSingleton {
   public <T extends BaseOBObject> OBCriteria<T> createCriteria(String entityName, String alias) {
     checkReadAccess(entityName);
     Entity entity = ModelProvider.getInstance().getEntity(entityName);
-    final OBCriteria<T> obCriteria = new OBCriteria<T>(entity.getMappingClass().getName(), alias,
+    final OBCriteria<T> obCriteria = new OBCriteria<>(entity.getMappingClass().getName(), alias,
         (SessionImplementor) SessionHandler.getInstance().getSession(poolName));
     obCriteria.setEntity(entity);
     return obCriteria;
@@ -638,7 +637,7 @@ public class OBDal implements OBNotSingleton {
    */
   public List<BaseOBObject> findUniqueConstrainedObjects(BaseOBObject obObject) {
     final Entity entity = obObject.getEntity();
-    final List<BaseOBObject> result = new ArrayList<BaseOBObject>();
+    final List<BaseOBObject> result = new ArrayList<>();
     final Object id = obObject.getId();
     for (final UniqueConstraint uc : entity.getUniqueConstraints()) {
       final OBCriteria<BaseOBObject> criteria = createCriteria(entity.getName());
@@ -690,7 +689,9 @@ public class OBDal implements OBNotSingleton {
    * 
    * @return an in-clause which can be directly used inside of a HQL clause
    * @see OBContext#getReadableOrganizations()
+   * @deprecated Use bind statement parameter instead of this method
    */
+  @Deprecated
   public String getReadableOrganizationsInClause() {
     return createInClause(OBContext.getOBContext().getReadableOrganizations());
   }
@@ -702,7 +703,9 @@ public class OBDal implements OBNotSingleton {
    * 
    * @return an in-clause which can be directly used inside of a HQL clause
    * @see OBContext#getReadableClients()
+   * @deprecated Use bind statement parameter instead of this method
    */
+  @Deprecated
   public String getReadableClientsInClause() {
     return createInClause(OBContext.getOBContext().getReadableClients());
   }

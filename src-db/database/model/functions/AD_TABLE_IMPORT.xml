@@ -22,7 +22,7 @@
   * parts created by ComPiere are Copyright (C) ComPiere, Inc.;
   * All Rights Reserved.
   * Contributor(s): Openbravo SLU
-  * Contributions are Copyright (C) 2001-2015 Openbravo, S.L.U.
+  * Contributions are Copyright (C) 2001-2019 Openbravo, S.L.U.
   *
   * Specifically, this derivative work is based upon the following Compiere
   * file and version.
@@ -54,7 +54,6 @@
     -- Added by Ismael Ciordia
     v_AD_Reference_ID VARCHAR2(32);
     v_AD_Reference_Value_ID VARCHAR2(32);
-    v_IsParent CHAR(1):='N';
     v_IsKey CHAR(1):='N';
     v_IsIdentifier CHAR(1):='N';
     v_IsSessionAttr CHAR(1):='N';
@@ -64,7 +63,6 @@
     v_columnNameOrg VARCHAR2(40) ;
     v_columnName VARCHAR2(40) ;
     v_TableName  VARCHAR2(40) ;
-    v_LastColumnName VARCHAR2(40) ;
     v_varchar2 VARCHAR2(32767) ;
     v_FieldLength NUMBER(10) ;
     v_Aux NUMBER;
@@ -127,7 +125,6 @@
       -- Added by Ismael Ciordia
       v_AD_Reference_ID:=NULL;
       v_AD_Reference_Value_ID:=NULL;
-      v_IsParent:='N';
       v_IsKey:='N';
       v_IsIdentifier:='N';
       v_IsSessionAttr:='N';
@@ -180,11 +177,6 @@
       ELSIF(UPPER(Cur_Column.Column_Name) IN('LINE', 'SEQNO')) THEN
         v_DefaultValue:='@SQL=SELECT COALESCE(MAX('||Cur_Column.Column_Name||'),0)+10 AS DefaultValue FROM '||Cur_Column.Table_Name||' WHERE xxParentColumn=@xxParentColumn@';
       END IF;
-      IF(UPPER(v_LastColumnName)='UPDATEDBY' AND UPPER(Cur_Column.Column_Name) LIKE '%_ID') THEN
-        v_IsParent:='Y';
-        v_IsUpdateable:='N';
-      END IF;
-      --added by Pablo Sarobe
       IF(Cur_Column.Data_Type IN('VARCHAR2', 'CHAR')) THEN
         v_FieldLength:=Cur_Column.Data_Length;
       ELSIF(Cur_Column.Data_Type IN('NVARCHAR2', 'NCHAR')) THEN
@@ -301,7 +293,7 @@
             AD_COLUMN_ID, AD_CLIENT_ID, AD_ORG_ID, ISACTIVE,
             CREATED, CREATEDBY, UPDATED, UPDATEDBY,
             NAME, COLUMNNAME, AD_TABLE_ID,
-            AD_REFERENCE_ID, FIELDLENGTH, ISKEY, ISPARENT,
+            AD_REFERENCE_ID, FIELDLENGTH, ISKEY,
             ISMANDATORY, ISIDENTIFIER, SEQNO, ISTRANSLATED,
             ISENCRYPTED, ISUPDATEABLE, AD_REFERENCE_VALUE_ID,
             AD_VAL_RULE_ID, DEFAULTVALUE, ISSESSIONATTR, 
@@ -311,7 +303,7 @@
           (v_NextNo, '0', '0', 'Y',
           now(), '0', now(), '0',
            v_columnName,v_columnNameOrg, Cur_Column.AD_Table_ID,
-          v_AD_Reference_ID, v_FieldLength, v_IsKey, v_IsParent,
+          v_AD_Reference_ID, v_FieldLength, v_IsKey,
          (CASE Cur_Column.Nullable WHEN 'Y' THEN 'N' ELSE 'Y' END),
           v_IsIdentifier, v_SeqNo, 'N', 'N', v_IsUpdateable, v_AD_Reference_Value_ID, 
           null, v_DefaultValue, v_IsSessionAttr,
@@ -324,8 +316,7 @@
       END IF;
       -- Added by Ismael Ciordia
       v_SeqNo:=v_SeqNo + 10;
-      v_LastColumnName:=Cur_Column.Column_Name;
-      -- Falta: insert de AD_Element
+
        DBMS_OUTPUT.PUT_LINE('adding Table ' || InitCap(Cur_Column.Table_Name) || ' Column ' || InitCap(Cur_Column.Column_Name)) ;
       
     END LOOP; --  All new columns

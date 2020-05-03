@@ -301,8 +301,10 @@ public class OBInterceptor extends EmptyInterceptor {
         }
 
         Property property = bob.getEntity().getProperty(propertyNames[i]);
+
         boolean skipCrossOrgCheck = (obContext.isInCrossOrgAdministratorMode()
-            && property.isAllowedCrossOrgReference()) || property.isAuditInfo();
+            && property.isAllowedCrossOrgReference()) || property.isAuditInfo()
+            || property.isImage();
 
         if (!skipCrossOrgCheck && !obObject.getEntity().isVirtualEntity()
             && !obContext.getOrganizationStructureProvider(o1.getClient().getId())

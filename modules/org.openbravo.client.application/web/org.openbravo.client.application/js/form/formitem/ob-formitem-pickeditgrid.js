@@ -30,36 +30,42 @@ isc.OBPickEditGridItem.addProperties({
     condition: function(item) {
       var grid = item.canvas.viewGrid,
         hasErrors = false,
-        undef,
         i,
         j,
         fields,
-        selection,
-        len,
+        recordsToValidate,
         record,
         lineNumbers;
       grid.endEditing();
       fields = grid.getFields();
-      selection = grid.getSelectedRecords() || [];
-      len = selection.length;
-      for (i = 0; i < len; i++) {
-        record = grid.getEditedRecord(grid.getRecordIndex(selection[i]));
+      if (grid.viewProperties && grid.viewProperties.showSelect) {
+        // validate the selected records
+        recordsToValidate = grid.getSelectedRecords() || [];
+      } else {
+        // grid doesn't allow record selection, validate all the records
+        recordsToValidate = (grid.data && grid.data.allRows) || [];
+      }
+      for (i = 0; i < recordsToValidate.length; i++) {
+        record = grid.getEditedRecord(
+          grid.getRecordIndex(recordsToValidate[i])
+        );
         for (j = 0; j < fields.length; j++) {
-          if (fields[j].required) {
-            if (
-              record[fields[j].name] === null ||
-              record[fields[j].name] === '' ||
-              record[fields[j] === undef]
-            ) {
-              hasErrors = true;
-              if (lineNumbers === undef) {
-                lineNumbers = grid.getRecordIndex(selection[i]).toString();
-              } else {
-                lineNumbers =
-                  lineNumbers +
-                  ',' +
-                  grid.getRecordIndex(selection[i]).toString();
-              }
+          if (
+            fields[j].required &&
+            (record[fields[j].name] === null ||
+              record[fields[j].name] === undefined ||
+              record[fields[j].name] === '')
+          ) {
+            hasErrors = true;
+            if (!lineNumbers) {
+              lineNumbers = grid
+                .getRecordIndex(recordsToValidate[i])
+                .toString();
+            } else {
+              lineNumbers =
+                lineNumbers +
+                ',' +
+                grid.getRecordIndex(recordsToValidate[i]).toString();
             }
           }
         }

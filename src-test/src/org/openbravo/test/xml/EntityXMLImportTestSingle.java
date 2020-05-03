@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2008-2014 Openbravo SLU 
+ * All portions are Copyright (C) 2008-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -66,7 +66,7 @@ public class EntityXMLImportTestSingle extends XMLBaseTest {
    */
   @Test
   public void test0ImportNoUpdate() {
-    setTestAdminContext();
+    setSystemAdministratorContext();
 
     final String xml = exportTax();
     final Client c = OBDal.getInstance().get(Client.class, TEST_CLIENT_ID);

@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2008-2017 Openbravo SLU 
+ * All portions are Copyright (C) 2008-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -228,10 +228,6 @@
         if(response.statusofstate=="Warning"){
           var warns=response.warnings;
           if (warns) {
-            if (warns instanceof Array) {
-              warns = warns[0];
-            }
-            warns = [warns.string];
             for(i=0;i<warns.length;i++){
               if (warns[i] !== undefined) {
                 var old=document.getElementById("warning_"+correspondingNode(response.state)).title;
@@ -253,16 +249,8 @@
           }
         }
         if(response.statusofstate=="Error"){
-          var errs;
-          if(response.errors instanceof Array){
-              errs=response.errors[0].string;
-          }else{
-              errs=response.errors.string;
-          }
+          var errs=response.errors;
           if(errs){
-            if(!(errs instanceof Array)){
-              errs=[errs];
-            }
             if(numoferrs[getStatusIndex(response.state)]<errs.length){
               for(i=0;i<errs.length;i++){
                 progList_addTextToTextArea('<b><i>Error: </b></i>'+errs[i]);
@@ -328,7 +316,7 @@
         }
         pending_states=pending_states-1;
         strText = strText.toString();
-        var msg = eval("("+strText+")");
+        var msg = JSON.parse(strText);
  
         var state=msg.Response.state;
         var errorStatus=msg.Response.statusofstate;
@@ -359,7 +347,7 @@
         } else {
           //Expecting msg in JSON format
           strText = strText.toString();
-          var msg = eval("("+strText+")");
+          var msg = JSON.parse(strText);
           initialize_MessageBox('messageBoxID');
           setValues_MessageBox('messageBoxID',msg.OBError.type, msg.OBError.title, msg.OBError.message);
           if(msg.OBError.type!="Error"){
@@ -401,7 +389,7 @@
           strText = XMLHttpRequestObj.responseText;
         }
         strText = strText.toString();
-        var msg = eval("("+strText+")");
+        var msg = JSON.parse(strText);
           
         var state=msg.Response.state;
         var errorStatus=msg.Response.statusofstate;

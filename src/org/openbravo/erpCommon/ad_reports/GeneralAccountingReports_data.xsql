@@ -12,7 +12,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2001-2016 Openbravo SLU 
+ * All portions are Copyright (C) 2001-2020 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -46,12 +46,14 @@
    </SqlMethod>
    <SqlMethod name="selectRptDouble" type="preparedStatement" return="multiple">
       <SqlMethodComment></SqlMethodComment>
-      <Sql>
+      <Sql><![CDATA[
 		SELECT C_ACCT_RPT.C_ACCTSCHEMA_ID AS PADRE, COALESCE(REPORTTYPE,'N') || C_ACCT_RPT.C_ACCT_RPT_ID AS ID, C_ACCT_RPT.NAME AS NAME 
 		FROM C_ACCT_RPT
 		WHERE C_ACCT_RPT.ISACTIVE = 'Y'
+		AND C_ACCT_RPT.AD_ORG_ID IN ('1')
 		ORDER BY NAME
-      </Sql>
+      ]]></Sql>
+      <Parameter name="adOrgId" type="replace" optional="true" after="C_ACCT_RPT.AD_ORG_ID IN (" text="'1'"/>
    </SqlMethod>
       
     <SqlMethod name="selectGroups" type="preparedStatement" return="multiple">
@@ -147,7 +149,6 @@
                                                 (CASE WHEN AD_ORGTYPE.ISBUSINESSUNIT='Y' OR AD_ORGTYPE.ISLEGALENTITY='Y' THEN 'Y' ELSE 'N' END) AS BALANCED
                                               FROM AD_ORG, AD_ORGTYPE
                                               WHERE AD_ORGTYPE.AD_ORGTYPE_ID = AD_ORG.AD_ORGTYPE_ID
-                                              AND AD_ORG.ISACTIVE = 'Y'
                                              ) O, AD_ORG ORG
       WHERE R.C_ACCTSCHEMA_ID = S.C_ACCTSCHEMA_ID
         AND AD_ISORGINCLUDED(O.AD_ORG_ID, S.AD_ORG_ID, S.AD_CLIENT_ID) <> -1
@@ -167,7 +168,6 @@
                                                 (CASE WHEN AD_ORGTYPE.ISBUSINESSUNIT='Y' OR AD_ORGTYPE.ISLEGALENTITY='Y' THEN 'Y' ELSE 'N' END) AS BALANCED
                                               FROM AD_ORG, AD_ORGTYPE
                                               WHERE AD_ORGTYPE.AD_ORGTYPE_ID = AD_ORG.AD_ORGTYPE_ID
-                                              AND AD_ORG.ISACTIVE = 'Y'
                                              ) O
       WHERE R.C_ACCTSCHEMA_ID = S.C_ACCTSCHEMA_ID
         AND (AD_ISORGINCLUDED(O.AD_ORG_ID, S.AD_ORG_ID, S.AD_CLIENT_ID) <> -1

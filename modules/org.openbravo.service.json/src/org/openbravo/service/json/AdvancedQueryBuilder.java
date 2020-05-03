@@ -1382,7 +1382,8 @@ public class AdvancedQueryBuilder {
     }
     final StringBuilder sb = new StringBuilder();
     boolean firstElement = true;
-    int columnsInDescending = StringUtils.countMatches(orderBy, "-");
+    int columnsInDescending = getNumberOfDescendingColumns();
+
     int totalColumnSeperators = StringUtils.countMatches(orderBy, ",");
     boolean orderPrimaryKeyInDesc = false;
     if (columnsInDescending == totalColumnSeperators) {
@@ -1410,9 +1411,24 @@ public class AdvancedQueryBuilder {
     return orderByClause;
   }
 
+  private int getNumberOfDescendingColumns() {
+    // supports both -columnName...
+    int columnsInDescending = StringUtils.countMatches(orderBy, "-");
+
+    // ... and columnName desc/DESC
+    Pattern p = Pattern.compile(" (desc|DESC)([^a-zA-Z0-9]|$)");
+    Matcher m = p.matcher(orderBy);
+    while (m.find()) {
+      columnsInDescending++;
+    }
+    return columnsInDescending;
+  }
+
   protected String getOrderByClausePart(String orderByParam) {
     // Support for one argument functions
-    String functionPattern = "(.*)\\((.*)\\) (desc|DESC)+";
+    // Supports descending order, both -functionName(param), functionName(param) desc and
+    // functionName(param) DESC
+    String functionPattern = "(?<leftSign>-)?(?<functionName>.*)\\((?<paramName>.*)\\)( (?<rightSign>desc|DESC))?";
     Pattern p = Pattern.compile(functionPattern);
     Matcher m = p.matcher(orderByParam);
 
@@ -1421,10 +1437,10 @@ public class AdvancedQueryBuilder {
     boolean descOrderedFunction = false;
     if (m.find()) {
       // If it is a function, retrieve the function name and the localOrderBy
-      functionName = m.group(1);
-      localOrderBy = m.group(2);
-      if (m.groupCount() == 3) {
-        // Check if the property is to be ordered in descending order
+      functionName = m.group("functionName");
+      localOrderBy = m.group("paramName");
+      // Check if the property is to be ordered in descending order
+      if (m.group("leftSign") != null || m.group("rightSign") != null) {
         descOrderedFunction = true;
       }
     } else {

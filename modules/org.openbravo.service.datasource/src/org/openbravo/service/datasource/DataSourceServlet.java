@@ -113,6 +113,7 @@ public class DataSourceServlet extends BaseKernelServlet {
   private static String servletPathPart = "org.openbravo.service.datasource";
   private static Pattern csrfTokenPattern = Pattern
       .compile("\"csrfToken\":\"(?<token>[A-Z0-9]+)\"");
+  private static final String[] CSV_FORMULA_PREFIXES = new String[] { "=", "+", "-", "@" };
 
   public static String getServletPathPart() {
     return servletPathPart;
@@ -634,11 +635,13 @@ public class DataSourceServlet extends BaseKernelServlet {
           Object keyValue = json.has(key + DalUtil.FIELDSEPARATOR + JsonConstants.IDENTIFIER)
               ? json.get(key + DalUtil.FIELDSEPARATOR + JsonConstants.IDENTIFIER)
               : json.get(key);
+          boolean isNumeric = false;
           if (refListCols.contains(key)) {
             keyValue = refLists.get(key).get(keyValue);
           } else if (keyValue instanceof Number) {
             // if the CSV decimal separator property is defined, used it over the character
             // defined in Format.xml
+            isNumeric = true;
             keyValue = keyValue.toString()
                 .replace(".",
                     prefDecimalSeparator != null ? prefDecimalSeparator : decimalSeparator);
@@ -675,15 +678,21 @@ public class DataSourceServlet extends BaseKernelServlet {
             keyValue = (Boolean) keyValue ? getTranslatedLabelYes() : getTranslatedLabelNo();
           }
 
+          String outputValue;
           if (keyValue != null && !keyValue.toString().equals("null")) {
-            keyValue = Replace.replace(keyValue.toString(), "\"", "\"\"");
+            outputValue = keyValue.toString().replace("\"", "\"\"");
+            if (!isNumeric && StringUtils.startsWithAny(outputValue, CSV_FORMULA_PREFIXES)) {
+              // escape formulas
+              outputValue = "\t" + outputValue;
+            }
           } else {
-            keyValue = "";
+            outputValue = "";
           }
+
           if (!numericCols.contains(key)) {
-            keyValue = "\"" + keyValue + "\"";
+            outputValue = "\"" + outputValue + "\"";
           }
-          writer.append(keyValue.toString());
+          writer.append(outputValue);
         }
       } catch (Exception e) {
         throw new OBException("Error while exporting CSV information", e);

@@ -3,16 +3,18 @@ package org.openbravo.advpaymentmngt.modulescript;
 
 import java.sql.*;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import javax.servlet.ServletException;
 
 import org.openbravo.data.FieldProvider;
 import org.openbravo.database.ConnectionProvider;
 import org.openbravo.data.UtilSql;
+import org.openbravo.database.SessionInfo;
 import java.util.*;
 
+@SuppressWarnings("serial")
 class CreateAccountingConfigurationData implements FieldProvider {
 static Logger log4j = LogManager.getLogger();
   private String InitRecordNumber="0";
@@ -67,7 +69,7 @@ static Logger log4j = LogManager.getLogger();
       "    FROM C_AcctSchema";
 
     ResultSet result;
-    Vector<java.lang.Object> vector = new Vector<java.lang.Object>(0);
+    Vector<CreateAccountingConfigurationData> vector = new Vector<CreateAccountingConfigurationData>(0);
     PreparedStatement st = null;
 
     try {
@@ -101,16 +103,24 @@ static Logger log4j = LogManager.getLogger();
       }
       result.close();
     } catch(SQLException e){
-      log4j.error("SQL error in query: " + strSql + "Exception:"+ e);
+      if (log4j.isDebugEnabled()) {
+        log4j.error("SQL error in query: " + strSql, e);
+      } else {
+        log4j.error("SQL error in query: " + strSql + " :" + e);
+      }
       throw new ServletException("@CODE=" + Integer.toString(e.getErrorCode()) + "@" + e.getMessage());
     } catch(Exception ex){
-      log4j.error("Exception in query: " + strSql + "Exception:"+ ex);
+      if (log4j.isDebugEnabled()) {
+        log4j.error("Exception in query: " + strSql, ex);
+      } else {
+        log4j.error("Exception in query: " + strSql + " :" + ex);
+      }
       throw new ServletException("@CODE=@" + ex.getMessage());
     } finally {
       try {
         connectionProvider.releasePreparedStatement(st);
-      } catch(Exception ignore){
-        ignore.printStackTrace();
+      } catch(Exception e){
+        log4j.error("Error during release*Statement of query: " + strSql, e);
       }
     }
     CreateAccountingConfigurationData objectCreateAccountingConfigurationData[] = new CreateAccountingConfigurationData[vector.size()];
@@ -141,16 +151,24 @@ static Logger log4j = LogManager.getLogger();
       }
       result.close();
     } catch(SQLException e){
-      log4j.error("SQL error in query: " + strSql + "Exception:"+ e);
+      if (log4j.isDebugEnabled()) {
+        log4j.error("SQL error in query: " + strSql, e);
+      } else {
+        log4j.error("SQL error in query: " + strSql + " :" + e);
+      }
       throw new ServletException("@CODE=" + Integer.toString(e.getErrorCode()) + "@" + e.getMessage());
     } catch(Exception ex){
-      log4j.error("Exception in query: " + strSql + "Exception:"+ ex);
+      if (log4j.isDebugEnabled()) {
+        log4j.error("Exception in query: " + strSql, ex);
+      } else {
+        log4j.error("Exception in query: " + strSql + " :" + ex);
+      }
       throw new ServletException("@CODE=@" + ex.getMessage());
     } finally {
       try {
         connectionProvider.releasePreparedStatement(st);
-      } catch(Exception ignore){
-        ignore.printStackTrace();
+      } catch(Exception e){
+        log4j.error("Error during release*Statement of query: " + strSql, e);
       }
     }
     return(boolReturn);
@@ -177,18 +195,27 @@ static Logger log4j = LogManager.getLogger();
       iParameter++; UtilSql.setValue(st, iParameter, 12, null, tableId);
       iParameter++; UtilSql.setValue(st, iParameter, 12, null, clientId);
 
+      SessionInfo.saveContextInfoIntoDB(conn);
       updateCount = st.executeUpdate();
     } catch(SQLException e){
-      log4j.error("SQL error in query: " + strSql + "Exception:"+ e);
+      if (log4j.isDebugEnabled()) {
+        log4j.error("SQL error in query: " + strSql, e);
+      } else {
+        log4j.error("SQL error in query: " + strSql + " :" + e);
+      }
       throw new ServletException("@CODE=" + Integer.toString(e.getErrorCode()) + "@" + e.getMessage());
     } catch(Exception ex){
-      log4j.error("Exception in query: " + strSql + "Exception:"+ ex);
+      if (log4j.isDebugEnabled()) {
+        log4j.error("Exception in query: " + strSql, ex);
+      } else {
+        log4j.error("Exception in query: " + strSql + " :" + ex);
+      }
       throw new ServletException("@CODE=@" + ex.getMessage());
     } finally {
       try {
         connectionProvider.releaseTransactionalPreparedStatement(st);
-      } catch(Exception ignore){
-        ignore.printStackTrace();
+      } catch(Exception e){
+        log4j.error("Error during release*Statement of query: " + strSql, e);
       }
     }
     return(updateCount);
@@ -223,18 +250,27 @@ static Logger log4j = LogManager.getLogger();
     try {
     st = connectionProvider.getPreparedStatement(conn, strSql);
 
+      SessionInfo.saveContextInfoIntoDB(conn);
       updateCount = st.executeUpdate();
     } catch(SQLException e){
-      log4j.error("SQL error in query: " + strSql + "Exception:"+ e);
+      if (log4j.isDebugEnabled()) {
+        log4j.error("SQL error in query: " + strSql, e);
+      } else {
+        log4j.error("SQL error in query: " + strSql + " :" + e);
+      }
       throw new ServletException("@CODE=" + Integer.toString(e.getErrorCode()) + "@" + e.getMessage());
     } catch(Exception ex){
-      log4j.error("Exception in query: " + strSql + "Exception:"+ ex);
+      if (log4j.isDebugEnabled()) {
+        log4j.error("Exception in query: " + strSql, ex);
+      } else {
+        log4j.error("Exception in query: " + strSql + " :" + ex);
+      }
       throw new ServletException("@CODE=@" + ex.getMessage());
     } finally {
       try {
         connectionProvider.releaseTransactionalPreparedStatement(st);
-      } catch(Exception ignore){
-        ignore.printStackTrace();
+      } catch(Exception e){
+        log4j.error("Error during release*Statement of query: " + strSql, e);
       }
     }
     return(updateCount);
@@ -247,7 +283,7 @@ static Logger log4j = LogManager.getLogger();
       "      WHERE ad_table_id = '4D8C3B3C31D1410DA046140C9F024D17'" +
       "        AND isreadonly = 'Y'" +
       "        AND isexclude = 'N'" +
-      "        AND created <= (SELECT created FROM ad_tab WHERE ad_tab_id = 'FF8080812F213146012F2135BC25000E')";
+      "        AND created <= (SELECT created FROM ad_tab WHERE ad_tab_id = '23691259D1BD4496BCC5F32645BCA4B9')";
 
     int updateCount = 0;
     PreparedStatement st = null;
@@ -255,18 +291,27 @@ static Logger log4j = LogManager.getLogger();
     try {
     st = connectionProvider.getPreparedStatement(conn, strSql);
 
+      SessionInfo.saveContextInfoIntoDB(conn);
       updateCount = st.executeUpdate();
     } catch(SQLException e){
-      log4j.error("SQL error in query: " + strSql + "Exception:"+ e);
+      if (log4j.isDebugEnabled()) {
+        log4j.error("SQL error in query: " + strSql, e);
+      } else {
+        log4j.error("SQL error in query: " + strSql + " :" + e);
+      }
       throw new ServletException("@CODE=" + Integer.toString(e.getErrorCode()) + "@" + e.getMessage());
     } catch(Exception ex){
-      log4j.error("Exception in query: " + strSql + "Exception:"+ ex);
+      if (log4j.isDebugEnabled()) {
+        log4j.error("Exception in query: " + strSql, ex);
+      } else {
+        log4j.error("Exception in query: " + strSql + " :" + ex);
+      }
       throw new ServletException("@CODE=@" + ex.getMessage());
     } finally {
       try {
         connectionProvider.releaseTransactionalPreparedStatement(st);
-      } catch(Exception ignore){
-        ignore.printStackTrace();
+      } catch(Exception e){
+        log4j.error("Error during release*Statement of query: " + strSql, e);
       }
     }
     return(updateCount);
@@ -284,18 +329,27 @@ static Logger log4j = LogManager.getLogger();
     try {
     st = connectionProvider.getPreparedStatement(conn, strSql);
 
+      SessionInfo.saveContextInfoIntoDB(conn);
       updateCount = st.executeUpdate();
     } catch(SQLException e){
-      log4j.error("SQL error in query: " + strSql + "Exception:"+ e);
+      if (log4j.isDebugEnabled()) {
+        log4j.error("SQL error in query: " + strSql, e);
+      } else {
+        log4j.error("SQL error in query: " + strSql + " :" + e);
+      }
       throw new ServletException("@CODE=" + Integer.toString(e.getErrorCode()) + "@" + e.getMessage());
     } catch(Exception ex){
-      log4j.error("Exception in query: " + strSql + "Exception:"+ ex);
+      if (log4j.isDebugEnabled()) {
+        log4j.error("Exception in query: " + strSql, ex);
+      } else {
+        log4j.error("Exception in query: " + strSql + " :" + ex);
+      }
       throw new ServletException("@CODE=@" + ex.getMessage());
     } finally {
       try {
         connectionProvider.releaseTransactionalPreparedStatement(st);
-      } catch(Exception ignore){
-        ignore.printStackTrace();
+      } catch(Exception e){
+        log4j.error("Error during release*Statement of query: " + strSql, e);
       }
     }
     return(updateCount);

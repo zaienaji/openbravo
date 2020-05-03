@@ -13,7 +13,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2008-2013 Openbravo SLU
+ * All portions are Copyright (C) 2008-2019 Openbravo SLU
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -45,7 +45,6 @@
         dojo.hostenv.writeIncludes(); //makes debugging in Venkman possible
       </script>
     <SCRIPT language="JavaScript" type="text/javascript">
-        
     function closeThisPage() {
         closePage();
         return true;
@@ -167,7 +166,7 @@
         var fieldName = field.substring(0, field.length-5)+'Name';
         if (document.getElementById(field) && document.getElementById(fieldName)) {
             currentValue = document.getElementById(field).value;
-            originalValue = eval(field + 'Orig');
+            originalValue = window[field + 'Orig'];
             if (originalValue !== currentValue) {
                 document.getElementById(fieldName).style.display = 'none';
             } else {
@@ -205,7 +204,7 @@
               strText = XMLHttpRequestObj.responseText;
             }
           } catch (e) {}
-          o = eval('('+strText+')');
+          o = JSON.parse(strText);
           if (!o.error) {
             document.getElementById('emailSubject').value = o.subject;
             document.getElementById('emailBody').innerHTML = o.body;
@@ -232,7 +231,7 @@
             strText = XMLHttpRequestObj.responseText;
           }
         } catch (e) {}
-        o = eval('('+strText+')');
+        o = JSON.parse(strText);
         if (!o.error) {
           document.getElementById('emailSubject').value = o.subject;
           document.getElementById('emailBody').innerHTML = o.body;

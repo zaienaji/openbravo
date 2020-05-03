@@ -76,7 +76,7 @@ public class CostAdjustmentProcess {
   private JSONObject processCostAdjustment(CostAdjustment _costAdjustment) throws OBException {
     CostAdjustment costAdjustment = _costAdjustment;
     JSONObject message = new JSONObject();
-    OBContext.setAdminMode(true);
+    OBContext.setAdminMode(false);
     try {
       message.put("severity", "success");
       message.put("title", "");

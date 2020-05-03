@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2015 Openbravo SLU 
+ * All portions are Copyright (C) 2015-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -55,6 +55,7 @@ public class ServiceRelatedLinePriceActionHandler extends BaseActionHandler {
       BigDecimal priceamount = new BigDecimal(jsonRequest.getString("priceamount"));
       BigDecimal relatedQty = new BigDecimal(jsonRequest.getString("relatedqty"));
       BigDecimal unitDiscountsAmt = new BigDecimal(jsonRequest.getString("unitdiscountsamt"));
+      JSONObject relatedInfo = jsonRequest.optJSONObject("relatedLinesInfo");
       final OrderLine orderLineToRelate = OBDal.getInstance()
           .get(OrderLine.class, jsonRequest.getString("orderLineToRelateId"));
       String tabId = jsonRequest.getString("tabId");
@@ -64,7 +65,7 @@ public class ServiceRelatedLinePriceActionHandler extends BaseActionHandler {
       }
       JSONObject deferredSale = null;
       BigDecimal serviceTotalAmount = ServicePriceUtils.getServiceAmount(serviceOrderline, amount,
-          discounts, priceamount, relatedQty, unitDiscountsAmt);
+          discounts, priceamount, relatedQty, unitDiscountsAmt, relatedInfo);
       if (jsonRequest.has("orderLineToRelateId")
           && jsonRequest.get("orderLineToRelateId") != JSONObject.NULL
           && !RFC_ORDERLINE_TAB_ID.equals(tabId) && state) {

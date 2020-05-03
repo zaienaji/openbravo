@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2008-2018 Openbravo SLU 
+ * All portions are Copyright (C) 2008-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -126,6 +126,7 @@ public class Property {
   private boolean usedSequence;
   private boolean isProxy;
   private boolean allowedCrossOrgReference;
+  private boolean isChildPropertyInParent;
 
   /**
    * Initializes this Property using the information from the Column.
@@ -203,6 +204,7 @@ public class Property {
 
     setModule(fromColumn.getModule());
     setAllowedCrossOrgReference(fromColumn.isAllowedCrossOrgReference());
+    setChildPropertyInParent(fromColumn.isChildPropertyInParent());
     isProxy = false;
   }
 
@@ -1348,5 +1350,31 @@ public class Property {
   /** @see Property#isAllowedCrossOrgReference() */
   public void setAllowedCrossOrgReference(boolean allowedCrossOrgReference) {
     this.allowedCrossOrgReference = allowedCrossOrgReference;
+  }
+
+  /**
+   * This method is used to determine if this is an image property.
+   * 
+   * @return {@code true} if this property references an AD_Image_ID record. Otherwise, this method
+   *         returns {@code false}.
+   */
+  public boolean isImage() {
+    if (referencedProperty == null) {
+      return false;
+    }
+    return "ADImage".equals(referencedProperty.getEntity().getName());
+  }
+
+  /**
+   * For FK properties, this flag indicates whether a new property in referenced entity will be
+   * created referencing this one.
+   */
+  public boolean isChildPropertyInParent() {
+    return isChildPropertyInParent;
+  }
+
+  /** @see #isChildPropertyInParent() */
+  public void setChildPropertyInParent(boolean isChildPropertyInParent) {
+    this.isChildPropertyInParent = isChildPropertyInParent;
   }
 }

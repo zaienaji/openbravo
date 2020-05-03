@@ -4,9 +4,9 @@
     <specialForm id="800015" entity-name="ADForm" identifier="About"/>
     <role id="CA5B7FB2C95740E499C0F102343D51AD" entity-name="ADRole" identifier="Employee"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.390Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.508Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.390Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.508Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -16,9 +16,9 @@
     <specialForm id="800015" entity-name="ADForm" identifier="About"/>
     <role id="FF808181259DADEB01259DDDA4C201E6" entity-name="ADRole" identifier="Company Executive"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.390Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.507Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.390Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.507Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -28,21 +28,9 @@
     <specialForm id="1004400000" entity-name="ADForm" identifier="Requisition To Order"/>
     <role id="D7D7D228E4594ACE8D00FD0E08B333DE" entity-name="ADRole" identifier="Procurement"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.390Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.506Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.390Z</updated>
-    <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <editableField>true</editableField>
-    <inheritedFrom xsi:nil="true"/>
-  </ADFormAccess>
-  <ADFormAccess id="2E16347CD9544BE99044907B9EC27E31" identifier="AccountTransactions - Finance">
-    <id>2E16347CD9544BE99044907B9EC27E31</id>
-    <specialForm id="4201E189318E443297F6B23F03CABB9D" entity-name="ADForm" identifier="AccountTransactions"/>
-    <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
-    <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.390Z</creationDate>
-    <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.390Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.506Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -52,9 +40,9 @@
     <specialForm id="FE9623C32FE749DD803ED7C64CCD7405" entity-name="ADForm" identifier="Payment Execution"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.390Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.506Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.390Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.506Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -64,9 +52,9 @@
     <specialForm id="800015" entity-name="ADForm" identifier="About"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.390Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.505Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.390Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.505Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -76,9 +64,9 @@
     <specialForm id="800015" entity-name="ADForm" identifier="About"/>
     <role id="FF808181259DADEB01259DDDA4BB01E5" entity-name="ADRole" identifier="Company Admin"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.390Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.505Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.390Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.505Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -88,9 +76,9 @@
     <specialForm id="800015" entity-name="ADForm" identifier="About"/>
     <role id="FF808181259DADEB01259DDDA4C201E7" entity-name="ADRole" identifier="Warehouse"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.390Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.505Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.390Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.505Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -100,9 +88,9 @@
     <specialForm id="800015" entity-name="ADForm" identifier="About"/>
     <role id="D7D7D228E4594ACE8D00FD0E08B333DE" entity-name="ADRole" identifier="Procurement"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.390Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.505Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.390Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.505Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -112,9 +100,9 @@
     <specialForm id="800015" entity-name="ADForm" identifier="About"/>
     <role id="FF8081812250326E012250353BDE0006" entity-name="ADRole" identifier="Sales"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.389Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.504Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.389Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.504Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -124,9 +112,9 @@
     <specialForm id="800016" entity-name="ADForm" identifier="Alert Management"/>
     <role id="FF808181259DADEB01259DDDA4BB01E5" entity-name="ADRole" identifier="Company Admin"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.389Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.503Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.389Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.503Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -136,9 +124,9 @@
     <specialForm id="800016" entity-name="ADForm" identifier="Alert Management"/>
     <role id="FF8081812250326E012250353BDE0006" entity-name="ADRole" identifier="Sales"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.389Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.500Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.389Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.500Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -148,9 +136,9 @@
     <specialForm id="800016" entity-name="ADForm" identifier="Alert Management"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.389Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.500Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.389Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.500Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -160,9 +148,9 @@
     <specialForm id="800003" entity-name="ADForm" identifier="GL Posting by DB Tables"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.389Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.500Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.389Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.500Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -172,9 +160,9 @@
     <specialForm id="100" entity-name="ADForm" identifier="Create Invoices from Orders"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.389Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.499Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.389Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.499Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -184,9 +172,9 @@
     <specialForm id="800016" entity-name="ADForm" identifier="Alert Management"/>
     <role id="FF808181259DADEB01259DDDA4C201E6" entity-name="ADRole" identifier="Company Executive"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.389Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.499Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.389Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.499Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -196,9 +184,9 @@
     <specialForm id="800016" entity-name="ADForm" identifier="Alert Management"/>
     <role id="FF808181259DADEB01259DDDA4C201E7" entity-name="ADRole" identifier="Warehouse"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.389Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.499Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.389Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.499Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -208,9 +196,9 @@
     <specialForm id="110" entity-name="ADForm" identifier="Create Shipments from Orders"/>
     <role id="FF808181259DADEB01259DDDA4C201E7" entity-name="ADRole" identifier="Warehouse"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.389Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.499Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.389Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.499Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -220,9 +208,9 @@
     <specialForm id="800009" entity-name="ADForm" identifier="Pending Goods Receipts"/>
     <role id="FF808181259DADEB01259DDDA4C201E7" entity-name="ADRole" identifier="Warehouse"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.388Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.498Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.388Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.498Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -232,9 +220,9 @@
     <window id="800092" entity-name="ADWindow" identifier="Requisition"/>
     <role id="D7D7D228E4594ACE8D00FD0E08B333DE" entity-name="ADRole" identifier="Procurement"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.388Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.498Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.388Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.498Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -244,9 +232,9 @@
     <window id="557A0AA1D0D745F9A61557C05483072C" entity-name="ADWindow" identifier="Bank File Format"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.388Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.498Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.388Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.498Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>false</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -256,9 +244,9 @@
     <window id="A839712F8D5E4929BB2D057BAA55A2A3" entity-name="ADWindow" identifier="Copy from Orders P&amp;E"/>
     <role id="FF8081812250326E012250353BDE0006" entity-name="ADRole" identifier="Sales"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:36:10.634Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.497Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:36:10.634Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.497Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -268,9 +256,9 @@
     <window id="800092" entity-name="ADWindow" identifier="Requisition"/>
     <role id="FF8081812250326E012250353BDE0006" entity-name="ADRole" identifier="Sales"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.388Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.497Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.388Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.497Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -280,9 +268,9 @@
     <window id="FEB8679CAA0D47E5978F10E22566FCEA" entity-name="ADWindow" identifier="Audit Trail"/>
     <role id="FF808181259DADEB01259DDDA4BB01E5" entity-name="ADRole" identifier="Company Admin"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.388Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.497Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.388Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.497Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -292,9 +280,9 @@
     <window id="123" entity-name="ADWindow" identifier="Business Partner"/>
     <role id="D7D7D228E4594ACE8D00FD0E08B333DE" entity-name="ADRole" identifier="Procurement"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.388Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.497Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.388Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.497Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -304,9 +292,9 @@
     <window id="D549B07D9D774AB2A60FF09E1562C93A" entity-name="ADWindow" identifier="Payment Priority"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.388Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.496Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.388Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.496Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -316,9 +304,9 @@
     <window id="1002100003" entity-name="ADWindow" identifier="Tax Register Type"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.388Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.496Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.388Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.496Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -328,9 +316,9 @@
     <window id="800092" entity-name="ADWindow" identifier="Requisition"/>
     <role id="FF808181259DADEB01259DDDA4BB01E5" entity-name="ADRole" identifier="Company Admin"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.388Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.496Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.388Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.496Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -340,9 +328,9 @@
     <window id="146" entity-name="ADWindow" identifier="Price List"/>
     <role id="D7D7D228E4594ACE8D00FD0E08B333DE" entity-name="ADRole" identifier="Procurement"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.387Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.496Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.387Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.496Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -352,9 +340,9 @@
     <window id="E547CE89D4C04429B6340FFA44E70716" entity-name="ADWindow" identifier="Payment In"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.387Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.495Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.387Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.495Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -364,9 +352,9 @@
     <window id="800092" entity-name="ADWindow" identifier="Requisition"/>
     <role id="FF808181259DADEB01259DDDA4C201E7" entity-name="ADRole" identifier="Warehouse"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.387Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.495Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.387Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.495Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -376,9 +364,9 @@
     <window id="1004400000" entity-name="ADWindow" identifier="Manage Requisitions"/>
     <role id="D7D7D228E4594ACE8D00FD0E08B333DE" entity-name="ADRole" identifier="Procurement"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.387Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.495Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.387Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.495Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -388,9 +376,9 @@
     <window id="6F8F913FA60F4CBD93DC1D3AA696E76E" entity-name="ADWindow" identifier="Payment Out"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.387Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.495Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.387Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.495Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -400,9 +388,9 @@
     <window id="800092" entity-name="ADWindow" identifier="Requisition"/>
     <role id="FF808181259DADEB01259DDDA4C201E6" entity-name="ADRole" identifier="Company Executive"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.387Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.494Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.387Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.494Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -412,9 +400,9 @@
     <window id="3CAAC7D54593489384452416ACF356DD" entity-name="ADWindow" identifier="Payment Method"/>
     <role id="FF808181259DADEB01259DDDA4BB01E5" entity-name="ADRole" identifier="Company Admin"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.387Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.494Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.387Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.494Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -424,9 +412,9 @@
     <window id="D549B07D9D774AB2A60FF09E1562C93A" entity-name="ADWindow" identifier="Payment Priority"/>
     <role id="FF808181259DADEB01259DDDA4BB01E5" entity-name="ADRole" identifier="Company Admin"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.387Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.494Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.387Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.494Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -436,9 +424,9 @@
     <window id="24DDE1DDF13942D78B6D6F216979E56A" entity-name="ADWindow" identifier="Execution Process"/>
     <role id="FF808181259DADEB01259DDDA4BB01E5" entity-name="ADRole" identifier="Company Admin"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.387Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.494Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.387Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.494Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -448,9 +436,9 @@
     <window id="181" entity-name="ADWindow" identifier="Purchase Order"/>
     <role id="D7D7D228E4594ACE8D00FD0E08B333DE" entity-name="ADRole" identifier="Procurement"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.386Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.494Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.386Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.494Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -460,9 +448,9 @@
     <window id="800092" entity-name="ADWindow" identifier="Requisition"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.386Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.493Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.386Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.493Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -472,9 +460,9 @@
     <window id="140" entity-name="ADWindow" identifier="Product"/>
     <role id="D7D7D228E4594ACE8D00FD0E08B333DE" entity-name="ADRole" identifier="Procurement"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.386Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.493Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.386Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.493Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -484,9 +472,9 @@
     <window id="800077" entity-name="ADWindow" identifier="Budget"/>
     <role id="FF808181259DADEB01259DDDA4C201E6" entity-name="ADRole" identifier="Company Executive"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.386Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.493Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.386Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.493Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -496,9 +484,9 @@
     <window id="A839712F8D5E4929BB2D057BAA55A2A3" entity-name="ADWindow" identifier="Copy from Orders P&amp;E"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:36:19.934Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.493Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:36:19.934Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.493Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>false</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -508,9 +496,9 @@
     <window id="800077" entity-name="ADWindow" identifier="Budget"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.386Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.492Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.386Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.492Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -520,9 +508,9 @@
     <window id="1002100004" entity-name="ADWindow" identifier="Tax Payment"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.386Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.492Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.386Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.492Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -532,9 +520,9 @@
     <window id="AFE6BDF360C44B99ACA6FB5E9F51EA45" entity-name="ADWindow" identifier="Payment Run"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.386Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.492Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.386Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.492Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -544,9 +532,9 @@
     <window id="3CAAC7D54593489384452416ACF356DD" entity-name="ADWindow" identifier="Payment Method"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.386Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.491Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.386Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.491Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -556,9 +544,9 @@
     <window id="D1D0C603DFC0423099D897A0DB388AC2" entity-name="ADWindow" identifier="Matching Algorithm"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.385Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.491Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.385Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.491Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>false</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -568,9 +556,9 @@
     <window id="137" entity-name="ADWindow" identifier="Tax Rate"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.385Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.485Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.385Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.485Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -580,9 +568,9 @@
     <window id="1B7B3BB7FEAF41ED8D9727AB98779D3C" entity-name="ADWindow" identifier="Payment Proposal"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.385Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.483Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.385Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.483Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -592,9 +580,9 @@
     <window id="94EAA455D2644E04AB25D93BE5157B6D" entity-name="ADWindow" identifier="Financial Account"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.385Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.483Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.385Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.483Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -604,9 +592,9 @@
     <window id="800092" entity-name="ADWindow" identifier="Requisition"/>
     <role id="CA5B7FB2C95740E499C0F102343D51AD" entity-name="ADRole" identifier="Employee"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.385Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.483Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.385Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.483Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -616,9 +604,9 @@
     <window id="144" entity-name="ADWindow" identifier="Product Category"/>
     <role id="FF808181259DADEB01259DDDA4BB01E5" entity-name="ADRole" identifier="Company Admin"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.385Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.482Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.385Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.482Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -628,9 +616,9 @@
     <window id="110" entity-name="ADWindow" identifier="Organization"/>
     <role id="FF808181259DADEB01259DDDA4BB01E5" entity-name="ADRole" identifier="Company Admin"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.385Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.482Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.385Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.482Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -640,9 +628,9 @@
     <window id="112" entity-name="ADWindow" identifier="Document Sequence"/>
     <role id="FF808181259DADEB01259DDDA4BB01E5" entity-name="ADRole" identifier="Company Admin"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.385Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.482Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.385Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.482Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -652,9 +640,9 @@
     <window id="120" entity-name="ADWindow" identifier="Unit of Measure"/>
     <role id="FF808181259DADEB01259DDDA4BB01E5" entity-name="ADRole" identifier="Company Admin"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.385Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.482Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.385Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.482Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -664,9 +652,9 @@
     <window id="116" entity-name="ADWindow" identifier="Conversion Rates"/>
     <role id="FF808181259DADEB01259DDDA4BB01E5" entity-name="ADRole" identifier="Company Admin"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.384Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.481Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.384Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.481Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -676,9 +664,9 @@
     <window id="115" entity-name="ADWindow" identifier="Currency"/>
     <role id="FF808181259DADEB01259DDDA4BB01E5" entity-name="ADRole" identifier="Company Admin"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.384Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.481Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.384Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.481Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -688,9 +676,9 @@
     <window id="260" entity-name="ADWindow" identifier="Attribute"/>
     <role id="FF808181259DADEB01259DDDA4BB01E5" entity-name="ADRole" identifier="Company Admin"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.384Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.481Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.384Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.481Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -700,9 +688,9 @@
     <window id="192" entity-name="ADWindow" identifier="Business Partner Category"/>
     <role id="FF808181259DADEB01259DDDA4BB01E5" entity-name="ADRole" identifier="Company Admin"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.384Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.481Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.384Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.481Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -712,9 +700,9 @@
     <window id="135" entity-name="ADWindow" identifier="Document Type"/>
     <role id="FF808181259DADEB01259DDDA4BB01E5" entity-name="ADRole" identifier="Company Admin"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.384Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.480Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.384Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.480Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -724,9 +712,9 @@
     <window id="256" entity-name="ADWindow" identifier="Attribute Set"/>
     <role id="FF808181259DADEB01259DDDA4BB01E5" entity-name="ADRole" identifier="Company Admin"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.384Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.480Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.384Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.480Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -736,9 +724,9 @@
     <window id="137" entity-name="ADWindow" identifier="Tax Rate"/>
     <role id="FF808181259DADEB01259DDDA4BB01E5" entity-name="ADRole" identifier="Company Admin"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.384Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.480Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.384Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.480Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -748,9 +736,9 @@
     <window id="138" entity-name="ADWindow" identifier="Tax Category"/>
     <role id="FF808181259DADEB01259DDDA4BB01E5" entity-name="ADRole" identifier="Company Admin"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.384Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.480Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.384Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.480Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -760,9 +748,9 @@
     <window id="800086" entity-name="ADWindow" identifier="Business Partner Tax Category"/>
     <role id="FF808181259DADEB01259DDDA4BB01E5" entity-name="ADRole" identifier="Company Admin"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.384Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.479Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.384Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.479Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -772,9 +760,9 @@
     <window id="146" entity-name="ADWindow" identifier="Price List"/>
     <role id="FF8081812250326E012250353BDE0006" entity-name="ADRole" identifier="Sales"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.383Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.479Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.383Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.479Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -784,9 +772,9 @@
     <window id="140" entity-name="ADWindow" identifier="Product"/>
     <role id="FF8081812250326E012250353BDE0006" entity-name="ADRole" identifier="Sales"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.383Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.479Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.383Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.479Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -796,9 +784,9 @@
     <window id="143" entity-name="ADWindow" identifier="Sales Order"/>
     <role id="FF8081812250326E012250353BDE0006" entity-name="ADRole" identifier="Sales"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.383Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.479Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.383Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.479Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -808,9 +796,9 @@
     <window id="123" entity-name="ADWindow" identifier="Business Partner"/>
     <role id="FF8081812250326E012250353BDE0006" entity-name="ADRole" identifier="Sales"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.383Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.478Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.383Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.478Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -820,9 +808,9 @@
     <window id="800026" entity-name="ADWindow" identifier="Amortization"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.383Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.478Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.383Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.478Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -832,9 +820,9 @@
     <window id="800017" entity-name="ADWindow" identifier="Basic Discount"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.383Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.478Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.383Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.478Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -844,9 +832,9 @@
     <window id="143" entity-name="ADWindow" identifier="Sales Order"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.383Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.477Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.383Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.477Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -856,9 +844,9 @@
     <window id="118" entity-name="ADWindow" identifier="Account Tree"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.383Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.477Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.383Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.477Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -868,9 +856,9 @@
     <window id="123" entity-name="ADWindow" identifier="Business Partner"/>
     <role id="FF808181259DADEB01259DDDA4C201E6" entity-name="ADRole" identifier="Company Executive"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.382Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.477Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.382Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.477Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -880,9 +868,9 @@
     <window id="184" entity-name="ADWindow" identifier="Goods Receipt"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.382Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.477Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.382Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.477Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -892,9 +880,9 @@
     <window id="141" entity-name="ADWindow" identifier="Payment Term"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.382Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.476Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.382Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.476Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -904,9 +892,9 @@
     <window id="140" entity-name="ADWindow" identifier="Product"/>
     <role id="FF808181259DADEB01259DDDA4C201E6" entity-name="ADRole" identifier="Company Executive"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.382Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.476Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.382Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.476Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -916,9 +904,9 @@
     <window id="139" entity-name="ADWindow" identifier="Warehouse and Storage Bins"/>
     <role id="FF808181259DADEB01259DDDA4C201E7" entity-name="ADRole" identifier="Warehouse"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.382Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.476Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.382Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.476Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -928,9 +916,9 @@
     <window id="162" entity-name="ADWindow" identifier="Accounting Transaction Details"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.382Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.475Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.382Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.475Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -940,9 +928,9 @@
     <window id="137" entity-name="ADWindow" identifier="Tax Rate"/>
     <role id="FF808181259DADEB01259DDDA4C201E6" entity-name="ADRole" identifier="Company Executive"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.382Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.475Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.382Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.475Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -952,9 +940,9 @@
     <window id="800007" entity-name="ADWindow" identifier="G/L Item"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.381Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.475Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.381Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.475Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -964,9 +952,9 @@
     <window id="125" entity-name="ADWindow" identifier="General Ledger Configuration"/>
     <role id="FF808181259DADEB01259DDDA4BB01E5" entity-name="ADRole" identifier="Company Admin"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.381Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.474Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.381Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.474Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -976,9 +964,9 @@
     <window id="144" entity-name="ADWindow" identifier="Product Category"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.381Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.473Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.381Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.473Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -988,9 +976,9 @@
     <window id="169" entity-name="ADWindow" identifier="Goods Shipment"/>
     <role id="FF808181259DADEB01259DDDA4C201E7" entity-name="ADRole" identifier="Warehouse"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.381Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.472Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.381Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.472Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1000,9 +988,9 @@
     <window id="132" entity-name="ADWindow" identifier="G/L Journal"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.381Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.472Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.381Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.472Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1012,9 +1000,9 @@
     <window id="E56E701CCBA14B8BA480CBDE37C50D7A" entity-name="ADWindow" identifier="Period Control Log"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.381Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.472Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.381Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.472Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1024,9 +1012,9 @@
     <window id="170" entity-name="ADWindow" identifier="Goods Movements"/>
     <role id="FF808181259DADEB01259DDDA4C201E7" entity-name="ADRole" identifier="Warehouse"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.381Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.471Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.381Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.471Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1036,9 +1024,9 @@
     <window id="146" entity-name="ADWindow" identifier="Price List"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.380Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.471Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.380Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.471Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1048,9 +1036,9 @@
     <window id="800027" entity-name="ADWindow" identifier="Assets"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.380Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.470Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.380Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.470Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1060,9 +1048,9 @@
     <window id="233" entity-name="ADWindow" identifier="Price List Schema"/>
     <role id="FF808181259DADEB01259DDDA4BB01E5" entity-name="ADRole" identifier="Company Admin"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.380Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.469Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.380Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.469Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1072,9 +1060,9 @@
     <window id="183" entity-name="ADWindow" identifier="Purchase Invoice"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.380Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.468Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.380Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.468Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1084,9 +1072,9 @@
     <window id="123" entity-name="ADWindow" identifier="Business Partner"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.380Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.468Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.380Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.468Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1096,9 +1084,9 @@
     <window id="167" entity-name="ADWindow" identifier="Sales Invoice"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.380Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.468Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.380Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.468Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1108,9 +1096,9 @@
     <window id="117" entity-name="ADWindow" identifier="Fiscal Calendar"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.379Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.467Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.379Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.467Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1120,9 +1108,9 @@
     <window id="168" entity-name="ADWindow" identifier="Physical Inventory"/>
     <role id="FF808181259DADEB01259DDDA4C201E7" entity-name="ADRole" identifier="Warehouse"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.379Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.467Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.379Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.467Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1132,9 +1120,9 @@
     <window id="252" entity-name="ADWindow" identifier="Asset Group"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.379Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.467Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.379Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.467Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1144,9 +1132,9 @@
     <window id="140" entity-name="ADWindow" identifier="Product"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.379Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.466Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.379Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.466Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1156,9 +1144,9 @@
     <window id="184" entity-name="ADWindow" identifier="Goods Receipt"/>
     <role id="FF808181259DADEB01259DDDA4C201E7" entity-name="ADRole" identifier="Warehouse"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.379Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.466Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.379Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.466Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1168,9 +1156,9 @@
     <window id="192" entity-name="ADWindow" identifier="Business Partner Category"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.378Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.466Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.378Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.466Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1180,9 +1168,9 @@
     <window id="181" entity-name="ADWindow" identifier="Purchase Order"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.378Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.465Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.378Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.465Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1192,9 +1180,9 @@
     <window id="147" entity-name="ADWindow" identifier="Invoice Schedule"/>
     <role id="FF808181259DADEB01259DDDA4BB01E5" entity-name="ADRole" identifier="Company Admin"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.378Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.465Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.378Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.465Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1204,9 +1192,9 @@
     <process id="800185" entity-name="ADProcess" identifier="Stock Report"/>
     <role id="D7D7D228E4594ACE8D00FD0E08B333DE" entity-name="ADRole" identifier="Procurement"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.378Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.465Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.378Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.465Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1216,9 +1204,9 @@
     <process id="6AD04479EC134BD4826077F36B709876" entity-name="ADProcess" identifier="Payment Report"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.378Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.464Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.378Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.464Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1228,9 +1216,9 @@
     <process id="800181" entity-name="ADProcess" identifier="Purchase Dimensional Report"/>
     <role id="D7D7D228E4594ACE8D00FD0E08B333DE" entity-name="ADRole" identifier="Procurement"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.378Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.464Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.378Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.464Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1240,9 +1228,9 @@
     <process id="ACD33F81B247441B8659BECF10D7A808" entity-name="ADProcess" identifier="Print payments process"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.378Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.463Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.378Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.463Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1252,21 +1240,9 @@
     <process id="3C4A5FB206B74C3CA9FE20116FCA0464" entity-name="ADProcess" identifier="Reconciliation Details"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.377Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.463Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.377Z</updated>
-    <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <editableField>true</editableField>
-    <inheritedFrom xsi:nil="true"/>
-  </ADProcessAccess>
-  <ADProcessAccess id="454D973ADF99416EA713BCB799C229B4" identifier="Add Payment - Finance">
-    <id>454D973ADF99416EA713BCB799C229B4</id>
-    <process id="2EED9BC16DB34D2B80BA40A21564BECF" entity-name="ADProcess" identifier="Add Payment"/>
-    <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
-    <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.377Z</creationDate>
-    <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.377Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.463Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1276,21 +1252,9 @@
     <process id="1003900000" entity-name="ADProcess" identifier="TaxPayment Post"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.377Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.463Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.377Z</updated>
-    <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <editableField>true</editableField>
-    <inheritedFrom xsi:nil="true"/>
-  </ADProcessAccess>
-  <ADProcessAccess id="4984E30D8FEF497FA6E6480669489903" identifier="Match Statement - Finance">
-    <id>4984E30D8FEF497FA6E6480669489903</id>
-    <process id="C125EA7C85234D8B89FEA511FCCD2E9E" entity-name="ADProcess" identifier="Match Statement"/>
-    <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
-    <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.377Z</creationDate>
-    <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.377Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.463Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1300,9 +1264,9 @@
     <process id="800138" entity-name="ADProcess" identifier="Export Budget to Excel"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.377Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.463Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.377Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.463Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1312,21 +1276,9 @@
     <process id="1004400000" entity-name="ADProcess" identifier="Create Purchase Order"/>
     <role id="D7D7D228E4594ACE8D00FD0E08B333DE" entity-name="ADRole" identifier="Procurement"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.376Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.462Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.376Z</updated>
-    <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <editableField>true</editableField>
-    <inheritedFrom xsi:nil="true"/>
-  </ADProcessAccess>
-  <ADProcessAccess id="4FE6B3E4EE344515BF66B9DA24B04308" identifier="Add Transaction - Finance">
-    <id>4FE6B3E4EE344515BF66B9DA24B04308</id>
-    <process id="E3E92E9F08214507958E6875E66F2F99" entity-name="ADProcess" identifier="Add Transaction"/>
-    <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
-    <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.376Z</creationDate>
-    <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.376Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.462Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1336,21 +1288,9 @@
     <process id="EB3D56BDD37E4229B67DBAB9F9A9B167" entity-name="ADProcess" identifier="Reconcile"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.376Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.462Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.376Z</updated>
-    <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <editableField>true</editableField>
-    <inheritedFrom xsi:nil="true"/>
-  </ADProcessAccess>
-  <ADProcessAccess id="767E9ADA7198450593796617E62B7BE1" identifier="Add Payment From Transaction - Finance">
-    <id>767E9ADA7198450593796617E62B7BE1</id>
-    <process id="4A059E4F79294640AD37B1B718C56E5D" entity-name="ADProcess" identifier="Add Payment From Transaction"/>
-    <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
-    <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.376Z</creationDate>
-    <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.376Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.462Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1360,9 +1300,9 @@
     <process id="7AC7BE9024E448A0BB863C159DA762F9" entity-name="ADProcess" identifier="Import Statement"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.376Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.462Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.376Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.462Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1372,21 +1312,9 @@
     <process id="800135" entity-name="ADProcess" identifier="Copy Budget"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.376Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.462Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.376Z</updated>
-    <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <editableField>true</editableField>
-    <inheritedFrom xsi:nil="true"/>
-  </ADProcessAccess>
-  <ADProcessAccess id="909D6CF233484666B2224529C8326E73" identifier="Select Expected Payments - Finance">
-    <id>909D6CF233484666B2224529C8326E73</id>
-    <process id="62E6270312534380B9A8BDF603CA8FBB" entity-name="ADProcess" identifier="Select Expected Payments"/>
-    <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
-    <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.376Z</creationDate>
-    <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.376Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.462Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1396,21 +1324,9 @@
     <process id="1002100000" entity-name="ADProcess" identifier="Create Vat Registers"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.375Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.461Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.375Z</updated>
-    <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <editableField>true</editableField>
-    <inheritedFrom xsi:nil="true"/>
-  </ADProcessAccess>
-  <ADProcessAccess id="96315A8697EB4A3985F08C37E9AF67E5" identifier="Add Details - Finance">
-    <id>96315A8697EB4A3985F08C37E9AF67E5</id>
-    <process id="12016E2EDE0245B5A36B84CBA144DBDF" entity-name="ADProcess" identifier="Add Details"/>
-    <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
-    <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.375Z</creationDate>
-    <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.375Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.461Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1420,9 +1336,9 @@
     <process id="DC23BB9234174E52879E4B21C8CD1F4B" entity-name="ADProcess" identifier="Process Payment Proposal"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.375Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.461Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.375Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.461Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1432,9 +1348,9 @@
     <process id="E011F492B0814A74B63CD1F3B9FF0526" entity-name="ADProcess" identifier="Execute Payment"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.375Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.461Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.375Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.461Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1444,9 +1360,9 @@
     <process id="800137" entity-name="ADProcess" identifier="Create Budget Reports in Excel"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.375Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.460Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.375Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.460Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1456,9 +1372,9 @@
     <process id="6255BE488882480599C81284B70CD9B3" entity-name="ADProcess" identifier="Payment Process"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.375Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.460Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.375Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.460Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1468,9 +1384,9 @@
     <process id="D16966FBF9604A3D91A50DC83C6EA8E3" entity-name="ADProcess" identifier="Payment Proposal Process"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.375Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.460Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.375Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.460Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1480,9 +1396,9 @@
     <process id="BBA11D1A061346459AF6148920FE6629" entity-name="ADProcess" identifier="Reconciliation Summary"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.375Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.459Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.375Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.459Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1492,9 +1408,9 @@
     <process id="800023" entity-name="ADProcess" identifier="Invoice Taxes Report"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.375Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.459Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.375Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.459Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1504,9 +1420,9 @@
     <process id="800099" entity-name="ADProcess" identifier="Bpartner print"/>
     <role id="FF808181259DADEB01259DDDA4C201E6" entity-name="ADRole" identifier="Company Executive"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.374Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.459Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.374Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.459Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>false</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1516,9 +1432,9 @@
     <process id="800099" entity-name="ADProcess" identifier="Bpartner print"/>
     <role id="FF8081812250326E012250353BDE0006" entity-name="ADRole" identifier="Sales"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.374Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.459Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.374Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.459Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>false</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1528,9 +1444,9 @@
     <process id="800099" entity-name="ADProcess" identifier="Bpartner print"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.374Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.458Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.374Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.458Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>false</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1540,9 +1456,9 @@
     <process id="800099" entity-name="ADProcess" identifier="Bpartner print"/>
     <role id="D7D7D228E4594ACE8D00FD0E08B333DE" entity-name="ADRole" identifier="Procurement"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.374Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.458Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.374Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.458Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>false</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1552,9 +1468,9 @@
     <process id="800168" entity-name="ADProcess" identifier="Not Posted Transaction Report"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.374Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.458Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.374Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.458Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1564,9 +1480,9 @@
     <process id="800039" entity-name="ADProcess" identifier="Trial Balance"/>
     <role id="FF808181259DADEB01259DDDA4C201E6" entity-name="ADRole" identifier="Company Executive"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.374Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.458Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.374Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.458Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1576,9 +1492,9 @@
     <process id="800021" entity-name="ADProcess" identifier="Balance sheet and P&amp;L structure"/>
     <role id="FF808181259DADEB01259DDDA4C201E6" entity-name="ADRole" identifier="Company Executive"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.374Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.457Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.374Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.457Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1588,9 +1504,9 @@
     <process id="800000" entity-name="ADProcess" identifier="Journal Entries Report"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.373Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.457Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.373Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.457Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1600,9 +1516,9 @@
     <process id="800001" entity-name="ADProcess" identifier="General Ledger Report"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.373Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.457Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.373Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.457Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1612,9 +1528,9 @@
     <process id="800038" entity-name="ADProcess" identifier="Undo Close Year"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.373Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.456Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.373Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.456Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1624,9 +1540,9 @@
     <process id="800176" entity-name="ADProcess" identifier="Sales Order Report"/>
     <role id="FF8081812250326E012250353BDE0006" entity-name="ADRole" identifier="Sales"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.373Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.456Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.373Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.456Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1636,9 +1552,9 @@
     <process id="800058" entity-name="ADProcess" identifier="Shipments Dimensional Report"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.373Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.456Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.373Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.456Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1648,9 +1564,9 @@
     <process id="800184" entity-name="ADProcess" identifier="Sales Dimensional Report"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.373Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.456Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.373Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.456Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1660,9 +1576,9 @@
     <process id="800046" entity-name="ADProcess" identifier="Product Movements Report"/>
     <role id="FF808181259DADEB01259DDDA4C201E7" entity-name="ADRole" identifier="Warehouse"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.373Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.455Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.373Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.455Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1672,9 +1588,9 @@
     <process id="119" entity-name="ADProcess" identifier="Generate Invoices"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.373Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.455Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.373Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.455Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1684,9 +1600,9 @@
     <process id="800183" entity-name="ADProcess" identifier="Purchase Invoice Dimensional Report"/>
     <role id="FF808181259DADEB01259DDDA4C201E6" entity-name="ADRole" identifier="Company Executive"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.372Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.455Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.372Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.455Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>false</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1696,9 +1612,9 @@
     <process id="800018" entity-name="ADProcess" identifier="Material Transaction Report"/>
     <role id="FF808181259DADEB01259DDDA4C201E7" entity-name="ADRole" identifier="Warehouse"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.372Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.454Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.372Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.454Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>false</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1708,9 +1624,9 @@
     <process id="800036" entity-name="ADProcess" identifier="Close Year"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.372Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.454Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.372Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.454Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1720,9 +1636,9 @@
     <process id="800085" entity-name="ADProcess" identifier="Generate Average Costs"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.372Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.454Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.372Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.454Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1732,9 +1648,9 @@
     <process id="800184" entity-name="ADProcess" identifier="Sales Dimensional Report"/>
     <role id="FF8081812250326E012250353BDE0006" entity-name="ADRole" identifier="Sales"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.372Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.453Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.372Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.453Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1744,9 +1660,9 @@
     <process id="6D3B1C36BF594A51878281B505F6CECF" entity-name="ADProcess" identifier="Sales Invoice Dimensional Report"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.372Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.453Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.372Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.453Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1756,9 +1672,9 @@
     <process id="800182" entity-name="ADProcess" identifier="Goods Receipts Dimensional Report"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.372Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.453Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.372Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.453Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1768,9 +1684,9 @@
     <process id="3DAA5E63A30D45A8ABF87701F8BD91EF" entity-name="ADProcess" identifier="Orders Awaiting Delivery Report"/>
     <role id="FF808181259DADEB01259DDDA4C201E7" entity-name="ADRole" identifier="Warehouse"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.371Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.452Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.371Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.452Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>false</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1780,9 +1696,9 @@
     <process id="800184" entity-name="ADProcess" identifier="Sales Dimensional Report"/>
     <role id="FF808181259DADEB01259DDDA4C201E6" entity-name="ADRole" identifier="Company Executive"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.371Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.452Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.371Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.452Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1792,9 +1708,9 @@
     <process id="E5BE98DCF4514A18B571F21183B397DD" entity-name="ADProcess" identifier="Valued Stock Report"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.371Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.452Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.371Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.452Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1804,9 +1720,9 @@
     <process id="3DAA5E63A30D45A8ABF87701F8BD91EF" entity-name="ADProcess" identifier="Orders Awaiting Delivery Report"/>
     <role id="FF8081812250326E012250353BDE0006" entity-name="ADRole" identifier="Sales"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.371Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.451Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.371Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.451Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>false</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1816,9 +1732,9 @@
     <process id="129" entity-name="ADProcess" identifier="Monthly Invoice"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.371Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.451Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.371Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.451Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1828,9 +1744,9 @@
     <process id="800079" entity-name="ADProcess" identifier="Traceability Report"/>
     <role id="FF808181259DADEB01259DDDA4C201E7" entity-name="ADRole" identifier="Warehouse"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.371Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.451Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.371Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.451Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1840,9 +1756,9 @@
     <process id="176" entity-name="ADProcess" identifier="Reset Accounting Old"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.371Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.451Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.371Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.451Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1852,9 +1768,9 @@
     <process id="462033447A1548F09BBFB0683FA976CC" entity-name="ADProcess" identifier="Asset report for depreciation schedule"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.371Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.450Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.371Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.450Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1864,9 +1780,9 @@
     <process id="E5BE98DCF4514A18B571F21183B397DD" entity-name="ADProcess" identifier="Valued Stock Report"/>
     <role id="FF808181259DADEB01259DDDA4C201E7" entity-name="ADRole" identifier="Warehouse"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.370Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.450Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.370Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.450Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1876,9 +1792,9 @@
     <process id="800185" entity-name="ADProcess" identifier="Stock Report"/>
     <role id="FF8081812250326E012250353BDE0006" entity-name="ADRole" identifier="Sales"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.370Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.450Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.370Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.450Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>false</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1888,9 +1804,9 @@
     <process id="800058" entity-name="ADProcess" identifier="Shipments Dimensional Report"/>
     <role id="FF8081812250326E012250353BDE0006" entity-name="ADRole" identifier="Sales"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.370Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.449Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.370Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.449Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>false</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1900,9 +1816,9 @@
     <process id="800183" entity-name="ADProcess" identifier="Purchase Invoice Dimensional Report"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.370Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.449Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.370Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.449Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1912,9 +1828,9 @@
     <process id="800021" entity-name="ADProcess" identifier="Balance sheet and P&amp;L structure"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.370Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.449Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.370Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.449Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1924,9 +1840,9 @@
     <process id="6D3B1C36BF594A51878281B505F6CECF" entity-name="ADProcess" identifier="Sales Invoice Dimensional Report"/>
     <role id="FF808181259DADEB01259DDDA4C201E6" entity-name="ADRole" identifier="Company Executive"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.370Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.448Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.370Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.448Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1936,9 +1852,9 @@
     <process id="800058" entity-name="ADProcess" identifier="Shipments Dimensional Report"/>
     <role id="FF808181259DADEB01259DDDA4C201E6" entity-name="ADRole" identifier="Company Executive"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.370Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.448Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.370Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.448Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1948,9 +1864,9 @@
     <process id="166" entity-name="ADProcess" identifier="Create Invoice"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.370Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.448Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.370Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.448Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1960,9 +1876,9 @@
     <process id="800039" entity-name="ADProcess" identifier="Trial Balance"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.370Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.448Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.370Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.448Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1972,9 +1888,9 @@
     <process id="800085" entity-name="ADProcess" identifier="Generate Average Costs"/>
     <role id="FF808181259DADEB01259DDDA4C201E7" entity-name="ADRole" identifier="Warehouse"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.369Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.447Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.369Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.447Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1984,9 +1900,9 @@
     <process id="800181" entity-name="ADProcess" identifier="Purchase Dimensional Report"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.369Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.447Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.369Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.447Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -1996,9 +1912,9 @@
     <process id="800185" entity-name="ADProcess" identifier="Stock Report"/>
     <role id="FF808181259DADEB01259DDDA4C201E7" entity-name="ADRole" identifier="Warehouse"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.369Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.446Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.369Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.446Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -2008,9 +1924,9 @@
     <obuiappProcess id="4BDE0AF5E8C44B6C9575E388AAECDF69" entity-name="OBUIAPP_Process" identifier="Purchase Order Report"/>
     <role id="D7D7D228E4594ACE8D00FD0E08B333DE" entity-name="ADRole" identifier="Procurement"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.369Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.445Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.369Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.445Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -2020,9 +1936,9 @@
     <obuiappProcess id="8B81D80B06364566B87853FEECAB5DE0" entity-name="OBUIAPP_Process" identifier="Copy from Orders"/>
     <role id="FF8081812250326E012250353BDE0006" entity-name="ADRole" identifier="Sales"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:03:09.185Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.443Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:03:09.185Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.443Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -2032,9 +1948,9 @@
     <obuiappProcess id="8B81D80B06364566B87853FEECAB5DE0" entity-name="OBUIAPP_Process" identifier="Copy from Orders"/>
     <role id="FF8081812250326E012250353BDE0005" entity-name="ADRole" identifier="Finance"/>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:03:19.52Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.443Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:03:19.52Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.443Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <editableField>true</editableField>
     <inheritedFrom xsi:nil="true"/>
@@ -2042,9 +1958,9 @@
   <ADRole id="CA5B7FB2C95740E499C0F102343D51AD" identifier="Employee">
     <id>CA5B7FB2C95740E499C0F102343D51AD</id>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.369Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.442Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.369Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.442Z</updated>
     <name>Employee</name>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <description>Role with access to self-service requisitions.</description>
@@ -2066,9 +1982,9 @@
   <ADRole id="D7D7D228E4594ACE8D00FD0E08B333DE" identifier="Procurement">
     <id>D7D7D228E4594ACE8D00FD0E08B333DE</id>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.369Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.442Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.369Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.442Z</updated>
     <name>Procurement</name>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <description>User working in the procurement department.</description>
@@ -2090,9 +2006,9 @@
   <ADRole id="FF8081812250326E012250353BDE0005" identifier="Finance">
     <id>FF8081812250326E012250353BDE0005</id>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.368Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.441Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.368Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.441Z</updated>
     <name>Finance</name>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <description>User working in the Finance department.</description>
@@ -2114,9 +2030,9 @@
   <ADRole id="FF8081812250326E012250353BDE0006" identifier="Sales">
     <id>FF8081812250326E012250353BDE0006</id>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.368Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.440Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.368Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.440Z</updated>
     <name>Sales</name>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <description>Manage and create sales transactions.</description>
@@ -2138,9 +2054,9 @@
   <ADRole id="FF808181259DADEB01259DDDA4BB01E5" identifier="Company Admin">
     <id>FF808181259DADEB01259DDDA4BB01E5</id>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.368Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.440Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.368Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.440Z</updated>
     <name>Company Admin</name>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <description>Set vital parameters of the company's Openbravo client.</description>
@@ -2162,9 +2078,9 @@
   <ADRole id="FF808181259DADEB01259DDDA4C201E6" identifier="Company Executive">
     <id>FF808181259DADEB01259DDDA4C201E6</id>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.368Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.439Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.368Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.439Z</updated>
     <name>Company Executive</name>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <description>Overview key performance indicators and manage crucial data.</description>
@@ -2186,9 +2102,9 @@
   <ADRole id="FF808181259DADEB01259DDDA4C201E7" identifier="Warehouse">
     <id>FF808181259DADEB01259DDDA4C201E7</id>
     <active>true</active>
-    <creationDate transient="true">2017-11-28T13:00:08.368Z</creationDate>
+    <creationDate transient="true">2019-04-23T08:34:13.439Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
-    <updated transient="true">2017-11-28T13:00:08.368Z</updated>
+    <updated transient="true">2019-04-23T08:34:13.439Z</updated>
     <name>Warehouse</name>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Openbravo"/>
     <description>Manage master data as part of warehouse and procurement management.</description>

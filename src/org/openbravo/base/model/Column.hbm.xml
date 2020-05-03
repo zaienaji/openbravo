@@ -12,7 +12,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2008-2016 Openbravo SLU 
+ * All portions are Copyright (C) 2008-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -59,6 +59,7 @@
     <property name="transient" type="org.openbravo.base.session.OBYesNoType" column="istransient"/>
     <property name="isTransientCondition" column="istransientcondition"/>
     <property name="allowedCrossOrgReference" type="org.openbravo.base.session.OBYesNoType" column="allowed_cross_org_link"/>
+    <property name="childPropertyInParent" type="org.openbravo.base.session.OBYesNoType" column="is_child_property_in_parent"/>
                         
     <many-to-one name="module" not-null="true" class="org.openbravo.base.model.Module" column="ad_module_id"/>
 

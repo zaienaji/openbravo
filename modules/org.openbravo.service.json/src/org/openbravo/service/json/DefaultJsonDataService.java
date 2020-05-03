@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2009-2018 Openbravo SLU 
+ * All portions are Copyright (C) 2009-2020 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -248,10 +248,6 @@ public class DefaultJsonDataService implements JsonDataService {
           jsonResponse.put(JsonConstants.RESPONSE_TOTALROWS, 1);
           return jsonResult.toString();
         } else {
-          String currentProfile = SessionInfo.getQueryProfile();
-          if (currentProfile == null || currentProfile.isEmpty()) {
-            SessionInfo.setQueryProfile("grid");
-          }
           long t = System.currentTimeMillis();
           bobs = queryService.list();
           log.debug("query time:" + (System.currentTimeMillis() - t));
@@ -538,6 +534,13 @@ public class DefaultJsonDataService implements JsonDataService {
     String entityName = parameters.get(JsonConstants.ENTITYNAME);
     final DataEntityQueryService queryService = OBProvider.getInstance()
         .get(DataEntityQueryService.class);
+
+    String currentProfile = SessionInfo.getQueryProfile();
+    if (currentProfile == null || currentProfile.isEmpty()) {
+      currentProfile = "grid";
+      SessionInfo.setQueryProfile(currentProfile);
+    }
+    log.trace("Generating QueryService for entity {} with profile {}", entityName, currentProfile);
 
     boolean includeOrgFilter = includeOrgFilter(parameters);
     if (!forSubEntity && parameters.get(JsonConstants.DISTINCT_PARAMETER) != null) {

@@ -11,7 +11,7 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU
- * All portions are Copyright (C) 2012-2016 Openbravo SLU
+ * All portions are Copyright (C) 2012-2019 Openbravo SLU
  * All Rights Reserved.
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -43,7 +43,7 @@ public class DuplicateDocExchangeRate extends BuildValidation {
   private static final String PURCHASE_INVOICE_HEADER_TAB = "290";
   private static final String PAYMENT_IN_HEADER_TAB = "C4B6506838E14A349D6717D6856F1B56";
   private static final String PAYMENT_OUT_HEADER_TAB = "F7A52FDAAA0346EFA07D53C125B40404";
-  private static final String TRANSACTION_HEADER_TAB = "FF8080812F213146012F2135BC25000E";
+  private static final String TRANSACTION_HEADER_TAB = "23691259D1BD4496BCC5F32645BCA4B9";
 
   private static final String SALES_INV_WINDOW = "167";
   private static final String PURCHASE_INV_WINDOW = "183";

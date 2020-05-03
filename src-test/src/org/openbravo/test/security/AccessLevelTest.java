@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2008-2018 Openbravo SLU 
+ * All portions are Copyright (C) 2008-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -201,7 +201,7 @@ public class AccessLevelTest extends OBBaseTest {
    */
   @Test
   public void testAccessLevelCO() {
-    setTestAdminContext();
+    setSystemAdministratorContext();
     final Client c = OBDal.getInstance().get(Client.class, "0");
 
     final BusinessPartner bp = OBDal.getInstance()

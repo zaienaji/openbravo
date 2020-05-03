@@ -332,8 +332,7 @@ isc.OBUploadView.addClassProperties({
     },
 
     updateState: function() {
-      var ownerId,
-        tabId = this.view.tabId;
+      var ownerId;
       if (this.inChildTab) {
         ownerId = this.view.parentRecordId;
         if (ownerId && ownerId !== '-1') {

@@ -116,7 +116,7 @@ public class ADCSTest extends WeldBaseTest {
     assertThat(generatedView, not(isEmptyString()));
   }
 
-  public static class WindowSettingsActionHandlerTest extends WindowSettingsActionHandler {
+  private static class WindowSettingsActionHandlerTest extends WindowSettingsActionHandler {
 
     public void execute(String windowId) {
       Map<String, Object> parameters = new HashMap<>();

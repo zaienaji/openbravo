@@ -602,6 +602,7 @@ where @additional_filters@
 <!--862F54CB1B074513BD791C6789F4AA42-->  <NAME><![CDATA[Business Partner with contact and location]]></NAME>
 <!--862F54CB1B074513BD791C6789F4AA42-->  <AD_REFERENCE_ID><![CDATA[800057]]></AD_REFERENCE_ID>
 <!--862F54CB1B074513BD791C6789F4AA42-->  <AD_TABLE_ID><![CDATA[291]]></AD_TABLE_ID>
+<!--862F54CB1B074513BD791C6789F4AA42-->  <FILTER_EXPRESSION><![CDATA[OB.getFilterExpression("org.openbravo.erpCommon.info.BusinessPartnerSelectorFilterExpression")]]></FILTER_EXPRESSION>
 <!--862F54CB1B074513BD791C6789F4AA42-->  <OBCLKER_TEMPLATE_ID><![CDATA[9314DE8599AD44E7BFC4CC50699042AB]]></OBCLKER_TEMPLATE_ID>
 <!--862F54CB1B074513BD791C6789F4AA42-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--862F54CB1B074513BD791C6789F4AA42-->  <VALUEFIELD_ID><![CDATA[B103893820FC4080809A97FABD49D8AF]]></VALUEFIELD_ID>
@@ -1299,7 +1300,7 @@ where @additional_filters@
 <!--F3CDEE79343F4746A2FEE8C60EBEC0BF-->  <NAME><![CDATA[Receipts]]></NAME>
 <!--F3CDEE79343F4746A2FEE8C60EBEC0BF-->  <AD_REFERENCE_ID><![CDATA[E68CCF4495A34ED7902293A930386B93]]></AD_REFERENCE_ID>
 <!--F3CDEE79343F4746A2FEE8C60EBEC0BF-->  <AD_TABLE_ID><![CDATA[319]]></AD_TABLE_ID>
-<!--F3CDEE79343F4746A2FEE8C60EBEC0BF-->  <WHERECLAUSE><![CDATA[e.salesTransaction = false and e.documentStatus = 'CO' and exists (select 1 from MaterialMgmtMaterialTransaction t join t.goodsShipmentLine iol where iol.shipmentReceipt.id = e.id and iol.movementQuantity >= 0 and exists (select 1 from CostingRule r where r.validated = 'Y' and ad_org_isinnaturaltree(r.organization.id, t.organization.id, t.client.id) = 'Y' and r.endingDate is null and (r.startingDate is null or r.startingDate <= t.transactionProcessDate)))]]></WHERECLAUSE>
+<!--F3CDEE79343F4746A2FEE8C60EBEC0BF-->  <WHERECLAUSE><![CDATA[e.salesTransaction = false and e.documentStatus = 'CO' and exists (select 1 from MaterialMgmtMaterialTransaction t join t.goodsShipmentLine iol where iol.shipmentReceipt.id = e.id and iol.movementQuantity >= 0 and exists (select 1 from CostingRule r where r.validated = 'Y' and r.endingDate is null and (r.startingDate is null or r.startingDate <= t.transactionProcessDate)) and t.organization.id in (select ro.organization.id from ADRoleOrganization ro where ro.role.id = @#AD_Role_ID@))]]></WHERECLAUSE>
 <!--F3CDEE79343F4746A2FEE8C60EBEC0BF-->  <OBCLKER_TEMPLATE_ID><![CDATA[9314DE8599AD44E7BFC4CC50699042AB]]></OBCLKER_TEMPLATE_ID>
 <!--F3CDEE79343F4746A2FEE8C60EBEC0BF-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--F3CDEE79343F4746A2FEE8C60EBEC0BF-->  <SUGGESTIONTEXTMATCHSTYLE><![CDATA[startsWith]]></SUGGESTIONTEXTMATCHSTYLE>

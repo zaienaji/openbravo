@@ -64,7 +64,7 @@
                 SELECT trx.ad_client_id, trx.ad_org_id, trx.createdby, trx.updatedby, trx.m_product_id, trx.m_locator_id, trx.c_uom_id, trx.movementqty,
                   0 AS trxcost
                 FROM m_transaction trx
-                WHERE trx.movementdate <= TO_DATE(?)
+                WHERE TRUNC(trx.movementdate) <= TO_DATE(?)
                 AND 2=2
                 AND 4=4
                 AND 5=5
@@ -79,7 +79,7 @@
                 FROM(SELECT SUM(CASE WHEN t2.movementqty < 0 THEN -cost ELSE cost END) AS trxcost, t2.m_transaction_id, tc2.c_currency_id, COALESCE(dateacct, costdate) AS movementdate
                      FROM m_transaction_cost tc2
                      JOIN m_transaction t2 ON (tc2.m_transaction_id = t2.m_transaction_id)
-                     WHERE dateacct <= TO_DATE(?)
+                     WHERE TRUNC(dateacct) <= TO_DATE(?)
                      AND 3=3
                      AND 6=6
                      AND 7=7
@@ -110,7 +110,7 @@
     <Parameter name="cCurrencyID"/>
     <Parameter name="mCostingRuleID"/>
     <Parameter name="dateTo"/>
-    <Parameter name="startingDate" optional="true" after="AND 2=2"><![CDATA[ AND trx.movementdate > TO_DATE(?) ]]></Parameter>
+    <Parameter name="startingDate" optional="true" after="AND 2=2"><![CDATA[ AND TRUNC(trx.movementdate) > TO_DATE(?) ]]></Parameter>
     <Parameter name="crStartDate" optional="true" after="AND 4=4"><![CDATA[ AND trx.trxprocessdate >= to_timestamp(?, 'DD-MM-YYYY HH24:MI:SS') ]]></Parameter>
     <Parameter name="crEndDate" optional="true" after="AND 5=5"><![CDATA[ AND trx.trxprocessdate <= to_timestamp(?, 'DD-MM-YYYY HH24:MI:SS') ]]></Parameter>
     <Parameter name="adClientId"/>
@@ -118,7 +118,7 @@
     <Parameter name="cCurrencyID"/>
     <Parameter name="legalOrg"/>
     <Parameter name="dateTo"/>
-    <Parameter name="startingDate" optional="true" after="AND 3=3"><![CDATA[ AND dateacct > TO_DATE(?) ]]></Parameter>
+    <Parameter name="startingDate" optional="true" after="AND 3=3"><![CDATA[ AND TRUNC(dateacct) > TO_DATE(?) ]]></Parameter>
     <Parameter name="crStartDate" optional="true" after="AND 6=6"><![CDATA[ AND t2.trxprocessdate >= to_timestamp(?, 'DD-MM-YYYY HH24:MI:SS') ]]></Parameter>
     <Parameter name="crEndDate" optional="true" after="AND 7=7"><![CDATA[ AND t2.trxprocessdate <= to_timestamp(?, 'DD-MM-YYYY HH24:MI:SS') ]]></Parameter>
     <Parameter name="adClientId"/>

@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2018 Openbravo SLU
+ * All portions are Copyright (C) 2018-2019 Openbravo SLU
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -1099,6 +1099,7 @@ public class TestCostingNoSourceAdjustments extends TestCostingBase {
     final BigDecimal price2 = new BigDecimal("30.00");
     final BigDecimal quantity1 = new BigDecimal("180");
     final BigDecimal quantity2 = new BigDecimal("80");
+    final BigDecimal half = new BigDecimal("0.5");
 
     try {
 
@@ -1128,7 +1129,8 @@ public class TestCostingNoSourceAdjustments extends TestCostingBase {
       TestCostingUtils.runPriceBackground();
 
       // Cancel goods shipment
-      ShipmentInOut goodsShipment2 = TestCostingUtils.cancelGoodsShipment(goodsShipment1, price2);
+      ShipmentInOut goodsShipment2 = TestCostingUtils.cancelGoodsShipment(goodsShipment1,
+          price2.multiply(half));
 
       // Assert product transactions
       List<ProductTransactionAssert> productTransactionAssertList = new ArrayList<ProductTransactionAssert>();
@@ -1143,7 +1145,7 @@ public class TestCostingNoSourceAdjustments extends TestCostingBase {
       productTransactionAssertList.add(new ProductTransactionAssert(OBDal.getInstance()
           .get(ShipmentInOut.class, goodsShipment2.getId())
           .getMaterialMgmtShipmentInOutLineList()
-          .get(0), price2, price2, true));
+          .get(0), price2.multiply(half), price2, true));
       TestCostingUtils.assertProductTransaction(product.getId(), productTransactionAssertList);
 
       // Assert product costing
@@ -1152,8 +1154,9 @@ public class TestCostingNoSourceAdjustments extends TestCostingBase {
       List<ProductCostingAssert> productCostingAssertList = new ArrayList<ProductCostingAssert>();
       productCostingAssertList
           .add(new ProductCostingAssert(transactionList.get(0), price2, price1, price2, quantity1));
-      productCostingAssertList
-          .add(new ProductCostingAssert(transactionList.get(2), price2, null, price2, quantity1));
+      productCostingAssertList.add(new ProductCostingAssert(transactionList.get(2), price2,
+          TestCostingUtils.getProductCostings(product.getId()).get(1).getOriginalCost(), price2,
+          quantity1));
       TestCostingUtils.assertProductCosting(product.getId(), productCostingAssertList);
 
       // Assert cost adjustment
@@ -1165,6 +1168,10 @@ public class TestCostingNoSourceAdjustments extends TestCostingBase {
       costAdjustmentAssertLineList.add(new CostAdjustmentAssert(transactionList.get(1), "PDC",
           quantity2.multiply(price2).add(quantity2.multiply(price1).negate()), day2, false));
       costAdjustmentAssertList.add(costAdjustmentAssertLineList);
+      List<CostAdjustmentAssert> costAdjustmentAssertLineList1 = new ArrayList<CostAdjustmentAssert>();
+      costAdjustmentAssertLineList1.add(new CostAdjustmentAssert(transactionList.get(2), "PDC",
+          quantity2.multiply(price2).add(quantity2.multiply(price1).negate()), day2, true));
+      costAdjustmentAssertList.add(costAdjustmentAssertLineList1);
       TestCostingUtils.assertCostAdjustment(costAdjustmentList, costAdjustmentAssertList);
 
       // Post cost adjustment 1 and assert it
@@ -1308,6 +1315,7 @@ public class TestCostingNoSourceAdjustments extends TestCostingBase {
     final BigDecimal price1 = new BigDecimal("15.00");
     final BigDecimal price2 = new BigDecimal("7.50");
     final BigDecimal quantity1 = new BigDecimal("180");
+    final BigDecimal two = new BigDecimal("2");
 
     try {
 
@@ -1333,14 +1341,15 @@ public class TestCostingNoSourceAdjustments extends TestCostingBase {
       TestCostingUtils.runPriceBackground();
 
       // Cancel goods receipt
-      ShipmentInOut goodsReceipt2 = TestCostingUtils.cancelGoodsReceipt(goodsReceipt1, price2);
+      ShipmentInOut goodsReceipt2 = TestCostingUtils.cancelGoodsReceipt(goodsReceipt1,
+          price2.multiply(two));
 
       // Assert product transactions
       List<ProductTransactionAssert> productTransactionAssertList = new ArrayList<ProductTransactionAssert>();
       productTransactionAssertList.add(new ProductTransactionAssert(OBDal.getInstance()
           .get(ShipmentInOut.class, goodsReceipt2.getId())
           .getMaterialMgmtShipmentInOutLineList()
-          .get(0), price2, price2, true));
+          .get(0), price2.multiply(two), price2, true));
       productTransactionAssertList.add(new ProductTransactionAssert(OBDal.getInstance()
           .get(ShipmentInOut.class, goodsReceipt1.getId())
           .getMaterialMgmtShipmentInOutLineList()
@@ -1353,8 +1362,8 @@ public class TestCostingNoSourceAdjustments extends TestCostingBase {
       List<ProductCostingAssert> productCostingAssertList = new ArrayList<ProductCostingAssert>();
       productCostingAssertList
           .add(new ProductCostingAssert(transactionList.get(1), price2, price1, price2, quantity1));
-      productCostingAssertList.add(
-          new ProductCostingAssert(transactionList.get(0), price2, null, price2, BigDecimal.ZERO));
+      productCostingAssertList.add(new ProductCostingAssert(transactionList.get(0),
+          price2.multiply(two), null, price2, BigDecimal.ZERO));
       TestCostingUtils.assertProductCosting(product.getId(), productCostingAssertList);
 
       // Assert cost adjustment
@@ -1364,6 +1373,10 @@ public class TestCostingNoSourceAdjustments extends TestCostingBase {
       costAdjustmentAssertLineList.add(new CostAdjustmentAssert(transactionList.get(1), "PDC",
           quantity1.multiply(price2).add(quantity1.multiply(price1).negate()), day1, true));
       costAdjustmentAssertList.add(costAdjustmentAssertLineList);
+      List<CostAdjustmentAssert> costAdjustmentAssertLineList1 = new ArrayList<CostAdjustmentAssert>();
+      costAdjustmentAssertLineList1.add(new CostAdjustmentAssert(transactionList.get(0), "PDC",
+          quantity1.multiply(price2).add(quantity1.multiply(price1).negate()), day1, true));
+      costAdjustmentAssertList.add(costAdjustmentAssertLineList1);
       TestCostingUtils.assertCostAdjustment(costAdjustmentList, costAdjustmentAssertList);
 
       // Post cost adjustment 1 and assert it

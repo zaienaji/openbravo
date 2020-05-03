@@ -515,60 +515,15 @@ class Part {
       this.contents = "0";
     }
 
-    // Simplify multiple-parameter properties
-    simplifyParameters();
-
     // Simplify font weights
     simplifyFontWeights();
 
-    // Strip unnecessary quotes from url() and single-word parts, and make as much lowercase as
-    // possible.
-    simplifyQuotesAndCaps();
+    // Strip unnecessary quotes from url() and single-word parts
+    simplifyQuotes();
 
     // Simplify colours
     simplifyColourNames();
     simplifyHexColours();
-  }
-
-  private void simplifyParameters() {
-    if (this.property.equals("transform-origin") || this.property.equals("background-size")
-        || this.property.equals("quotes")) {
-      // These properties have several parameters, typically one per axis, and having
-      // just one does not imply that the remaining ones will take the same value
-      return;
-    }
-
-    StringBuffer newContents = new StringBuffer();
-
-    String[] params = this.contents.split(" ");
-    if (params.length == 4) {
-      // We can drop off the fourth item if the second and fourth items match
-      // ie turn 3px 0 3px 0 into 3px 0 3px
-      if (params[1].equalsIgnoreCase(params[3])) {
-        params = Arrays.copyOf(params, 3);
-      }
-    }
-    if (params.length == 3) {
-      // We can drop off the third item if the first and third items match
-      // ie turn 3px 0 3px into 3px 0
-      if (params[0].equalsIgnoreCase(params[2])) {
-        params = Arrays.copyOf(params, 2);
-      }
-    }
-    if (params.length == 2) {
-      // We can drop off the second item if the first and second items match
-      // ie turn 3px 3px into 3px
-      if (params[0].equalsIgnoreCase(params[1])) {
-        params = Arrays.copyOf(params, 1);
-      }
-    }
-
-    for (int i = 0; i < params.length; i++) {
-      newContents.append(params[i] + " ");
-    }
-    newContents.deleteCharAt(newContents.length() - 1); // Delete the trailing space
-
-    this.contents = newContents.toString();
   }
 
   private void simplifyFontWeights() {
@@ -586,14 +541,13 @@ class Part {
     }
   }
 
-  private void simplifyQuotesAndCaps() {
+  private void simplifyQuotes() {
     // Strip quotes from URLs
     if ((this.contents.length() > 4) && (this.contents.substring(0, 4).equalsIgnoreCase("url("))) {
       this.contents = this.contents.replaceAll("(?i)url\\(('|\")?(.*?)\\1\\)", "url($2)");
     } else {
       String[] words = this.contents.split("\\s");
       if (words.length == 1) {
-        this.contents = this.contents.toLowerCase();
         this.contents = this.contents.replaceAll("('|\")?(.*?)\1", "$2");
       }
     }

@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2010-2018 Openbravo SLU 
+ * All portions are Copyright (C) 2010-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -51,7 +51,7 @@ public class ViewTest extends OBBaseTest {
    */
   @Test
   public void viewsCanBeQueried() {
-    setTestAdminContext();
+    setSystemAdministratorContext();
     BaseOBObject aViewBOB = null;
     Entity aViewEntity = null;
     for (Entity entity : ModelProvider.getInstance().getModel()) {

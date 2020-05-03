@@ -69,7 +69,6 @@
       <servlet-class>
         <FIELD_TMP id="fieldTabClassName">codigo</FIELD_TMP>
       </servlet-class>
-      <load-on-startup>9999</load-on-startup>
     </servlet>
   </FIELDS_TMP>
 

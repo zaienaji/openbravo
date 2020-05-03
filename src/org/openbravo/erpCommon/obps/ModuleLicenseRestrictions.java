@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2015-2016 Openbravo SLU 
+ * All portions are Copyright (C) 2015-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -20,18 +20,17 @@ package org.openbravo.erpCommon.obps;
 
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.openbravo.erpCommon.obps.ActivationKey.LicenseRestriction;
 import org.openbravo.xmlEngine.XmlEngine;
 
 /**
  * Modules can check for License restrictions. To do so this interface should be implemented.
  * 
+ * Note that classes implementing this interface should be annotated as {@code @ApplicationScoped}.
+ * 
  * @author alostale
  *
  */
-@ApplicationScoped
 public interface ModuleLicenseRestrictions {
   /**
    * Returns LicenseRestrictions applicable to this instance, or null or

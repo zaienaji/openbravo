@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
   <database name="FUNCTION MRP_CHECK_PLANNINGMETHOD">
-    <function name="MRP_CHECK_PLANNINGMETHOD" type="NUMERIC">
+    <function name="MRP_CHECK_PLANNINGMETHOD" type="NUMERIC" volatility="STABLE">
       <parameter name="p_planningmethod_id" type="VARCHAR" mode="in">
         <default/>
       </parameter>
@@ -25,7 +25,7 @@
 * under the License.
 * The Original Code is Openbravo ERP.
 * The Initial Developer of the Original Code is Openbravo SLU
-* All portions are Copyright (C) 2001-2009 Openbravo SLU
+* All portions are Copyright (C) 2001-2019 Openbravo SLU
 * All Rights Reserved.
 * Contributor(s):  ______________________________________.
 ************************************************************************/

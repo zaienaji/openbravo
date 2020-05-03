@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
   <database name="FUNCTION C_GETTAX">
-    <function name="C_GETTAX" type="VARCHAR">
+    <function name="C_GETTAX" type="VARCHAR" volatility="STABLE">
       <parameter name="p_product_id" type="VARCHAR" mode="in">
         <default/>
       </parameter>

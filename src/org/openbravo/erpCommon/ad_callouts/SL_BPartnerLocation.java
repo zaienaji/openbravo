@@ -74,7 +74,7 @@ public class SL_BPartnerLocation extends SimpleCallout {
             "and c.id <> :countryId "; //
         Query<Long> query = OBDal.getInstance()
             .getSession()
-            .createQuery(hql.toString(), Long.class);
+            .createQuery(hql, Long.class);
         query.setParameter("bPartnerId", bPartnerId);
         query.setParameter("countryId", location.getCountry().getId());
         int otherCountriesTaxLocationYes = query.list().get(0).intValue();
@@ -95,7 +95,7 @@ public class SL_BPartnerLocation extends SimpleCallout {
               "inner join ad.country as c " + //
               "where bpl.businessPartner.id = :bPartnerId " + //
               "and c.id <> :countryId "; //
-          query = OBDal.getInstance().getSession().createQuery(hql.toString(), Long.class);
+          query = OBDal.getInstance().getSession().createQuery(hql, Long.class);
           query.setParameter("bPartnerId", bPartnerId);
           query.setParameter("countryId", location.getCountry().getId());
           int otherCountries = query.list().get(0).intValue();
@@ -109,7 +109,7 @@ public class SL_BPartnerLocation extends SimpleCallout {
                 "where bpl.businessPartner.id = :bPartnerId " + //
                 "and c.id = :countryId " + //
                 "and bpl.taxLocation = true ";
-            query = OBDal.getInstance().getSession().createQuery(hql.toString(), Long.class);
+            query = OBDal.getInstance().getSession().createQuery(hql, Long.class);
             query.setParameter("bPartnerId", bPartnerId);
             query.setParameter("countryId", location.getCountry().getId());
             int thisCountryTaxLocationYes = query.list().get(0).intValue();

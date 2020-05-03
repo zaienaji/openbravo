@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2001-2018 Openbravo SLU
+ * All portions are Copyright (C) 2001-2019 Openbravo SLU
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -1948,7 +1948,7 @@ public class Utility {
   /**
    * Returns the name for a value in a list reference in the selected language.
    * 
-   * @param ListName
+   * @param listName
    *          Name for the reference list to look in
    * @param value
    *          Value to look for
@@ -1957,26 +1957,49 @@ public class Utility {
    * @return Name for the value, in case the value is not found in the list the return is not the
    *         name but the passed value
    */
-  public static String getListValueName(String ListName, String value, String lang) {
+  public static String getListValueName(String listName, String value, String lang) {
     // Try to obtain the translated value
-    String hql = "  select rlt.name as name " + " from ADReference r, " + "      ADList rl,"
-        + "      ADListTrl rlt" + " where rl.reference = r" + "  and rlt.listReference = rl"
-        + "  and rlt.language.language = '" + lang + "'" + "  and r.name =  '" + ListName + "'"
-        + "  and rl.searchKey = '" + value + "'";
-    Query<String> q = OBDal.getInstance().getSession().createQuery(hql, String.class);
-    q.setMaxResults(1);
-    String name = (String) q.uniqueResult();
+    // @formatter:off
+    String hql =
+        "  select rlt.name as name "
+        + " from ADReference r, ADList rl, ADListTrl rlt"
+        + " where rl.reference = r"
+        + "  and rlt.listReference = rl"
+        + "  and rlt.language.language = :lang"
+        + "  and r.name = :name"
+        + "  and rl.searchKey = :value";
+    // @formatter:on
+
+    String name = OBDal.getInstance()
+        .getSession()
+        .createQuery(hql, String.class)
+        .setParameter("lang", lang)
+        .setParameter("name", listName)
+        .setParameter("value", value)
+        .setMaxResults(1)
+        .uniqueResult();
+
     if (name != null) {
       return name;
     }
 
     // No translated value obtained, get the standard one
-    hql = "  select rl.name " + " from ADReference r, " + "      ADList rl"
-        + " where rl.reference = r" + "  and r.name =  '" + ListName + "'"
-        + "  and rl.searchKey = '" + value + "'";
-    q = OBDal.getInstance().getSession().createQuery(hql, String.class);
-    q.setMaxResults(1);
-    name = (String) q.uniqueResult();
+    // @formatter:off
+    hql = "  select rl.name "
+        + " from ADReference r, ADList rl"
+        + " where rl.reference = r"
+        + "  and r.name = :name"
+        + "  and rl.searchKey = :value";
+    // @formatter:on
+
+    name = OBDal.getInstance()
+        .getSession()
+        .createQuery(hql, String.class)
+        .setParameter("name", listName)
+        .setParameter("value", value)
+        .setMaxResults(1)
+        .uniqueResult();
+
     if (name != null) {
       return name;
     } else {
