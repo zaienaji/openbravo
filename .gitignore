@@ -20,3 +20,5 @@
 /src-trl/lib/openbravo-trl.jar
 /src-wad/lib/openbravo-wad.jar
 /config/checksums
+*.log
+/lib/openbravo.war
