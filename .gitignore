@@ -1,12 +1,6 @@
 /config/Format.xml
 /config/Openbravo.properties
-/config/log4j2-web.xml
-/config/log4j2.xml
 /build/
-/.classpath
-/.settings/org.eclipse.wst.common.component
-/src-test/.classpath
-/src-test/src/log4j2-test.xml
 /WebContent/
 /src-core/build/
 /src-db/build/
@@ -14,14 +8,8 @@
 /src-trl/build/
 /src-wad/build/
 /srcAD/
-/lib/runtime/openbravo-core.jar
-/src-core/lib/openbravo-core.jar
-/src-db/database/lib/dbmanager.jar
-/src-trl/lib/openbravo-trl.jar
-/src-wad/lib/openbravo-wad.jar
 /config/checksums
 *.log
-/src-db/database/formalChangesScript.xml
 /lib/openbravo.war
 /backup_install/
 /.settings/
