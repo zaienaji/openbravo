@@ -14,3 +14,8 @@
 /backup_install/
 *.obx
 !/modules/org.openbravo.utility.cleanup.log/
+/lib/runtime/openbravo-core.jar
+/src-core/lib/openbravo-core.jar
+/src-db/database/lib/dbmanager.jar
+/src-trl/lib/openbravo-trl.jar
+/src-wad/lib/openbravo-wad.jar
