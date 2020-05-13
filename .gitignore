@@ -13,3 +13,4 @@
 /lib/openbravo.war
 /backup_install/
 *.obx
+!/modules/org.openbravo.utility.cleanup.log/
