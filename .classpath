@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/OpenbravoCore"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
+	<classpathentry including="**/*.ext|**/*.ftl|**/*.java|**/*.oaw|**/*.properties|**/*.xml|**/*.xpt|**/*.xslt" kind="src" path="src"/>
+	<classpathentry kind="src" path="modules/org.openbravo.apachejdbcconnectionpool/src"/>
+	<classpathentry kind="src" path="modules/org.openbravo.client.widgets/src"/>
+	<classpathentry kind="src" path="modules/org.openbravo.client.htmlwidget/src"/>
+	<classpathentry kind="src" path="modules/org.openbravo.base.weld/src"/>
+	<classpathentry kind="src" path="modules/org.openbravo.client.querylist/src"/>
+	<classpathentry kind="src" path="modules/org.openbravo.advpaymentmngt/src"/>
+	<classpathentry kind="src" path="modules/org.openbravo.financial.paymentreport/src"/>
+	<classpathentry kind="src" path="modules/org.openbravo.reports.ordersawaitingdelivery/src"/>
+	<classpathentry kind="src" path="modules/org.openbravo.client.myob/src"/>
+	<classpathentry kind="src" path="modules/org.openbravo.client.kernel/src"/>
+	<classpathentry kind="src" path="modules/org.openbravo.service.json/src"/>
+	<classpathentry kind="src" path="modules/org.openbravo.client.application/src"/>
+	<classpathentry kind="src" path="modules/org.openbravo.userinterface.selector/src"/>
+	<classpathentry kind="src" path="modules/org.openbravo.userinterface.smartclient/src"/>
+	<classpathentry kind="src" path="modules/org.openbravo.service.datasource/src"/>
+	<classpathentry kind="src" path="modules/org.openbravo.utility.cleanup.log/src"/>
+	<classpathentry including="quartz.properties" kind="src" path="config"/>
+	<classpathentry kind="src" path="src-gen"/>
+	<classpathentry including="**/*.java" kind="src" path="srcAD"/>
+	<classpathentry including="**/*.java" kind="src" path="build/javasqlc/srcAD"/>
+	<classpathentry including="**/*.java" kind="src" path="build/javasqlc/src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/build/servlet-api.jar"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>
