@@ -11,7 +11,7 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU
- * All portions are Copyright (C) 2010-2016 Openbravo SLU
+ * All portions are Copyright (C) 2010-2019 Openbravo SLU
  * All Rights Reserved.
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -19,8 +19,6 @@
 package org.openbravo.userinterface.selector;
 
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -66,8 +64,6 @@ import org.openbravo.service.json.JsonUtils;
 public class SelectorDataSourceFilter implements DataSourceFilter {
 
   private static Logger log = LogManager.getLogger();
-  private String dateFormat = null;
-  private DateFormat systemDateFormat = null;
   private TextMatching textMatching = TextMatching.exact;
 
   @Inject
@@ -385,15 +381,9 @@ public class SelectorDataSourceFilter implements DataSourceFilter {
         } else if (Boolean.class == property.getPrimitiveObjectType() || property.isNumericType()) {
           sb.append("e." + sf.getProperty() + " = " + result.toString());
         } else if (Date.class.isAssignableFrom(property.getPrimitiveObjectType())) {
-
-          if (dateFormat == null || systemDateFormat == null) {
-            dateFormat = (String) request.getSession(false).getAttribute("#AD_JAVADATEFORMAT");
-            systemDateFormat = new SimpleDateFormat(dateFormat);
-          }
-
           try {
             final Calendar cal = Calendar.getInstance();
-            cal.setTime(systemDateFormat.parse(result.toString()));
+            cal.setTime(UIDefinitionController.DATE_UI_DEFINITION.parse(result.toString()));
             sb.append("(day(" + "e." + sf.getProperty() + ") = " + cal.get(Calendar.DATE)
                 + " and month(" + "e." + sf.getProperty() + ") = " + (cal.get(Calendar.MONTH) + 1)
                 + " and year(" + "e." + sf.getProperty() + ") = " + cal.get(Calendar.YEAR) + ")");

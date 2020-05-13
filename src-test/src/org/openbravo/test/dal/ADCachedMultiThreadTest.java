@@ -49,13 +49,12 @@ import org.openbravo.dal.service.OBDal;
 import org.openbravo.model.ad.ui.Field;
 import org.openbravo.model.ad.ui.Tab;
 import org.openbravo.test.base.HiddenObjectHelper;
+import org.openbravo.test.base.Issue;
 import org.openbravo.test.base.OBBaseTest;
 
 /**
  * Test cases to verify multiple ApplicationDictionaryCachedStructures behavior when working
  * concurrently with multiple threads.
- * 
- * See issue https://issues.openbravo.com/view.php?id=24421
  * 
  * @author alostale
  * 
@@ -105,12 +104,13 @@ public class ADCachedMultiThreadTest extends OBBaseTest {
    * ApplicationDictionaryCachedStructures for the same tab.
    * 
    * It is executed {@code TEST_EXECUTIONS} number of times to simulate high traffic in the same
-   * session which is one of the ways issue #24421 was reproducible.
+   * session.
    * 
    * Using cache
    * 
    */
   @Test
+  @Issue("24421")
   public void testMultiCallsCache() throws Exception {
     executeTestMultiCalls(true);
   }
@@ -120,10 +120,13 @@ public class ADCachedMultiThreadTest extends OBBaseTest {
    * ApplicationDictionaryCachedStructures for the same tab.
    * 
    * It is executed {@code TEST_EXECUTIONS} number of times to simulate high traffic in the same
-   * session which is one of the ways issue #24421 was reproducible. Not using cache
+   * session.
+   * 
+   * Not using cache
    * 
    */
   @Test
+  @Issue("24421")
   public void testMultiCallsNoCache() throws Exception {
     executeTestMultiCalls(false);
   }

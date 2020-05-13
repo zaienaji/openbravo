@@ -14,7 +14,7 @@
 * under the License.
 * The Original Code is Openbravo ERP.
 * The Initial Developer of the Original Code is Openbravo SLU
-* All portions are Copyright (C) 2012 Openbravo SLU
+* All portions are Copyright (C) 2012-2019 Openbravo SLU
 * All Rights Reserved.
 * Contributor(s):  ______________________________________.
 ************************************************************************/
@@ -29,7 +29,7 @@ IF (UPDATING) THEN
  IF NOT(COALESCE(:OLD.UserLevel,'.')<>COALESCE(:NEW.UserLevel,'.')) THEN
   RETURN;
  END IF;
- END IF;
+END IF;
 
 
  IF (INSERTING) THEN
@@ -78,6 +78,18 @@ IF (UPDATING) THEN
   WHERE p.AccessLevel IN ('3','1','7')
     AND p.IsActive = 'Y') p;
 
+ END IF;
+ 
+ -- Add View Implementation access to role
+ IF (:new.IsManual <> 'Y') THEN
+  INSERT INTO OBUIAPP_View_Role_Access
+   (OBUIAPP_View_Role_Access_ID, OBUIAPP_View_Impl_ID, AD_Role_ID,
+   AD_Client_ID, AD_Org_ID, IsActive, Created, CreatedBy, Updated, UpdatedBy)
+  SELECT get_uuid(), vr.OBUIAPP_View_Impl_ID, :new.AD_Role_ID,
+   :new.AD_CLIENT_ID, :new.AD_ORG_ID, 'Y', now(), :new.UpdatedBy, now(), :new.UpdatedBy
+  FROM (select distinct vi.OBUIAPP_View_Impl_ID
+	   from OBUIAPP_VIEW_IMPL vi
+	   WHERE vi.IsActive='Y') vr;
  END IF;
 
 END OBUIAPP_AD_ROLE_TRG

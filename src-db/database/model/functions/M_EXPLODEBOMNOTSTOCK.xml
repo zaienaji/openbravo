@@ -78,7 +78,8 @@
      
     SELECT C_ORDER.c_order_id, c_orderline.explode
       INTO v_orderID, v_explode
-    FROM C_ORDER JOIN c_orderline ON c_order.c_order_id = c_orderline.c_order_id
+    FROM C_ORDER
+      JOIN c_orderline ON c_order.c_order_id = c_orderline.c_order_id
     WHERE c_orderline.c_orderline_id=v_Record_ID  FOR UPDATE;
 
     IF (v_explode = 'Y') THEN

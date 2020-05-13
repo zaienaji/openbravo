@@ -11,7 +11,7 @@
  * Portions created by Jorg Janke are Copyright (C) 1999-2001 Jorg Janke, parts
  * created by ComPiere are Copyright (C) ComPiere, Inc.;   All Rights Reserved.
  * Contributor(s): Openbravo SLU
- * Contributions are Copyright (C) 2001-2017 Openbravo S.L.U.
+ * Contributions are Copyright (C) 2001-2019 Openbravo S.L.U.
  ******************************************************************************
  */
 package org.openbravo.erpCommon.ad_forms;
@@ -747,6 +747,7 @@ public class Fact {
       line.setDocumentInfo(m_doc, null);
       line.setJournalInfo(m_doc.GL_Category_ID);
       line.setPostingType(m_postingType);
+      line.setAD_Org_ID(m_doc.AD_Org_ID);
 
       // Amount
       line.setAmtSource(m_doc.C_Currency_ID, ZERO.toString(), ZERO.toString());

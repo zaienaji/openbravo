@@ -20,6 +20,7 @@ package org.openbravo.materialmgmt.actionhandler;
 
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,7 +112,7 @@ public class ManageVariants extends BaseProcessActionHandler {
     if (generic.getClient().isMultilingualDocuments()) {
       variant.getProductTrlList().clear();
     }
-
+    variant.setCreationDate(new Date());
     variant.setGenericProduct(generic);
     variant.setProductAccountsList(Collections.<ProductAccounts> emptyList());
     variant.setGeneric(false);

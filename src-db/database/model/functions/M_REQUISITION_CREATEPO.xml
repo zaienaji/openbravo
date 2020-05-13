@@ -16,7 +16,7 @@
 * under the License.
 * The Original Code is Openbravo ERP.
 * The Initial Developer of the Original Code is Openbravo SLU
-* All portions are Copyright (C) 2008-2017 Openbravo SLU
+* All portions are Copyright (C) 2008-2019 Openbravo SLU
 * All Rights Reserved.
 * Contributor(s):  ______________________________________.
 ************************************************************************/
@@ -232,7 +232,7 @@ BEGIN
       Ad_Sequence_Next('C_OrderLine', v_Client_ID, v_COrderLine_ID);
 
       SELECT pp.PRICELIST, pp.PRICELIMIT, pp.PRICESTD,
-             ROUND(M_GET_OFFERS_PRICE(TO_DATE(p_OrderDate),Cur_Lines.C_BPID,Cur_Lines.M_Product_ID,COALESCE(Cur_Lines.PRICEACTUAL, pp.PRICESTD),Cur_Lines.QTY - Cur_Lines.ORDEREDQTY,Cur_Lines.PRICELIST_ID),CUR.PRICEPRECISION), 
+             ROUND(COALESCE(Cur_Lines.PRICEACTUAL, pp.PRICESTD),CUR.PRICEPRECISION), 
              pp.Gross
         INTO v_PriceList, v_PriceLimit, v_PriceStd, v_PriceActual, v_Gross
       FROM

@@ -37,6 +37,7 @@ import org.openbravo.base.session.OBPropertiesProvider;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.erpCommon.utility.DocumentNoData;
 import org.openbravo.service.db.DalConnectionProvider;
+import org.openbravo.test.base.Issue;
 import org.openbravo.test.base.OBBaseTest;
 
 /**
@@ -47,10 +48,9 @@ import org.openbravo.test.base.OBBaseTest;
  */
 public class SqlCallableStatement extends OBBaseTest {
 
-  /**
-   * Asserts that sqlc transactional callable statements are closed. See issue #30891
-   */
+  /** Asserts that sqlc transactional callable statements are closed. */
   @Test
+  @Issue("30891")
   public void transactionalCallableStatemetsShouldBeClosed() throws Exception {
     DalConnectionProvider cp = new DalConnectionProvider(false);
     assumeThat("Executing only in Oracle", cp.getRDBMS(), is(equalTo("ORACLE")));
@@ -64,10 +64,9 @@ public class SqlCallableStatement extends OBBaseTest {
     assertOpenCursors();
   }
 
-  /**
-   * Asserts that sqlc non transactional callable statements are closed. See issue #30891
-   */
+  /** Asserts that sqlc non transactional callable statements are closed. */
   @Test
+  @Issue("30891")
   public void noTransactionalCallableStatemetsShouldBeClosedCallableStatemetsShouldBeClosed()
       throws Exception {
     DalConnectionProvider cp = new DalConnectionProvider(false);

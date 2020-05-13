@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2008-2018 Openbravo SLU 
+ * All portions are Copyright (C) 2008-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -732,7 +732,7 @@ public class RequisitionToOrder extends HttpSecureAppServlet {
                 lines[i].mAttributesetinstanceId, strWarehouse, lines[i].mProductUomId,
                 lines[i].cUomId, lines[i].cAum, lines[i].quantityorder, lines[i].lockqty,
                 lines[i].aumqty, cCurrencyId, lines[i].pricelist, lines[i].priceactual,
-                strPriceListId, lines[i].pricelimit, lines[i].tax, "", lines[i].discount,
+                lines[i].pricelimit, lines[i].tax, "", lines[i].discount,
                 lines[i].grossUnit, lines[i].grossAmt);
           } catch (ServletException ex) {
             myMessage = Utility.translateError(this, vars, vars.getLanguage(), ex.getMessage());

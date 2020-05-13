@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2018 Openbravo SLU 
+ * All portions are Copyright (C) 2018-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -210,13 +210,12 @@ class UpdatePricesAndAmounts extends CreateLinesFromProcessHook {
 
   @SuppressWarnings("unchecked")
   private Object[] selectBOMPrices(Product product, PriceList priceList) {
-    BigDecimal qtyOrdered = CreateLinesFromUtil.getOrderedQuantity(getPickExecJSONObject());
     StringBuilder obq = new StringBuilder(" SELECT ");
     obq.append("   TO_NUMBER(M_BOM_PriceStd(:productID, plv.id)), ");
     obq.append("   TO_NUMBER(M_BOM_PriceList(:productID, plv.id)), ");
     obq.append("   TO_NUMBER(M_BOM_PriceLimit(:productID, plv.id)), ");
     obq.append(
-        "   TO_NUMBER(ROUND(M_GET_OFFERS_PRICE(:dateInvoiced, :bpId, :productID, TO_NUMBER(TO_NUMBER(M_BOM_PriceStd(:productID, plv.id))), TO_NUMBER(:qtyOrdered), :priceListID), :pricePrecision)) ");
+        "   TO_NUMBER(ROUND(TO_NUMBER(M_BOM_PriceStd(:productID, plv.id)), :pricePrecision)) ");
     obq.append(" from PricingProductPrice pp ");
     obq.append("   join pp.priceListVersion plv ");
     obq.append(" where pp.product.id = :productID");
@@ -230,9 +229,6 @@ class UpdatePricesAndAmounts extends CreateLinesFromProcessHook {
     obQuery.setParameter("productID", product.getId());
     obQuery.setParameter("priceListID", priceList.getId());
     obQuery.setParameter("validFromDate", new Date());
-    obQuery.setParameter("dateInvoiced", getInvoice().getInvoiceDate());
-    obQuery.setParameter("bpId", getInvoice().getBusinessPartner().getId());
-    obQuery.setParameter("qtyOrdered", qtyOrdered);
     obQuery.setParameter("pricePrecision", getInvoice().getCurrency().getPricePrecision());
     obQuery.setMaxResults(1);
     List<Object[]> prices = (List<Object[]>) obQuery.getResultList();

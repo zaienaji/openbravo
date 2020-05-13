@@ -31,6 +31,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -102,19 +103,17 @@ import org.openbravo.model.ad.domain.Reference;
 import org.openbravo.model.ad.system.Client;
 import org.openbravo.model.ad.system.SystemInformation;
 import org.openbravo.model.common.enterprise.Organization;
-import org.openbravo.services.webservice.Module;
-import org.openbravo.services.webservice.ModuleDependency;
-import org.openbravo.services.webservice.SimpleModule;
-import org.openbravo.services.webservice.WebService3Impl;
-import org.openbravo.services.webservice.WebService3ImplServiceLocator;
+import org.openbravo.service.centralrepository.CentralRepository;
+import org.openbravo.service.centralrepository.CentralRepository.Service;
+import org.openbravo.service.centralrepository.Module;
+import org.openbravo.service.centralrepository.ModuleDependency;
+import org.openbravo.service.json.JsonConstants;
 import org.openbravo.utils.Replace;
 import org.openbravo.xmlEngine.XmlDocument;
 
 /**
  * This servlet is in charge of showing the Module Manager Console which have three tabs: *Installed
  * modules *Add Modules *Installation history
- * 
- * 
  */
 public class ModuleManagement extends HttpSecureAppServlet {
   private static final long serialVersionUID = 1L;
@@ -125,9 +124,6 @@ public class ModuleManagement extends HttpSecureAppServlet {
   @SuppressWarnings("hiding")
   private static final Logger log4j = LogManager.getLogger();
 
-  /**
-   * Main method that controls the sent command
-   */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
@@ -137,18 +133,11 @@ public class ModuleManagement extends HttpSecureAppServlet {
       printPageInstalled(response, vars);
     } else if (vars.commandIn("APPLY")) {
       printPageApply(response, vars);
+    } else if (vars.commandIn("SEARCH")) {
+      String q = vars.getStringParameter("inpSearchText");
+      searchModules(q, response);
     } else if (vars.commandIn("ADD")) {
-      final String searchText = vars.getGlobalVariable("inpSearchText", "ModuleManagemetAdd|text",
-          "");
-      printPageAdd(request, response, vars, searchText, true);
-    } else if (vars.commandIn("ADD_NOSEARCH")) {
-      final String searchText = vars.getGlobalVariable("inpSearchText", "ModuleManagemetAdd|text",
-          "");
-      printPageAdd(request, response, vars, searchText, false);
-    } else if (vars.commandIn("ADD_SEARCH")) {
-      final String searchText = vars.getRequestGlobalVariable("inpSearchText",
-          "ModuleManagemetAdd|text");
-      printPageAdd(request, response, vars, searchText, true);
+      printPageAdd(response, vars);
     } else if (vars.commandIn("HISTORY")) {
       final String strDateFrom = vars.getGlobalVariable("inpDateFrom", "ModuleManagement|DateFrom",
           "");
@@ -235,18 +224,10 @@ public class ModuleManagement extends HttpSecureAppServlet {
 
   /**
    * Show the tab for installed modules, where it is possible to look for updates, uninstall and
-   * apply changes-
-   * 
-   * @param response
-   * @param vars
-   * @throws IOException
-   * @throws ServletException
+   * apply changes.
    */
   private void printPageInstalled(HttpServletResponse response, VariablesSecureApp vars)
       throws IOException, ServletException {
-    if (log4j.isDebugEnabled()) {
-      log4j.debug("Output: Installed");
-    }
     response.setContentType("text/html; charset=UTF-8");
     final PrintWriter out = response.getWriter();
     final XmlDocument xmlDocument = xmlEngine
@@ -327,16 +308,9 @@ public class ModuleManagement extends HttpSecureAppServlet {
     out.close();
   }
 
-  /**
-   * Displays the pop-up to execute an ant task
-   * 
-   * @param response
-   * @param vars
-   * @throws IOException
-   * @throws ServletException
-   */
+  /** Displays the pop-up to execute an ant task */
   private void printPageApply(HttpServletResponse response, VariablesSecureApp vars)
-      throws IOException, ServletException {
+      throws IOException {
     try {
       final XmlDocument xmlDocument = xmlEngine
           .readXmlTemplate("org/openbravo/erpCommon/ad_forms/ApplyModule")
@@ -468,21 +442,9 @@ public class ModuleManagement extends HttpSecureAppServlet {
   /**
    * Displays the second tab: Add modules where it is possible to search and install modules
    * remotely or locally
-   * 
-   * @param request
-   * @param response
-   * @param vars
-   * @param searchText
-   * @param displaySearch
-   * @throws IOException
-   * @throws ServletException
    */
-  private void printPageAdd(HttpServletRequest request, HttpServletResponse response,
-      VariablesSecureApp vars, String searchText, boolean displaySearch)
+  private void printPageAdd(HttpServletResponse response, VariablesSecureApp vars)
       throws IOException, ServletException {
-    if (log4j.isDebugEnabled()) {
-      log4j.debug("Output: Installed");
-    }
     response.setContentType("text/html; charset=UTF-8");
     final PrintWriter out = response.getWriter();
     final XmlDocument xmlDocument = xmlEngine
@@ -509,45 +471,116 @@ public class ModuleManagement extends HttpSecureAppServlet {
     } catch (final Exception ex) {
       throw new ServletException(ex);
     }
-    {
-      final OBError myMessage = vars.getMessage("ModuleManagement");
-      vars.removeMessage("ModuleManagement");
-      if (myMessage != null) {
-        xmlDocument.setParameter("messageType", myMessage.getType());
-        xmlDocument.setParameter("messageTitle", myMessage.getTitle());
-        xmlDocument.setParameter("messageMessage", myMessage.getMessage());
-      }
-    }
-    // //----
 
-    xmlDocument.setParameter("inpSearchText", searchText);
-
-    // In case the search results must be shown request and display them
-    if (displaySearch) {
-      xmlDocument.setParameter("searchResults",
-          getSearchResults(request, response, vars, searchText));
+    final OBError myMessage = vars.getMessage("ModuleManagement");
+    vars.removeMessage("ModuleManagement");
+    if (myMessage != null) {
+      xmlDocument.setParameter("messageType", myMessage.getType());
+      xmlDocument.setParameter("messageTitle", myMessage.getTitle());
+      xmlDocument.setParameter("messageMessage", myMessage.getMessage());
     }
 
     out.println(xmlDocument.print());
     out.close();
   }
 
+  private void searchModules(String q, HttpServletResponse response) {
+    try {
+      JSONObject searchQuery = new JSONObject();
+      searchQuery.put("search.level", getSystemMaturity(false));
+
+      searchQuery.put("installedModules", Arrays.asList(getInstalledModules()));
+      searchQuery.put("q", q);
+      JSONObject crResponse = CentralRepository.executeRequest(Service.SEARCH_MODULES, searchQuery);
+
+      boolean success = crResponse.getBoolean("success") && crResponse.has("response")
+          && crResponse.getJSONObject("response").has("modules");
+
+      JSONObject r = new JSONObject();
+      r.put("success", success);
+      if (success) {
+        r.put("html", getSearchHtmlResponse(crResponse));
+      } else {
+        if (crResponse.has("response") && crResponse.getJSONObject("response").has("msg")) {
+          r.put("title", OBMessageUtils.messageBD("Error"));
+          r.put("msg", crResponse.getJSONObject("response").getString("msg"));
+        }
+      }
+      response.setContentType(JsonConstants.JSON_CONTENT_TYPE);
+      response.setCharacterEncoding("UTF-8");
+      r.write(response.getWriter());
+    } catch (JSONException | IOException e) {
+      log4j.error("Error searching for modules query: {}", q, e);
+    }
+  }
+
+  private String getSearchHtmlResponse(JSONObject r) throws JSONException {
+    JSONArray modules = r.getJSONObject("response").getJSONArray("modules");
+    FieldProvider[] modulesBox = new FieldProvider[modules.length()];
+    for (int i = 0; i < modules.length(); i++) {
+      JSONObject mod = modules.getJSONObject(i);
+      Map<String, String> moduleBox = new HashMap<>();
+
+      // set different icon depending on module type
+      String icon = mod.getString("type");
+      icon = "M".equals(icon) ? "Module" : "T".equals(icon) ? "Template" : "Pack";
+
+      moduleBox.put("name", mod.getString("name"));
+      moduleBox.put("description", mod.getString("description"));
+      moduleBox.put("type", icon);
+      moduleBox.put("help", mod.getString("help"));
+      // If there is no url, we need to hide the 'Visit Site' link and separator.
+      String url = mod.getString("url");
+      if (StringUtils.isBlank(url)) {
+        moduleBox.put("urlStyle", "none");
+      } else {
+        moduleBox.put("url", getLink(url));
+        moduleBox.put("urlStyle", "true");
+      }
+      moduleBox.put("moduleVersionID", mod.getString("moduleVersionID"));
+      moduleBox.put("commercialStyle", mod.getBoolean("isCommercial") ? "true" : "none");
+
+      JSONObject additionalInfo = mod.getJSONObject("additionalInfo");
+      int maturity = additionalInfo.getInt("maturity.level");
+      if (maturity != MaturityLevel.CS_MATURITY) {
+        moduleBox.put("maturityStyle", "true");
+        moduleBox.put("maturityLevel", additionalInfo.getString("maturity.name"));
+      } else {
+        moduleBox.put("maturityStyle", "none");
+      }
+
+      if (additionalInfo.has("merge")) {
+        JSONObject mergeInfo = additionalInfo.getJSONObject("merge");
+        moduleBox.put("mergeDisplay", "true");
+        moduleBox.put("mergedModule", mergeInfo.getString("mergedModule"));
+        moduleBox.put("mergedInto", mergeInfo.getString("mergedIntoModule"));
+        moduleBox.put("mergedIntoVersion",
+            mergeInfo.getString("mergedIntoModule") + " - " + mergeInfo.getString("mergedVersion"));
+      } else {
+        moduleBox.put("mergeDisplay", "none");
+      }
+      String support = additionalInfo.getString("support");
+      if (!"NI".equals(support)) {
+        moduleBox.put("supportStyle", "true");
+        moduleBox.put("support", getSupportStatus(support, false));
+      } else {
+        moduleBox.put("supportStyle", "none");
+      }
+
+      modulesBox[i] = FieldProviderFactory.getFieldProvider(moduleBox);
+    }
+    final XmlDocument xmlDocument = xmlEngine
+        .readXmlTemplate("org/openbravo/erpCommon/modules/ModuleBox")
+        .createXmlDocument();
+    xmlDocument.setData("structureBox", modulesBox);
+    return xmlDocument.print();
+  }
+
   /**
    * Displays the third tab "Installation History" with a log of all installation actions
-   * 
-   * @param response
-   * @param vars
-   * @param strDateFrom
-   * @param strDateTo
-   * @param strUser
-   * @throws IOException
-   * @throws ServletException
    */
   private void printPageHistory(HttpServletResponse response, VariablesSecureApp vars,
       String strDateFrom, String strDateTo, String strUser) throws IOException, ServletException {
-    if (log4j.isDebugEnabled()) {
-      log4j.debug("Output: Installed");
-    }
     response.setContentType("text/html; charset=UTF-8");
     final PrintWriter out = response.getWriter();
     final XmlDocument xmlDocument = xmlEngine
@@ -589,7 +622,6 @@ public class ModuleManagement extends HttpSecureAppServlet {
           Utility.getContext(this, vars, "#User_Client", "ModuleManagement"), 0);
       Utility.fillSQLParameters(this, vars, null, comboTableData, "ModuleManagement", strUser);
       xmlDocument.setData("reportUser", "liststructure", comboTableData.select(false));
-      comboTableData = null;
     } catch (final Exception ex) {
       throw new ServletException(ex);
     }
@@ -602,28 +634,12 @@ public class ModuleManagement extends HttpSecureAppServlet {
     out.close();
   }
 
-  /**
-   * Shows the detail pop-up for a module
-   * 
-   * @param response
-   * @param vars
-   * @param recordId
-   * @throws IOException
-   * @throws ServletException
-   */
+  /** Shows the detail pop-up for a module */
   private void printPageDetail(HttpServletResponse response, VariablesSecureApp vars,
-      String recordId, boolean local) throws IOException, ServletException {
+      String recordId, boolean local) throws IOException {
     Module module = null;
     if (!local) {
-      try {
-        // retrieve the module details from the webservice
-        final WebService3ImplServiceLocator loc = new WebService3ImplServiceLocator();
-        final WebService3Impl ws = loc.getWebService3();
-        module = ws.moduleDetail(recordId);
-      } catch (final Exception e) {
-        log4j.error(e.getMessage(), e);
-        throw new ServletException(e);
-      }
+      module = getRemoteModuleVersionDetail(recordId);
     } else {
       final ImportModule im = (ImportModule) vars.getSessionObject("InstallModule|ImportModule");
       module = im.getModule(recordId);
@@ -678,6 +694,17 @@ public class ModuleManagement extends HttpSecureAppServlet {
     final PrintWriter out = response.getWriter();
     out.println(xmlDocument.print());
     out.close();
+  }
+
+  private Module getRemoteModuleVersionDetail(String recordId) {
+    try {
+      JSONObject moduleDetail = CentralRepository
+          .executeRequest(Service.MODULE_INFO, Arrays.asList(recordId))
+          .getJSONObject("response");
+      return Module.fromJson(moduleDetail);
+    } catch (JSONException e) {
+      throw new OBException(e);
+    }
   }
 
   private String getLink(String url) {
@@ -741,10 +768,6 @@ public class ModuleManagement extends HttpSecureAppServlet {
    * warning indicating the module is already the most recent version.
    * 
    * b. The .obx file is okay -> redirect to the moduleInstall1 pop-up.
-   * 
-   * @param request
-   * @param response
-   * @throws IOException
    */
   private void printPageInstallFile(HttpServletResponse response, HttpServletRequest request,
       VariablesSecureApp vars) throws ServletException, IOException {
@@ -778,7 +801,7 @@ public class ModuleManagement extends HttpSecureAppServlet {
   }
 
   private void printPageUpgrade(HttpServletResponse response, HttpServletRequest request)
-      throws IOException, ServletException {
+      throws IOException {
     final VariablesSecureApp vars = new VariablesSecureApp(request);
     final String moduleId = vars.getStringParameter("inpcUpdate");
     final String version = vars.getStringParameter("upgradeVersion");
@@ -1139,13 +1162,12 @@ public class ModuleManagement extends HttpSecureAppServlet {
    * install/update and an error message in case it is not possible to install the selected one or a
    * warning message in case the selected version is not installable but it is possible to install
    * another one.
-   * 
    */
   private void printPageInstall1(HttpServletResponse response, HttpServletRequest request,
       VariablesSecureApp vars, String recordId, boolean islocal, InputStream obx,
       String[] updateModules, HashMap<String, String> maturityLevels, ImportModule upgradeIM)
-      throws IOException, ServletException {
-    final String discard[] = { "", "", "", "", "", "", "warnMaturity", "", "missingDeps" };
+      throws IOException {
+    final String[] discard = { "", "", "", "", "", "", "warnMaturity", "", "missingDeps" };
     Module module = null;
 
     // Remote installation is only allowed for heartbeat enabled instances
@@ -1195,19 +1217,13 @@ public class ModuleManagement extends HttpSecureAppServlet {
       // if it is a remote installation get the module from webservice,
       // other case the obx file is passed as an InputStream
       try {
-        if (HttpsUtils.isInternetAvailable()) {
-          final WebService3ImplServiceLocator loc = new WebService3ImplServiceLocator();
-          final WebService3Impl ws = loc.getWebService3();
-          module = ws.moduleDetail(recordId);
-        } else {
-          String popUpTitle = Utility.messageBD(this, "OBUIAPP_Error", vars.getLanguage());
-          String connectErrorMsg = Utility.messageBD(this, "CR_CouldNotConnect",
-              vars.getLanguage());
-          advisePopUpRefresh(request, response, "ERROR", popUpTitle, connectErrorMsg);
-          return;
-        }
+        module = getRemoteModuleVersionDetail(recordId);
       } catch (final Exception e) {
-        log4j.error("Error obtaining module info", e);
+        log4j.error("Error obtaining module version info for version id {}", recordId, e);
+        String popUpTitle = Utility.messageBD(this, "OBUIAPP_Error", vars.getLanguage());
+        String connectErrorMsg = Utility.messageBD(this, "CR_CouldNotConnect", vars.getLanguage());
+        advisePopUpRefresh(request, response, "ERROR", popUpTitle, connectErrorMsg);
+        return;
       }
     } else {
       discard[4] = "core";
@@ -1221,8 +1237,6 @@ public class ModuleManagement extends HttpSecureAppServlet {
     boolean check = false;
     // to hold (key,value) = (moduleId, minVersion)
     Map<String, String> minVersions = new HashMap<String, String>();
-
-    VersionUtility.setPool(this);
 
     // Create a new ImportModule instance which will be used to check
     // dependencies and to process the installation
@@ -1371,23 +1385,20 @@ public class ModuleManagement extends HttpSecureAppServlet {
             log4j.error("Error checking local dependencies", e);
           }
 
-          if (!locallyOk) {
-            if (!StringUtils.isEmpty(localDepsMsg.getMessage())) {
-              String localErrorsMsg = "<br><b>"
-                  + OBMessageUtils.messageBD("ModuleLocalDepErrorsTitle") + "</b><br>"
-                  + OBMessageUtils.messageBD("ModuleLocalDepErrorsExplain") + "<ul>";
-              for (String localError : localDepsMsg.getMessage().split("\\n")) {
-                localErrorsMsg += "<li>" + StringEscapeUtils.escapeHtml(localError);
-              }
-              localErrorsMsg += "</ul>";
+          if (!locallyOk && !StringUtils.isEmpty(localDepsMsg.getMessage())) {
+            String localErrorsMsg = "<br><b>"
+                + OBMessageUtils.messageBD("ModuleLocalDepErrorsTitle") + "</b><br>"
+                + OBMessageUtils.messageBD("ModuleLocalDepErrorsExplain") + "<ul>";
+            for (String localError : localDepsMsg.getMessage().split("\\n")) {
+              localErrorsMsg += "<li>" + StringEscapeUtils.escapeHtml(localError);
+            }
+            localErrorsMsg += "</ul>";
 
-              if (message == null || message.getMessage() == null
-                  || message.getMessage().isEmpty()) {
-                message = localDepsMsg;
-                message.setMessage(localErrorsMsg);
-              } else {
-                message.setMessage(message.getMessage() + "<br>" + localErrorsMsg);
-              }
+            if (message == null || message.getMessage() == null || message.getMessage().isEmpty()) {
+              message = localDepsMsg;
+              message.setMessage(localErrorsMsg);
+            } else {
+              message.setMessage(message.getMessage() + "<br>" + localErrorsMsg);
             }
           }
         }
@@ -1486,10 +1497,10 @@ public class ModuleManagement extends HttpSecureAppServlet {
    * Obtains a FieldProvider to display the merged modules.
    */
   private FieldProvider[] getMergesFieldProvider(Module[] merges) {
-    List<Map<String, String>> rt = new ArrayList<Map<String, String>>();
+    List<Map<String, String>> rt = new ArrayList<>();
 
     for (Module merge : merges) {
-      Map<String, String> mod = new HashMap<String, String>();
+      Map<String, String> mod = new HashMap<>();
       mod.put("mergedModule", merge.getName());
       mod.put("mergedWith", (String) merge.getAdditionalInfo().get("mergedWith"));
       rt.add(mod);
@@ -1500,10 +1511,10 @@ public class ModuleManagement extends HttpSecureAppServlet {
 
   private FieldProvider[] getModuleFieldProvider(Module[] inst, Map<String, String> minVersions,
       boolean installed, String lang, boolean islocal) {
-    ArrayList<HashMap<String, String>> rt = new ArrayList<HashMap<String, String>>();
+    ArrayList<HashMap<String, String>> rt = new ArrayList<>();
 
     for (Module module : inst) {
-      HashMap<String, String> mod = new HashMap<String, String>();
+      HashMap<String, String> mod = new HashMap<>();
       mod.put("name", module.getName());
       mod.put("versionNo", module.getVersionNo());
       mod.put("moduleVersionID", module.getModuleVersionID());
@@ -1572,7 +1583,7 @@ public class ModuleManagement extends HttpSecureAppServlet {
    */
   private Map<String, String> calcMinVersions(ImportModule im) {
     // (key,value) = (moduleId, minRequiredVersion)
-    Map<String, String> minVersions = new HashMap<String, String>();
+    Map<String, String> minVersions = new HashMap<>();
     for (Module m : im.getModulesToInstall()) {
       calcMinVersionFromDeps(minVersions, m.getDependencies());
       if (m.getIncludes() != null) {
@@ -1736,14 +1747,9 @@ public class ModuleManagement extends HttpSecureAppServlet {
   /**
    * Shows the second installation pup-up with all the license agreements for the modules to
    * install/update
-   * 
-   * @param response
-   * @param vars
-   * @throws IOException
-   * @throws ServletException
    */
   private void printPageInstall2(HttpServletResponse response, VariablesSecureApp vars)
-      throws IOException, ServletException {
+      throws IOException {
     Module[] inst = null;
     Module[] selected;
 
@@ -1785,7 +1791,7 @@ public class ModuleManagement extends HttpSecureAppServlet {
       selected = installOrig;
     }
 
-    final String discard[] = { "", "", "" };
+    final String[] discard = { "", "", "" };
 
     if (inst == null || inst.length == 0) {
       discard[0] = "moduleIntallation";
@@ -1842,14 +1848,9 @@ public class ModuleManagement extends HttpSecureAppServlet {
   /**
    * Shows the third pup-up for the installation process, in this popup the installation is executed
    * and afterwards a message is displayed with the success or fail information.
-   * 
-   * @param response
-   * @param vars
-   * @throws IOException
-   * @throws ServletException
    */
   private void printPageInstall3(HttpServletResponse response, VariablesSecureApp vars)
-      throws IOException, ServletException {
+      throws IOException {
     final ImportModule im = (ImportModule) vars.getSessionObject("InstallModule|ImportModule");
     final XmlDocument xmlDocument = xmlEngine
         .readXmlTemplate("org/openbravo/erpCommon/ad_forms/ModuleManagement_InstallP4")
@@ -1885,109 +1886,6 @@ public class ModuleManagement extends HttpSecureAppServlet {
     final PrintWriter out = response.getWriter();
     out.println(xmlDocument.print());
     out.close();
-  }
-
-  /**
-   * Executes a search query in the web service and returns a HTML with the list of modules
-   * retrieved from the query. This list is HTML with styles.
-   */
-  private String getSearchResults(HttpServletRequest request, HttpServletResponse response,
-      VariablesSecureApp vars, String text) {
-    SimpleModule[] modules = null;
-    try {
-      if (!HttpsUtils.isInternetAvailable()) {
-        final OBError message = new OBError();
-        message.setType("Error");
-        message.setTitle(Utility.messageBD(this, "Error", vars.getLanguage()));
-        message.setMessage(Utility.messageBD(this, "WSError", vars.getLanguage()));
-        vars.setMessage("ModuleManagement", message);
-        try {
-          response.sendRedirect(strDireccion + request.getServletPath() + "?Command=ADD_NOSEARCH");
-        } catch (final Exception ex) {
-          log4j.error(ex.getMessage(), ex);
-        }
-      }
-      final WebService3ImplServiceLocator loc = new WebService3ImplServiceLocator();
-      final WebService3Impl ws = loc.getWebService3();
-
-      // Stub stub = (javax.xml.rpc.Stub) ws;
-      // stub._setProperty(Stub.USERNAME_PROPERTY, "test");
-      // stub._setProperty(Stub.PASSWORD_PROPERTY, "1");
-
-      HashMap<String, String> maturitySearch = new HashMap<String, String>();
-      maturitySearch.put("search.level", getSystemMaturity(false));
-      modules = ws.moduleSearch(text, getInstalledModules(), maturitySearch);
-
-    } catch (final Exception e) {
-      final OBError message = new OBError();
-      message.setType("Error");
-      message.setTitle(Utility.messageBD(this, "Error", vars.getLanguage()));
-      message.setMessage(Utility.messageBD(this, "WSError", vars.getLanguage()));
-      vars.setMessage("ModuleManagement", message);
-      log4j.error("Error searching modules", e);
-      try {
-        response.sendRedirect(strDireccion + request.getServletPath() + "?Command=ADD_NOSEARCH");
-      } catch (final Exception ex) {
-        log4j.error("error searching modules", ex);
-      }
-    }
-
-    FieldProvider[] modulesBox = new FieldProvider[0];
-    if (modules != null && modules.length > 0) {
-      modulesBox = new FieldProvider[modules.length];
-      int i = 0;
-      for (SimpleModule mod : modules) {
-        HashMap<String, String> moduleBox = new HashMap<String, String>();
-
-        // set different icon depending on module type
-        String icon = mod.getType();
-        icon = (icon == null ? "M" : icon).equals("M") ? "Module"
-            : icon.equals("T") ? "Template" : "Pack";
-
-        moduleBox.put("name", mod.getName());
-        moduleBox.put("description", mod.getDescription());
-        moduleBox.put("type", icon);
-        moduleBox.put("help", mod.getHelp());
-        // If there is no url, we need to hide the 'Visit Site' link and separator.
-        if (mod.getUrl() == null || mod.getUrl().equals("")) {
-          moduleBox.put("urlStyle", "none");
-        } else {
-          moduleBox.put("url", getLink(mod.getUrl()));
-          moduleBox.put("urlStyle", "true");
-        }
-        moduleBox.put("moduleVersionID", mod.getModuleVersionID());
-        moduleBox.put("commercialStyle", (mod.isIsCommercial() ? "true" : "none"));
-
-        @SuppressWarnings("unchecked")
-        HashMap<String, String> additioanlInfo = mod.getAdditionalInfo();
-        if (additioanlInfo != null) {
-          if (!Integer.toString(MaturityLevel.CS_MATURITY)
-              .equals(additioanlInfo.get("maturity.level"))) {
-            // Display module's maturity in case it is not General availability (500)
-            moduleBox.put("maturityStyle", "true");
-            moduleBox.put("maturityLevel", additioanlInfo.get("maturity.name"));
-          } else {
-            moduleBox.put("maturityStyle", "none");
-          }
-
-          if (!"NI".equals(additioanlInfo.get("support"))) {
-            moduleBox.put("supportStyle", "true");
-            moduleBox.put("support", getSupportStatus(additioanlInfo.get("support"), false));
-          } else {
-            moduleBox.put("supportStyle", "none");
-          }
-        }
-
-        modulesBox[i] = FieldProviderFactory.getFieldProvider(moduleBox);
-        i++;
-      }
-    }
-    final XmlDocument xmlDocument = xmlEngine
-        .readXmlTemplate("org/openbravo/erpCommon/modules/ModuleBox")
-        .createXmlDocument();
-
-    xmlDocument.setData("structureBox", modulesBox);
-    return xmlDocument.print();
   }
 
   private String getSupportStatus(String supportCode, boolean detailed) {
@@ -2031,7 +1929,7 @@ public class ModuleManagement extends HttpSecureAppServlet {
    */
   private String[] getInstalledModules() {
     try {
-      final ModuleManagementData data[] = ModuleManagementData.selectInstalled(this);
+      final ModuleManagementData[] data = ModuleManagementData.selectInstalled(this);
       if (data != null && data.length != 0) {
         final String[] rt = new String[data.length];
         for (int i = 0; i < data.length; i++) {
@@ -2049,7 +1947,7 @@ public class ModuleManagement extends HttpSecureAppServlet {
 
   private String[] getUpdateableModules() {
     try {
-      final ModuleManagementData data[] = ModuleManagementData.selectUpdateable(this);
+      final ModuleManagementData[] data = ModuleManagementData.selectUpdateable(this);
       if (data != null && data.length != 0) {
         final String[] rt = new String[data.length];
         for (int i = 0; i < data.length; i++) {
@@ -2065,21 +1963,9 @@ public class ModuleManagement extends HttpSecureAppServlet {
     }
   }
 
-  /**
-   * This ajax call displays the license agreement for a module.
-   * 
-   * @param response
-   * @param vars
-   * @param record
-   * @throws IOException
-   * @throws ServletException
-   */
+  /** This ajax call displays the license agreement for a module. */
   private void printLicenseAgreement(HttpServletResponse response, VariablesSecureApp vars,
       String record) throws IOException, ServletException {
-    if (log4j.isDebugEnabled()) {
-      log4j.debug("Output: ajaxreponse");
-    }
-
     response.setContentType("text/plain; charset=UTF-8");
     response.setHeader("Cache-Control", "no-cache");
     final PrintWriter out = response.getWriter();
@@ -2114,14 +2000,9 @@ public class ModuleManagement extends HttpSecureAppServlet {
   /**
    * Displays the pop-up for the search locally file in order to look for an obx file and to install
    * it locally.
-   * 
-   * @param response
-   * @param vars
-   * @throws IOException
-   * @throws ServletException
    */
   private void printSearchFile(HttpServletResponse response, VariablesSecureApp vars,
-      OBError message) throws IOException, ServletException {
+      OBError message) throws IOException {
     final XmlDocument xmlDocument = xmlEngine
         .readXmlTemplate("org/openbravo/erpCommon/ad_forms/ModuleManagement_InstallLocal")
         .createXmlDocument();
@@ -2143,14 +2024,10 @@ public class ModuleManagement extends HttpSecureAppServlet {
 
   private void printScan(HttpServletResponse response, VariablesSecureApp vars)
       throws IOException, ServletException {
-    if (log4j.isDebugEnabled()) {
-      log4j.debug("Output: ajax response ");
-    }
-
     // clean module updates if there are any
     cleanModulesUpdates();
 
-    final HashMap<String, String> updates = ImportModule.scanForUpdates(this, vars);
+    final Map<String, String> updates = ImportModule.scanForUpdates(this, vars);
 
     JSONObject notifications = new JSONObject();
     try {
@@ -2191,7 +2068,7 @@ public class ModuleManagement extends HttpSecureAppServlet {
         vars.setSessionObject("SettingsModule|MaturityLevels", levels);
       }
     }
-    String discard[] = { "", "" };
+    String[] discard = { "", "" };
     OBError myMessage = null;
 
     try {
@@ -2231,7 +2108,6 @@ public class ModuleManagement extends HttpSecureAppServlet {
             } else {
               mod.setMaturityUpdate(null);
             }
-            OBDal.getInstance().flush();
             OBDal.getInstance().commitAndClose();
 
             // clean module updates if there are any
@@ -2649,13 +2525,11 @@ public class ModuleManagement extends HttpSecureAppServlet {
     }
   }
 
-  /**
-   * Enable the passed in module
-   */
-  private void enable(VariablesSecureApp vars) throws ServletException {
+  /** Enable the passed in module */
+  private void enable(VariablesSecureApp vars) {
     try {
       OBInterceptor.setPreventUpdateInfoChange(true);
-      ArrayList<String> notEnabledModules = new ArrayList<String>();
+      ArrayList<String> notEnabledModules = new ArrayList<>();
       enableDisableModule(OBDal.getInstance()
           .get(org.openbravo.model.ad.module.Module.class, vars.getStringParameter("inpcRecordId")),
           true, notEnabledModules);
@@ -2684,7 +2558,7 @@ public class ModuleManagement extends HttpSecureAppServlet {
         .replace(" ", "")
         .replace("'", "")
         .split(",");
-    ArrayList<String> notEnabledModules = new ArrayList<String>();
+    ArrayList<String> notEnabledModules = new ArrayList<>();
     try {
       OBInterceptor.setPreventUpdateInfoChange(true);
 
@@ -2764,35 +2638,28 @@ public class ModuleManagement extends HttpSecureAppServlet {
     OBDal.getInstance().rollbackAndClose();
   }
 
-  /**
-   * Checks if there are local changes in the application
-   */
+  /** Checks if there are local changes in the application */
   private String verifyLocalChanges(VariablesSecureApp vars) {
     Connection connection = OBDal.getInstance().getConnection();
-    List<String> tablesModified = new ArrayList<String>();
-    PreparedStatement ps = null;
+
     String localChanges = null;
-    try {
-      ps = connection.prepareStatement("SELECT ad_db_modified('N') FROM DUAL");
+    try (PreparedStatement ps = connection
+        .prepareStatement("SELECT ad_db_modified('N') FROM DUAL");) {
       ps.execute();
-      ResultSet rs = ps.getResultSet();
-      rs.next();
-      String answer = rs.getString(1);
-      if (answer.equalsIgnoreCase("Y")) {
-        localChanges = Utility.messageBD(this, "ErrorLocalChanges", vars.getLanguage());
-        localChanges = localChanges.concat(
-            " <br><br> " + Utility.messageBD(this, "StructuralChangesInDB", vars.getLanguage()));
+      try (ResultSet rs = ps.getResultSet()) {
+        rs.next();
+        String answer = rs.getString(1);
+        if (answer.equalsIgnoreCase("Y")) {
+          localChanges = Utility.messageBD(this, "ErrorLocalChanges", vars.getLanguage());
+          localChanges = localChanges.concat(
+              " <br><br> " + Utility.messageBD(this, "StructuralChangesInDB", vars.getLanguage()));
+        }
       }
     } catch (Exception e) {
       log4j.error("Couldn't verify local changes");
-    } finally {
-      try {
-        ps.close();
-      } catch (SQLException e) {
-        // won't happen
-      }
     }
-    List<File> modelFiles = new ArrayList<File>();
+
+    List<File> modelFiles = new ArrayList<>();
     String sourcePath = OBPropertiesProvider.getInstance()
         .getOpenbravoProperties()
         .getProperty("source.path");
@@ -2836,6 +2703,8 @@ public class ModuleManagement extends HttpSecureAppServlet {
     final Platform platform = PlatformFactory.createNewPlatformInstance(datasource);
 
     OBDataset ad = new OBDataset(platform, db, "AD");
+
+    List<String> tablesModified = new ArrayList<>();
     boolean datachange = ad.hasChanged(connection, super.log4j, tablesModified);
     if (datachange) {
       if (localChanges == null) {

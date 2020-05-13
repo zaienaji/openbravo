@@ -26,6 +26,10 @@
     <FIELD id="help" replaceCharacters="html">help</FIELD>
     <FIELD id="url" attribute="onclick" replace="xx">url</FIELD>
     <FIELD id="url" attribute="style" replace="xx">urlStyle</FIELD>
+    <FIELD id="mergeInfo" attribute="style" replace="xx">mergeDisplay</FIELD>
+    <FIELD id="mergedModule" replaceCharacters="html">mergedModule</FIELD>
+    <FIELD id="mergedInto" replaceCharacters="html">mergedInto</FIELD>
+    <FIELD id="mergedIntoVersion" replaceCharacters="html">mergedIntoVersion</FIELD>
     <FIELD id="details" attribute="onclick" replace="xx">moduleVersionID</FIELD>
     <FIELD id="buttonInstall" attribute="onclick" replace="xx">moduleVersionID</FIELD>
     <FIELD id="commercial" attribute="style" replace="xx" default="none">commercialStyle</FIELD>

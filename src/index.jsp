@@ -155,7 +155,7 @@ response.addHeader("Expires", "0");
   }
 %>
 <script src="./web/org.openbravo.client.kernel/js/LAB.min.js"></script>
-<script src="./web/org.openbravo.client.kernel/js/BigDecimal-all-1.0.1.min.js"></script>
+<script src="./web/org.openbravo.client.kernel/js/BigDecimal-all-1.0.3.min.js"></script>
 
 <script>
   (function () {

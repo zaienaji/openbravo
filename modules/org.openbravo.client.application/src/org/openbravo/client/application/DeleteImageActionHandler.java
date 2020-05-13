@@ -26,8 +26,10 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.openbravo.base.exception.OBException;
 import org.openbravo.client.kernel.BaseActionHandler;
+import org.openbravo.client.kernel.RequestContext;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBDal;
+import org.openbravo.erpCommon.utility.CsrfUtil;
 import org.openbravo.model.ad.utility.Image;
 import org.openbravo.service.json.JsonUtils;
 
@@ -48,6 +50,11 @@ public class DeleteImageActionHandler extends BaseActionHandler {
       JSONObject dataObject = new JSONObject(image);
       String imageId = dataObject.getString("img");
       Image imageInstance = OBDal.getInstance().get(Image.class, imageId);
+      String csrfToken = "";
+      if (dataObject.has("csrfToken")) {
+        csrfToken = dataObject.getString("csrfToken");
+      }
+      CsrfUtil.checkCsrfToken(csrfToken, RequestContext.get().getRequest());
       if (imageInstance != null) {
         OBContext.setAdminMode(true);
         try {

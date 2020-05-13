@@ -1317,19 +1317,29 @@ public abstract class AcctServer {
         String amt = "";
         OBQuery<ConversionRateDoc> conversionQuery = null;
         int conversionCount = 0;
+        //@formatter:off
         if (AD_Table_ID.equals(TABLEID_Invoice)) {
-          String whereClause = "invoice.id = :recordId and currency.id = :currency and toCurrency.id = :toCurrency";
+          String whereClause = "invoice.id = :recordId "
+              + "  and currency.id = :currency "
+              + "  and toCurrency.id = :toCurrency";
           conversionQuery = OBDal.getInstance().createQuery(ConversionRateDoc.class, whereClause);
         } else if (AD_Table_ID.equals(TABLEID_Payment)) {
-          String whereClause = "payment.id = :recordId and currency.id = :currency and toCurrency.id = :toCurrency";
+          String whereClause = "payment.id = :recordId "
+              + "  and currency.id = :currency "
+              + "  and toCurrency.id = :toCurrency";
           conversionQuery = OBDal.getInstance().createQuery(ConversionRateDoc.class, whereClause);
         } else if (AD_Table_ID.equals(TABLEID_Transaction)) {
-          String whereClause = "financialAccountTransaction.id = :recordId and currency.id = :currency and toCurrency.id = :toCurrency";
+          String whereClause = "financialAccountTransaction.id = :recordId "
+              + "  and currency.id = :currency "
+              + "  and toCurrency.id = :toCurrency";
           conversionQuery = OBDal.getInstance().createQuery(ConversionRateDoc.class, whereClause);
         } else if (AD_Table_ID.equals(TABLEID_GLJournal)) {
-          String whereClause = "journalEntry.id = :recordId and currency.id = :currency and toCurrency.id = :toCurrency";
+          String whereClause = "journalEntry.id = :recordId "
+              + "  and currency.id = :currency "
+              + "  and toCurrency.id = :toCurrency";
           conversionQuery = OBDal.getInstance().createQuery(ConversionRateDoc.class, whereClause);
         }
+        //@formatter:on
         if (conversionQuery != null) {
           conversionQuery.setNamedParameter("recordId", Record_ID);
           conversionQuery.setNamedParameter("currency", currency);
@@ -1867,15 +1877,16 @@ public abstract class AcctServer {
     OBContext.setAdminMode();
     try {
       if (isReceipt) {
-        final StringBuilder whereClause = new StringBuilder();
+        String whereClause = "";
         if (isDoubtfuldebt) {
           BusinessPartner bp = OBDal.getInstance().get(BusinessPartner.class, cBPartnerId);
-          whereClause.append(" as cuscata ");
-          whereClause.append(" where cuscata.businessPartnerCategory.id = :bpCategoryID");
-          whereClause.append(" and cuscata.accountingSchema.id = :acctSchemaID");
-
+          //@formatter:off
+          whereClause += " as cuscata "
+              + " where cuscata.businessPartnerCategory.id = :bpCategoryID"
+              + "  and cuscata.accountingSchema.id = :acctSchemaID";
+          //@formatter:on
           final OBQuery<CategoryAccounts> obqParameters = OBDal.getInstance()
-              .createQuery(CategoryAccounts.class, whereClause.toString());
+              .createQuery(CategoryAccounts.class, whereClause);
           obqParameters.setFilterOnReadableClients(false);
           obqParameters.setFilterOnReadableOrganization(false);
           obqParameters.setNamedParameter("bpCategoryID", bp.getBusinessPartnerCategory().getId());
@@ -1900,13 +1911,17 @@ public abstract class AcctServer {
           return new Account(conn, strValidCombination);
         }
 
-        whereClause.append(" as cusa ");
-        whereClause.append(" where cusa.businessPartner.id = '" + cBPartnerId + "'");
-        whereClause.append(" and cusa.accountingSchema.id = '" + as.m_C_AcctSchema_ID + "'");
-        whereClause.append(" and (cusa.status is null or cusa.status = 'DE')");
+        //@formatter:off
+        whereClause +=" as cusa "
+            + " where cusa.businessPartner.id = :bpartnerId"
+            + " and cusa.accountingSchema.id = :accountId"
+            + " and (cusa.status is null or cusa.status = 'DE')";
+        //@formatter:on
 
         final OBQuery<CustomerAccounts> obqParameters = OBDal.getInstance()
-            .createQuery(CustomerAccounts.class, whereClause.toString());
+            .createQuery(CustomerAccounts.class, whereClause);
+        obqParameters.setNamedParameter("bpartnerId", cBPartnerId);
+        obqParameters.setNamedParameter("accountId", as.m_C_AcctSchema_ID);
         obqParameters.setFilterOnReadableClients(false);
         obqParameters.setFilterOnReadableOrganization(false);
         final List<CustomerAccounts> customerAccounts = obqParameters.list();
@@ -1919,15 +1934,17 @@ public abstract class AcctServer {
           strValidCombination = customerAccounts.get(0).getCustomerPrepayment().getId();
         }
       } else {
-        final StringBuilder whereClause = new StringBuilder();
-
-        whereClause.append(" as vena ");
-        whereClause.append(" where vena.businessPartner.id = '" + cBPartnerId + "'");
-        whereClause.append(" and vena.accountingSchema.id = '" + as.m_C_AcctSchema_ID + "'");
-        whereClause.append(" and (vena.status is null or vena.status = 'DE')");
+        //@formatter:off
+        final String whereClause = " as vena "
+            + " where vena.businessPartner.id = :bpartnerId"
+            + " and vena.accountingSchema.id = :accountId"
+            + " and (vena.status is null or vena.status = 'DE')";
+        //@formatter:on
 
         final OBQuery<VendorAccounts> obqParameters = OBDal.getInstance()
-            .createQuery(VendorAccounts.class, whereClause.toString());
+            .createQuery(VendorAccounts.class, whereClause);
+        obqParameters.setNamedParameter("bpartnerId", cBPartnerId);
+        obqParameters.setNamedParameter("accountId", as.m_C_AcctSchema_ID);
         obqParameters.setFilterOnReadableClients(false);
         obqParameters.setFilterOnReadableOrganization(false);
         final List<VendorAccounts> vendorAccounts = obqParameters.list();
@@ -1981,14 +1998,15 @@ public abstract class AcctServer {
       AcctSchema as, ConnectionProvider conn) throws ServletException {
 
     String strValidCombination = "";
-    final StringBuilder whereClause = new StringBuilder();
     BusinessPartner bp = OBDal.getInstance().get(BusinessPartner.class, BPartnerId);
-    whereClause.append(" as cuscata ");
-    whereClause.append(" where cuscata.businessPartnerCategory.id = :bpCategoryID");
-    whereClause.append(" and cuscata.accountingSchema.id = :acctSchemaID");
+    //@formatter:off
+    final String whereClause = " as cuscata "
+        + " where cuscata.businessPartnerCategory.id = :bpCategoryID"
+        + "  and cuscata.accountingSchema.id = :acctSchemaID";
+    //@formatter:on
 
     final OBQuery<CategoryAccounts> obqParameters = OBDal.getInstance()
-        .createQuery(CategoryAccounts.class, whereClause.toString());
+        .createQuery(CategoryAccounts.class, whereClause);
     obqParameters.setFilterOnReadableClients(false);
     obqParameters.setFilterOnReadableOrganization(false);
     obqParameters.setNamedParameter("bpCategoryID", bp.getBusinessPartnerCategory().getId());
@@ -2036,14 +2054,15 @@ public abstract class AcctServer {
       ConnectionProvider conn) throws ServletException {
 
     String strValidCombination = "";
-    final StringBuilder whereClause = new StringBuilder();
     BusinessPartner bp = OBDal.getInstance().get(BusinessPartner.class, BPartnerId);
-    whereClause.append(" as cuscata ");
-    whereClause.append(" where cuscata.businessPartnerCategory.id = :bpCategoryID");
-    whereClause.append(" and cuscata.accountingSchema.id = :acctSchemaID");
+    //@formatter:off
+    String whereClause = " as cuscata "
+        + " where cuscata.businessPartnerCategory.id = :bpCategoryID"
+        + "   and cuscata.accountingSchema.id = :acctSchemaID";
+    //@formatter:on
 
     final OBQuery<CategoryAccounts> obqParameters = OBDal.getInstance()
-        .createQuery(CategoryAccounts.class, whereClause.toString());
+        .createQuery(CategoryAccounts.class, whereClause);
     obqParameters.setFilterOnReadableClients(false);
     obqParameters.setFilterOnReadableOrganization(false);
     obqParameters.setNamedParameter("bpCategoryID", bp.getBusinessPartnerCategory().getId());
@@ -2953,27 +2972,35 @@ public abstract class AcctServer {
     OBContext.setAdminMode();
     try {
       for (int i = 0; i < m_as.length; i++) {
-        StringBuffer whereClause = new StringBuffer();
-        whereClause.append(" as astdt ");
-        whereClause.append(" where astdt.acctschemaTable.accountingSchema.id = '"
-            + m_as[i].m_C_AcctSchema_ID + "'");
-        whereClause.append(" and astdt.acctschemaTable.table.id = '" + AD_Table_ID + "'");
+        //@formatter:off
+        String whereClause = " as astdt "
+            + " where astdt.acctschemaTable.accountingSchema.id = :accountSchemaId"
+            + "   and astdt.acctschemaTable.table.id = :tableId";
         if (!"".equals(DocumentType)) {
-          whereClause.append(" and astdt.documentCategory = '" + DocumentType + "'");
+          whereClause += " and astdt.documentCategory = :documentType";
         }
+        //@formatter:on
         final OBQuery<AcctSchemaTableDocType> obqParameters = OBDal.getInstance()
-            .createQuery(AcctSchemaTableDocType.class, whereClause.toString());
+            .createQuery(AcctSchemaTableDocType.class, whereClause);
+        obqParameters.setNamedParameter("accountSchemaId", m_as[i].m_C_AcctSchema_ID);
+        obqParameters.setNamedParameter("tableId", AD_Table_ID);
+        if (!"".equals(DocumentType)) {
+          obqParameters.setNamedParameter("documentType", DocumentType);
+        }
         final List<AcctSchemaTableDocType> acctSchemaTableDocTypes = obqParameters.list();
         if (acctSchemaTableDocTypes != null && acctSchemaTableDocTypes.size() > 0
             && acctSchemaTableDocTypes.get(0).getCreatefactTemplate() != null) {
           return true;
         }
-        final StringBuilder whereClause2 = new StringBuilder();
-        whereClause2.append(" as ast ");
-        whereClause2.append(" where ast.accountingSchema.id = '" + m_as[i].m_C_AcctSchema_ID + "'");
-        whereClause2.append(" and ast.table.id = '" + AD_Table_ID + "'");
+        //@formatter:off
+        final String whereClause2 = " as ast "
+            + " where ast.accountingSchema.id = :accountSchemaId"
+            + "   and ast.table.id = :tableId";
+        //@formatter:on
         final OBQuery<AcctSchemaTable> obqParameters2 = OBDal.getInstance()
-            .createQuery(AcctSchemaTable.class, whereClause2.toString());
+            .createQuery(AcctSchemaTable.class, whereClause2);
+        obqParameters2.setNamedParameter("accountSchemaId", m_as[i].m_C_AcctSchema_ID);
+        obqParameters2.setNamedParameter("tableId", AD_Table_ID);
         final List<AcctSchemaTable> acctSchemaTables = obqParameters2.list();
         if (acctSchemaTables != null && acctSchemaTables.size() > 0
             && acctSchemaTables.get(0).getCreatefactTemplate() != null) {

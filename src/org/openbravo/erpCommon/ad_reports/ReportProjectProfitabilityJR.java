@@ -35,7 +35,6 @@ import org.openbravo.base.secureApp.HttpSecureAppServlet;
 import org.openbravo.base.secureApp.VariablesSecureApp;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBDal;
-import org.openbravo.dal.service.OBQuery;
 import org.openbravo.database.ConnectionProvider;
 import org.openbravo.erpCommon.businessUtility.WindowTabs;
 import org.openbravo.erpCommon.utility.ComboTableData;
@@ -47,7 +46,6 @@ import org.openbravo.erpCommon.utility.OBError;
 import org.openbravo.erpCommon.utility.ToolBar;
 import org.openbravo.erpCommon.utility.Utility;
 import org.openbravo.model.common.uom.UOM;
-import org.openbravo.model.project.Project;
 import org.openbravo.service.db.DalConnectionProvider;
 import org.openbravo.xmlEngine.XmlDocument;
 
@@ -211,78 +209,80 @@ public class ReportProjectProfitabilityJR extends HttpSecureAppServlet {
   private List<UOM> noConversionToHours(String strProject, Date dateFrom, Date dateTo,
       String strOrg, String strProjectType, String strResponsible, Date dateFromContract,
       Date dateToContract, String strPartner, Date dateFromStarting, Date dateToStarting) {
-    final StringBuilder hsqlScript = new StringBuilder();
+    String hsqlScript = "";
     final Map<String, Object> parameters = new HashMap<>();
 
-    hsqlScript.append(" as unitofmeasure");
-    hsqlScript.append(" where exists (");
-    hsqlScript.append("   select 1 ");
-    hsqlScript.append("   from TimeAndExpenseSheetLine as tel ");
-    hsqlScript.append("        join tel.expenseSheet as es ");
-    hsqlScript.append("        left outer join tel.project as p");
-    hsqlScript.append("   where tel.timeSheet = true ");
-    hsqlScript.append("         and tel.uOM.id = unitofmeasure.id ");
-    hsqlScript.append("         and tel.uOM.id <> '101' ");
-    hsqlScript.append("         and es.processed = 'Y' ");
+    // @formatter:off
+    hsqlScript += " as unitofmeasure";
+    hsqlScript += " where exists (";
+    hsqlScript += "   select 1 ";
+    hsqlScript += "   from TimeAndExpenseSheetLine as tel ";
+    hsqlScript += "        join tel.expenseSheet as es ";
+    hsqlScript += "        left outer join tel.project as p";
+    hsqlScript += "   where tel.timeSheet = true ";
+    hsqlScript += "         and tel.uOM.id = unitofmeasure.id ";
+    hsqlScript += "         and tel.uOM.id <> '101' ";
+    hsqlScript += "         and es.processed = 'Y' ";
     if (StringUtils.isNotEmpty(strProject)) {
-      hsqlScript.append("    and p.id = :projectId");
+      hsqlScript += "    and p.id = :projectId";
       parameters.put("projectId", strProject);
     }
     if (StringUtils.isNotEmpty(strOrg)) {
       Set<String> orgIds = OBContext.getOBContext()
           .getOrganizationStructureProvider()
           .getChildTree(strOrg, true);
-      hsqlScript.append("    and p." + Project.PROPERTY_ORGANIZATION + ".id in (:orgIds)");
+      hsqlScript += "    and p.organization.id in (:orgIds)";
       parameters.put("orgIds", orgIds);
     }
     if (StringUtils.isNotEmpty(strProjectType)) {
-      hsqlScript.append("    and p." + Project.PROPERTY_PROJECTTYPE + ".id = :projectTypeId");
+      hsqlScript += "    and p.projectType.id = :projectTypeId";
       parameters.put("projectTypeId", strProjectType);
     }
     if (StringUtils.isNotEmpty(strResponsible)) {
-      hsqlScript.append("    and p." + Project.PROPERTY_PERSONINCHARGE + ".id = :responsible");
+      hsqlScript += "    and p.personInCharge.id = :responsible";
       parameters.put("responsible", strResponsible);
     }
     if (StringUtils.isNotEmpty(strPartner)) {
-      hsqlScript.append("    and p." + Project.PROPERTY_BUSINESSPARTNER + ".id = :bpId");
+      hsqlScript += "    and p.businessPartner.id = :bpId";
       parameters.put("bpId", strPartner);
     }
     if (dateFrom != null) {
-      hsqlScript.append("    and es.reportDate >= :dateFrom");
+      hsqlScript += "    and es.reportDate >= :dateFrom";
       parameters.put("dateFrom", dateFrom);
     }
     if (dateTo != null) {
-      hsqlScript.append("    and es.reportDate <= :dateTo");
+      hsqlScript += "    and es.reportDate <= :dateTo";
       parameters.put("dateTo", dateTo);
     }
     if (dateFromStarting != null) {
-      hsqlScript.append("    and p." + Project.PROPERTY_STARTINGDATE + " >= :dateFromStarting");
+      hsqlScript += "    and p.startingDate >= :dateFromStarting";
       parameters.put("dateFromStarting", dateFromStarting);
     }
     if (dateToStarting != null) {
-      hsqlScript.append("    and p." + Project.PROPERTY_STARTINGDATE + " < :dateToStarting");
+      hsqlScript += "    and p.startingDate < :dateToStarting";
       parameters.put("dateToStarting", dateToStarting);
     }
     if (dateFromContract != null) {
-      hsqlScript.append("    and p." + Project.PROPERTY_CONTRACTDATE + " >= :dateFromContract");
+      hsqlScript += "    and p.contractDate >= :dateFromContract";
       parameters.put("dateFromContract", dateFromContract);
     }
     if (dateToContract != null) {
-      hsqlScript.append("    and p." + Project.PROPERTY_CONTRACTDATE + " < :dateToContract");
+      hsqlScript += "    and p.contractDate < :dateToContract";
       parameters.put("dateToContract", dateToContract);
     }
-    hsqlScript.append(" )");
-    hsqlScript.append(" and not exists (");
-    hsqlScript.append("   select 1 ");
-    hsqlScript.append("   from UOMConversion as uomconv ");
-    hsqlScript.append("   where uomconv.uOM.id =  unitofmeasure.id ");
-    hsqlScript.append("         and uomconv.toUOM.id =  '101' ");
-    hsqlScript.append(" )");
+    hsqlScript += " )";
+    hsqlScript += " and not exists (";
+    hsqlScript += "   select 1 ";
+    hsqlScript += "   from UOMConversion as uomconv ";
+    hsqlScript += "   where uomconv.uOM.id =  unitofmeasure.id ";
+    hsqlScript += "         and uomconv.toUOM.id =  '101' ";
+    hsqlScript += " )";
+    // @formatter:on
 
-    final OBQuery<UOM> query = OBDal.getReadOnlyInstance()
-        .createQuery(UOM.class, hsqlScript.toString());
-    query.setNamedParameters(parameters);
-    return query.list();
+    return OBDal.getReadOnlyInstance()
+        .createQuery(UOM.class, hsqlScript)
+        .setNamedParameters(parameters)
+        .list();
   }
 
   private void printPageDataSheet(HttpServletResponse response, VariablesSecureApp vars,

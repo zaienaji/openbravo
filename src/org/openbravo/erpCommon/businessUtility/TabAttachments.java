@@ -98,7 +98,7 @@ public class TabAttachments extends HttpSecureAppServlet {
         tab = adcs.getTab(strTab);
         key = paramValues.getString("inpKey");
         if (!IsIDFilter.instance.accept(key)) {
-          throw new OBSecurityException("Invalid key for attachement in tab " + tab + " ID:" + key);
+          throw new OBSecurityException("Invalid key for attachment in tab " + tab + " ID:" + key);
         }
 
         final String strDocumentOrganization = paramValues.getString("inpDocumentOrg");

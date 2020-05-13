@@ -16,7 +16,7 @@
 * under the License.
 * The Original Code is Openbravo ERP.
 * The Initial Developer of the Original Code is Openbravo SLU
-* All portions are Copyright (C) 2001-2018 Openbravo SLU
+* All portions are Copyright (C) 2001-2019 Openbravo SLU
 * All Rights Reserved.
 * Contributor(s):  ______________________________________.
 ************************************************************************/
@@ -313,8 +313,8 @@
             now(), v_User_ID, now(), v_User_ID,
             v_Invoice_ID, Cur_Pend.C_OrderLine_ID, Cur_Pend.M_InOutLine_ID,
             v_line, NULL, Cur_Outs.M_Product_ID, v_auxQty,
-            v_priceList, M_Get_Offers_Price(v_DateInvoiced, v_BPartner_ID, Cur_Outs.M_Product_ID, v_priceActual, v_auxQty, Cur_Outs.M_PriceList_ID),
-   v_priceLimit, ROUND(M_Get_Offers_Price(v_DateInvoiced, v_BPartner_ID, Cur_Outs.M_Product_ID, v_priceActual, v_auxQty, Cur_Outs.M_PriceList_ID) *v_auxQty, 2),
+            v_priceList, v_priceActual,
+            v_priceLimit, ROUND(v_priceActual*v_auxQty, 2),
             NULL, 0, Cur_Outs.C_UOM_ID, v_Tax_ID, NULL,
             0, Cur_Outs.M_AttributeSetInstance_ID, 'N',
             Cur_Outs.quantityOrder*(v_auxQty/Cur_Outs.MovementQty), Cur_Outs.M_Product_UOM_ID, v_priceActual,
@@ -348,8 +348,8 @@
             now(), v_User_ID, now(), v_User_ID,
             v_Invoice_ID, NULL, NULL, v_line,
             NULL, Cur_Outs.M_Product_ID, v_auxQty, v_priceList,
-            M_Get_Offers_Price(v_DateInvoiced, v_BPartner_ID, Cur_Outs.M_Product_ID, v_priceActual, v_auxQty, Cur_Outs.M_PriceList_ID), v_priceLimit,
-   ROUND(M_Get_Offers_Price(v_DateInvoiced, v_BPartner_ID, Cur_Outs.M_Product_ID, v_priceActual, v_auxQty, Cur_Outs.M_PriceList_ID) *v_auxQty, 2), NULL,
+            v_priceActual, v_priceLimit,
+            ROUND(v_priceActual*v_auxQty, 2), NULL,
             0, Cur_Outs.C_UOM_ID, v_Tax_ID, NULL,
             0, Cur_Outs.M_AttributeSetInstance_ID, 'N',
             Cur_Outs.quantityOrder*(v_auxQty/Cur_Outs.MovementQty), Cur_Outs.M_Product_UOM_ID, v_priceActual

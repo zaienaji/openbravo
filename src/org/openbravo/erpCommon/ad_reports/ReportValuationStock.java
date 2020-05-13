@@ -214,7 +214,7 @@ public class ReportValuationStock extends HttpSecureAppServlet {
       }
       if (strCostType != null && !isWarehouseConsolidation) {
         data = ReportValuationStockData.select(readOnlyCP, vars.getLanguage(), strCurrencyId,
-            strLegalEntity, strDateNext, strMaxAggDate, processTime, dateFormat, orgIds,
+            strLegalEntity, strDate, strDateNext, strMaxAggDate, processTime, dateFormat, orgIds,
             strWarehouseIncluded, strCostOrg, strCostClientId, strCostType, warehouseDimension,
             strCategoryProduct);
       } else if (strCostType == null && !isWarehouseConsolidation) {
@@ -223,9 +223,9 @@ public class ReportValuationStock extends HttpSecureAppServlet {
             orgIds, strWarehouseIncluded, strCategoryProduct);
       } else if (strCostType != null && isWarehouseConsolidation) {
         data = ReportValuationStockData.selectClusteredByWarehouse(readOnlyCP, vars.getLanguage(),
-            strDateNext, strLegalEntity, strCurrencyId, strMaxAggDate, processTime, dateFormat,
-            orgIds, strWarehouseIncluded, strCategoryProduct, strCostOrg, strCostClientId,
-            strCostType, warehouseDimension, filterOrg.getId());
+            strDate, strLegalEntity, strCurrencyId, strDateNext, strMaxAggDate, processTime,
+            dateFormat, orgIds, strWarehouseIncluded, strCategoryProduct, strCostOrg,
+            strCostClientId, strCostType, warehouseDimension, filterOrg.getId());
       } else {
         data = ReportValuationStockData.selectClusteredByWarehouseWithoutCost(readOnlyCP,
             vars.getLanguage(), strCurrencyId, strLegalEntity, strDateNext, strMaxAggDate,

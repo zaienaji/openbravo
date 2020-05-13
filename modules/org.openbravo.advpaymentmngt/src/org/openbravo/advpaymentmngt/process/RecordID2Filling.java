@@ -11,7 +11,7 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU
- * All portions are Copyright (C) 2018 Openbravo SLU
+ * All portions are Copyright (C) 2018-2019 Openbravo SLU
  * All Rights Reserved.
  * Contributor(s):  ______________________________________.
  *************************************************************************
@@ -46,13 +46,11 @@ import org.openbravo.service.db.DalBaseProcess;
 
 public class RecordID2Filling extends DalBaseProcess {
 
-  private static final Object TRANSACTION_TABLE_ID = "4D8C3B3C31D1410DA046140C9F024D17";
   private ProcessLogger logger;
 
   @Override
   protected void doExecute(ProcessBundle bundle) throws Exception {
     logger = bundle.getLogger();
-    final StringBuilder hqlInvoices = new StringBuilder();
     Set<AcctSchema> schemas = getSchemas();
     Set<String> bpAccounts = new HashSet<String>();
     Set<String> faAccounts = new HashSet<String>();
@@ -63,31 +61,38 @@ public class RecordID2Filling extends DalBaseProcess {
       faAccounts.addAll(getFAAccountList(false, acctSchema.getId()));
     }
 
-    hqlInvoices.append(" update FinancialMgmtAccountingFact as f set f.recordID2 = f.lineID ");
-    hqlInvoices.append(" where f.table.id = '318' ");
-    hqlInvoices
-        .append("   and exists (select 1 from FIN_Payment_Schedule as ps where ps.id = f.lineID)");
-    hqlInvoices.append("   and f.account.id in :accounts");
-    hqlInvoices.append("   and f.recordID2 is null");
+    //@formatter:off
+    final String hqlInvoices = " update FinancialMgmtAccountingFact as f set f.recordID2 = f.lineID "
+        + " where f.table.id = '318' "
+        + "   and exists (select 1 from FIN_Payment_Schedule as ps where ps.id = f.lineID)"
+        + "   and f.account.id in :accounts"
+        + "   and f.recordID2 is null";
+    //@formatter:on
     int numberInvoices = OBDal.getInstance()
         .getSession()
-        .createQuery(hqlInvoices.toString())
+        .createQuery(hqlInvoices)
         .setParameterList("accounts", bpAccounts)
         .executeUpdate();
     logger.logln("Number of invoice entries updated: " + numberInvoices);
     OBDal.getInstance().flush();
 
-    final StringBuilder hqlPayments = new StringBuilder();
-    hqlPayments.append(" update FinancialMgmtAccountingFact as f set f.recordID2 = ("
-        + "select case when psd.invoicePaymentSchedule is null then psd.orderPaymentSchedule else psd.invoicePaymentSchedule end "
-        + "from FIN_Payment_ScheduleDetail as psd join psd.paymentDetails as pd"
-        + " where pd.id = f.lineID)");
-    hqlPayments.append("where f.table.id = 'D1A97202E832470285C9B1EB026D54E2' ");
-    hqlPayments.append(" and f.account.id in :accounts");
-    hqlPayments.append(" and f.recordID2 is null");
+    //@formatter:off
+    final String hqlPayments = " update FinancialMgmtAccountingFact as f "
+        + "   set f.recordID2 = ("
+        + "     select case when psd.invoicePaymentSchedule is null "
+        + "            then psd.orderPaymentSchedule "
+        + "            else psd.invoicePaymentSchedule "
+        + "            end "
+        + "     from FIN_Payment_ScheduleDetail as psd "
+        + "     join psd.paymentDetails as pd"
+        + "     where pd.id = f.lineID)"
+        + "   where f.table.id = 'D1A97202E832470285C9B1EB026D54E2' "
+        + "    and f.account.id in :accounts"
+        + "    and f.recordID2 is null";
+    //@formatter:on
     int numberPayments = OBDal.getInstance()
         .getSession()
-        .createQuery(hqlPayments.toString())
+        .createQuery(hqlPayments)
         .setParameterList("accounts", bpAccounts)
         .executeUpdate();
 
@@ -95,31 +100,38 @@ public class RecordID2Filling extends DalBaseProcess {
     OBDal.getInstance().flush();
 
     // Updates in transit accounts (record_id2)
-    final StringBuilder hqlPaymentsInTransit = new StringBuilder();
-    hqlPaymentsInTransit
-        .append(" update FinancialMgmtAccountingFact as f set f.recordID2 = f.recordID");
-    hqlPaymentsInTransit.append(" where f.lineID is null ");
-    hqlPaymentsInTransit.append(" and f.recordID2 is null");
-    hqlPaymentsInTransit
-        .append(" and exists (select 1 from FIN_Payment as p where p.id = f.recordID "
-            + "and not exists( select 1 from FIN_Payment_Credit as pc where pc.creditPaymentUsed = p))");
+    //@formatter:off
+    final String hqlPaymentsInTransit = " update FinancialMgmtAccountingFact as f set f.recordID2 = f.recordID"
+        + " where f.lineID is null "
+        + " and f.recordID2 is null"
+        + " and exists (select 1 "
+        + "             from FIN_Payment as p "
+        + "             where p.id = f.recordID "
+        + "             and not exists(select 1 "
+        + "                            from FIN_Payment_Credit as pc "
+        + "                            where pc.creditPaymentUsed = p)"
+        + "             )";
+    //@formatter:on
     int numberPaymentsInTransit = OBDal.getInstance()
         .getSession()
-        .createQuery(hqlPaymentsInTransit.toString())
+        .createQuery(hqlPaymentsInTransit)
         .executeUpdate();
 
     logger.logln("Number of payment entries updated (In Transit): " + numberPaymentsInTransit);
     OBDal.getInstance().flush();
 
-    final StringBuilder hqlTrxRec = new StringBuilder();
-    hqlTrxRec.append(" select f from FinancialMgmtAccountingFact as f ");
-    hqlTrxRec.append(" where f.recordID2 is null ");
-    hqlTrxRec
-        .append("   and exists (select 1 from FIN_Finacc_Transaction as t where t.id = f.lineID)");
-    hqlTrxRec.append("   and account.id in :accounts");
+    //@formatter:off
+    final String hqlTrxRec = "select f "
+        + " from FinancialMgmtAccountingFact as f "
+        + " where f.recordID2 is null "
+        + "   and exists (select 1 "
+        + "               from FIN_Finacc_Transaction as t "
+        + "               where t.id = f.lineID)"
+        + "   and account.id in :accounts";
+    //@formatter:on
     Query<AccountingFact> query = OBDal.getInstance()
         .getSession()
-        .createQuery(hqlTrxRec.toString(), AccountingFact.class);
+        .createQuery(hqlTrxRec, AccountingFact.class);
 
     query.setParameterList("accounts", bpAccounts);
     int i = 0;
@@ -198,16 +210,20 @@ public class RecordID2Filling extends DalBaseProcess {
       scroller.close();
     }
     // Update Transactions and Reconciliations
-    final StringBuilder hqlTrxRecInTransit = new StringBuilder();
-    hqlTrxRecInTransit.append(" select f from FinancialMgmtAccountingFact as f ");
-    hqlTrxRecInTransit.append(" where f.recordID2 is null ");
-    hqlTrxRecInTransit.append(
-        "   and (exists (select 1 from FIN_Finacc_Transaction as t where t.id = f.lineID) or (f.lineID is null and f.table.id = '"
-            + TRANSACTION_TABLE_ID + "'))");
-    hqlTrxRecInTransit.append("   and account.id in :accounts");
+    //@formatter:off
+    final String hqlTrxRecInTransit = " select f "
+        + " from FinancialMgmtAccountingFact as f "
+        + " where f.recordID2 is null "
+        + "   and (exists (select 1 "
+        + "                from FIN_Finacc_Transaction as t "
+        + "                where t.id = f.lineID) "
+        + "        or (f.lineID is null and f.table.id = '4D8C3B3C31D1410DA046140C9F024D17')"
+        + "       )"
+        + "   and account.id in :accounts";
+    //@formatter:on
     Query<AccountingFact> queryInTransit = OBDal.getInstance()
         .getSession()
-        .createQuery(hqlTrxRecInTransit.toString(), AccountingFact.class);
+        .createQuery(hqlTrxRecInTransit, AccountingFact.class);
 
     queryInTransit.setParameterList("accounts", faAccounts);
     i = 0;
@@ -274,16 +290,27 @@ public class RecordID2Filling extends DalBaseProcess {
     }
 
     // Update date balancing
-    final StringBuilder hqlDateBalanced = new StringBuilder();
-    hqlDateBalanced.append(" update FinancialMgmtAccountingFact as f set f.dateBalanced = "
-        + "(select max(f2.accountingDate) from FinancialMgmtAccountingFact as f2 "
-        + "where f2.recordID2 = f.recordID2 and f2.accountingSchema = f.accountingSchema and f2.account = f.account group by f2.recordID2 having sum(f2.credit-f2.debit)=0) ");
-    hqlDateBalanced.append(" where exists (select 1 from FinancialMgmtAccountingFact as f3 "
-        + "where f3.recordID2 = f.recordID2 and f3.accountingSchema = f.accountingSchema and f3.account = f.account group by f3.recordID2 having sum(f3.credit-f3.debit)=0)");
-    hqlDateBalanced.append(" and f.dateBalanced is null");
+    //@formatter:off
+    final String hqlDateBalanced = " update FinancialMgmtAccountingFact as f "
+        + " set f.dateBalanced = (select max(f2.accountingDate) "
+        + "                       from FinancialMgmtAccountingFact as f2 "
+        + "                       where f2.recordID2 = f.recordID2 "
+        + "                         and f2.accountingSchema = f.accountingSchema "
+        + "                         and f2.account = f.account "
+        + "                       group by f2.recordID2 "
+        + "                       having sum(f2.credit-f2.debit) = 0) "
+        + " where exists (select 1 "
+        + "               from FinancialMgmtAccountingFact as f3 "
+        + "               where f3.recordID2 = f.recordID2 "
+        + "                 and f3.accountingSchema = f.accountingSchema "
+        + "                 and f3.account = f.account "
+        + "               group by f3.recordID2 "
+        + "               having sum(f3.credit-f3.debit) = 0)"
+        + " and f.dateBalanced is null";
+    //@formatter:on
     int numberBalanced = OBDal.getInstance()
         .getSession()
-        .createQuery(hqlDateBalanced.toString())
+        .createQuery(hqlDateBalanced)
         .executeUpdate();
     logger.logln("Number of date balanced entries: " + numberBalanced);
     OBDal.getInstance().flush();
@@ -295,13 +322,14 @@ public class RecordID2Filling extends DalBaseProcess {
   }
 
   private int getAccountingEntryPosition(AccountingFact accountingEntry, Set<String> accounts) {
-    final StringBuilder hqlString = new StringBuilder();
-    hqlString.append(" as f");
-    hqlString.append(" where f.account.id in :accounts");
-    hqlString.append(" and f.recordID = :recordID");
-    hqlString.append(" order by abs(f.debit-f.credit), f.creationDate");
+    //@formatter:off
+    final String hqlString = " as f"
+        + " where f.account.id in :accounts"
+        + "   and f.recordID = :recordID"
+        + " order by abs(f.debit-f.credit), f.creationDate";
+    //@formatter:on
     final OBQuery<AccountingFact> query = OBDal.getInstance()
-        .createQuery(AccountingFact.class, hqlString.toString());
+        .createQuery(AccountingFact.class, hqlString);
     query.setNamedParameter("accounts", accounts);
     query.setNamedParameter("recordID", accountingEntry.getRecordID());
     query.setFilterOnReadableClients(false);
@@ -317,31 +345,38 @@ public class RecordID2Filling extends DalBaseProcess {
   }
 
   private List<FIN_PaymentScheduleDetail> getOrderedPSDs(FIN_Payment finPayment) {
-    final StringBuilder hqlString = new StringBuilder();
-    hqlString.append(" as psd join psd.paymentDetails as pd");
-    hqlString.append(" where pd.finPayment = :payment");
-    hqlString.append(" and pd.gLItem is null");
-    hqlString.append(" order by abs(psd.amount), psd.creationDate");
+    //@formatter:off
+    final String hqlString = " as psd "
+        + " join psd.paymentDetails as pd"
+        + " where pd.finPayment = :payment"
+        + "   and pd.gLItem is null"
+        + " order by abs(psd.amount), psd.creationDate";
+    //@formatter:on
     final OBQuery<FIN_PaymentScheduleDetail> query = OBDal.getInstance()
-        .createQuery(FIN_PaymentScheduleDetail.class, hqlString.toString());
+        .createQuery(FIN_PaymentScheduleDetail.class, hqlString);
     query.setNamedParameter("payment", finPayment);
     return query.list();
   }
 
   private Set<String> getBPAccountList(boolean isReceipt, String acctSchemaId) {
     Set<String> result = new HashSet<>();
-    final StringBuilder hqlString = new StringBuilder();
+    //@formatter:off
+    String hqlString = "";
     if (isReceipt) {
-      hqlString.append("select distinct ca.customerReceivablesNo, ca.customerPrepayment");
-      hqlString.append(" from CustomerAccounts as ca");
-      hqlString.append(" where ca.accountingSchema.id = '" + acctSchemaId + "'");
+      hqlString += "select distinct ca.customerReceivablesNo, "
+          + "   ca.customerPrepayment"
+          + " from CustomerAccounts as ca"
+          + " where ca.accountingSchema.id = :acctSchemaId";
     } else {
-      hqlString.append("select distinct va.vendorPrepayment, va.vendorLiability");// va.vendorServiceLiability,
-      hqlString.append(" from VendorAccounts as va");
-      hqlString.append(" where va.accountingSchema.id = '" + acctSchemaId + "'");
+      hqlString += "select distinct va.vendorPrepayment, "
+          + "   va.vendorLiability"// va.vendorServiceLiability,
+          + " from VendorAccounts as va"
+          + " where va.accountingSchema.id = :acctSchemaId";
     }
+    //@formatter:on
     final Session session = OBDal.getInstance().getSession();
-    final Query<Object[]> query = session.createQuery(hqlString.toString(), Object[].class);
+    final Query<Object[]> query = session.createQuery(hqlString, Object[].class);
+    query.setParameter("acctSchemaId", acctSchemaId);
     for (Object[] values : query.list()) {
       for (Object value : values) {
         if (value instanceof AccountingCombination) {
@@ -354,30 +389,34 @@ public class RecordID2Filling extends DalBaseProcess {
 
   private Set<String> getFAAccountList(boolean isReceipt, String acctSchemaId) {
     Set<String> result = new HashSet<>();
-    final StringBuilder hqlString = new StringBuilder();
+    //@formatter:off
+    String hqlString = "";
     if (isReceipt) {
-      hqlString.append("select distinct faa.inTransitPaymentAccountIN");
+      hqlString += "select distinct faa.inTransitPaymentAccountIN";
     } else {
-      hqlString.append("select distinct faa.fINOutIntransitAcct");
+      hqlString += "select distinct faa.fINOutIntransitAcct";
     }
-    hqlString.append(" from FIN_Financial_Account_Acct as faa");
-    hqlString.append(" where faa.accountingSchema.id = :acctSchemaId");
+    hqlString +=  " from FIN_Financial_Account_Acct as faa"
+        + "         where faa.accountingSchema.id = :acctSchemaId";
+    //@formatter:on
     final Session session = OBDal.getInstance().getSession();
-    final Query<AccountingCombination> query = session.createQuery(hqlString.toString(),
+    final Query<AccountingCombination> query = session.createQuery(hqlString,
         AccountingCombination.class);
     query.setParameter("acctSchemaId", acctSchemaId);
     for (AccountingCombination value : query.list()) {
       result.add(value.getAccount().getId());
     }
-    final StringBuilder hqlString2 = new StringBuilder();
+    //@formatter:off
+    String hqlString2 = "";
     if (isReceipt) {
-      hqlString2.append("select distinct faa.depositAccount");
+      hqlString2 += "select distinct faa.depositAccount";
     } else {
-      hqlString2.append("select distinct faa.withdrawalAccount");
+      hqlString2 += "select distinct faa.withdrawalAccount";
     }
-    hqlString2.append(" from FIN_Financial_Account_Acct as faa");
-    hqlString2.append(" where faa.accountingSchema.id = :acctSchemaId");
-    final Query<AccountingCombination> query2 = session.createQuery(hqlString2.toString(),
+    hqlString2 += " from FIN_Financial_Account_Acct as faa";
+    hqlString2 += " where faa.accountingSchema.id = :acctSchemaId";
+    //@formatter:on
+    final Query<AccountingCombination> query2 = session.createQuery(hqlString2,
         AccountingCombination.class);
     query2.setParameter("acctSchemaId", acctSchemaId);
     for (AccountingCombination value : query2.list()) {
@@ -389,7 +428,7 @@ public class RecordID2Filling extends DalBaseProcess {
   private Set<String> getFAAccountList(boolean isReceipt, String acctSchemaId,
       String financialAccountId, String paymentMethodId, String table) {
     Set<String> result = new HashSet<>();
-    final StringBuilder hqlString = new StringBuilder();
+    String hqlString = "";
     String use = null;
     if (paymentMethodId != null && !"".equals(paymentMethodId)) {
       FIN_PaymentMethod paymentMethod = OBDal.getInstance()
@@ -399,34 +438,36 @@ public class RecordID2Filling extends DalBaseProcess {
         return result;
       }
     }
+    //@formatter:off
     if (isReceipt) {
       if ("INT".equals(use)) {
-        hqlString.append("select distinct faa.inTransitPaymentAccountIN");
+        hqlString += "select distinct faa.inTransitPaymentAccountIN";
       } else if ("DEP".equals(use)) {
-        hqlString.append("select distinct faa.depositAccount");
+        hqlString += "select distinct faa.depositAccount";
       } else if ("CLE".equals(use)) {
-        hqlString.append("select distinct faa.clearedPaymentAccount");
+        hqlString += "select distinct faa.clearedPaymentAccount";
       } else {
-        hqlString.append("select distinct faa.inTransitPaymentAccountIN, faa.depositAccount");
+        hqlString += "select distinct faa.inTransitPaymentAccountIN, faa.depositAccount";
       }
     } else {
       if ("INT".equals(use)) {
-        hqlString.append("select distinct faa.fINOutIntransitAcct");
+        hqlString += "select distinct faa.fINOutIntransitAcct";
       } else if ("WIT".equals(use)) {
-        hqlString.append("select distinct faa.withdrawalAccount");
+        hqlString += "select distinct faa.withdrawalAccount";
       } else if ("CLE".equals(use)) {
-        hqlString.append("select distinct faa.clearedPaymentAccountOUT");
+        hqlString += "select distinct faa.clearedPaymentAccountOUT";
       } else {
-        hqlString.append("select distinct faa.inTransitPaymentAccountIN, faa.withdrawalAccount");
+        hqlString += "select distinct faa.inTransitPaymentAccountIN, faa.withdrawalAccount";
       }
     }
-    hqlString.append(" from FIN_Financial_Account_Acct as faa");
-    hqlString.append(" where faa.accountingSchema.id = :acctSchemaId");
+    hqlString += " from FIN_Financial_Account_Acct as faa"
+              +  " where faa.accountingSchema.id = :acctSchemaId";
     if (financialAccountId != null && !"".equals(financialAccountId)) {
-      hqlString.append(" and faa.account.id = :financialAccountId");
+      hqlString += " and faa.account.id = :financialAccountId";
     }
+    //@formatter:on
     final Session session = OBDal.getInstance().getSession();
-    final Query<Object> query = session.createQuery(hqlString.toString(), Object.class);
+    final Query<Object> query = session.createQuery(hqlString, Object.class);
     query.setParameter("acctSchemaId", acctSchemaId);
     if (financialAccountId != null && !"".equals(financialAccountId)) {
       query.setParameter("financialAccountId", financialAccountId);

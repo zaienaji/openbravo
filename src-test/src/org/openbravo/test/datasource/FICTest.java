@@ -38,6 +38,7 @@ import org.openbravo.client.kernel.reference.DateUIDefinition;
 import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.model.materialmgmt.cost.CostingRule;
+import org.openbravo.test.base.Issue;
 
 /**
  * Test cases for FormInitializationComponent
@@ -50,10 +51,9 @@ public class FICTest extends BaseDataSourceTestDal {
   /**
    * Auxiliary Input for which SQL can't be evaluated on NEW and the value is correctly set by
    * callouts, should be populated when creating a new record.
-   * 
-   * See issue #27234
    */
   @Test
+  @Issue("27234")
   public void testAuxiliaryInputBasedOnCallout() throws Exception {
     Map<String, String> params = new HashMap<String, String>();
     params.put("MODE", "NEW");
@@ -72,10 +72,9 @@ public class FICTest extends BaseDataSourceTestDal {
 
   /**
    * Tests FIC doesn't change date-time value when row is retrieved to be edited
-   * 
-   * See issue #28541
    */
   @Test
+  @Issue("28541")
   public void dateTimeShouldntChange() throws Exception {
     OBCriteria<CostingRule> qRule = OBDal.getInstance().createCriteria(CostingRule.class);
     qRule.add(Restrictions.isNotNull(CostingRule.PROPERTY_STARTINGDATE));
@@ -107,10 +106,9 @@ public class FICTest extends BaseDataSourceTestDal {
   /**
    * Tests that the FIC returns the expected value for a combo which links to the parent tab after
    * clearing the organization field in the sub-tab.
-   * 
-   * See issue #38635
    */
   @Test
+  @Issue("38635")
   public void selectCorrectComboValueAfterClearingOrgField() throws Exception {
     final String selectedRoleId = "C7E9112E632348F396B4967517E62805";
     StringBuilder urlParams = new StringBuilder();

@@ -69,6 +69,7 @@ public class DatabaseValidator implements SystemValidator {
   private boolean dbsmExecution = false;
 
   private static int MAX_OBJECT_NAME_LENGTH = 30;
+  private static final String FRENCHFISCAL_MODULE = "BA750E79C7AA4AA2860B99B415038E37";
 
   private StringBuilder updateSql = new StringBuilder();
 
@@ -878,12 +879,15 @@ public class DatabaseValidator implements SystemValidator {
    * implement the KillableProcess interface.
    */
   private void checkKillableImplementation(SystemValidationResult result) {
-
     OBCriteria<org.openbravo.model.ad.ui.Process> obc = OBDal.getInstance()
         .createCriteria(org.openbravo.model.ad.ui.Process.class);
     obc.add(Restrictions.eq(org.openbravo.model.ad.ui.Process.PROPERTY_KILLABLE, true));
+    // FIXME: Remove when https://issues.openbravo.com/view.php?id=41753 is fixed
+    obc.add(Restrictions.ne(org.openbravo.model.ad.ui.Process.PROPERTY_MODULE + ".id",
+        FRENCHFISCAL_MODULE));
     if (validateModule != null) {
-      obc.add(Restrictions.eq(DataSet.PROPERTY_MODULE, validateModule));
+      obc.add(Restrictions.eq(org.openbravo.model.ad.ui.Process.PROPERTY_MODULE + ".id",
+          validateModule.getId()));
     }
     List<org.openbravo.model.ad.ui.Process> processList = obc.list();
     for (org.openbravo.model.ad.ui.Process process : processList) {

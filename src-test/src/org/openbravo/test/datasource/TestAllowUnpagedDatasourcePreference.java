@@ -46,13 +46,13 @@ import org.openbravo.model.ad.domain.Preference;
 import org.openbravo.model.ad.system.Client;
 import org.openbravo.model.common.enterprise.Organization;
 import org.openbravo.service.json.JsonConstants;
+import org.openbravo.test.base.Issue;
 
 /**
  * Test case for 'Allow Unpaged Datasource In Manual Request' preference
- * 
- * See issue http://issues.openbravo.com/view.php?id=30204
  */
 @RunWith(Parameterized.class)
+@Issue("30204")
 public class TestAllowUnpagedDatasourcePreference extends BaseDataSourceTestDal {
 
   protected Logger logger = LogManager.getLogger();

@@ -28,16 +28,17 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.Test;
 import org.openbravo.service.json.JsonConstants;
+import org.openbravo.test.base.Issue;
 
 /**
- * This test is for the https://issues.openbravo.com/view.php?id=32912 issue. With these datasource
- * parameters, the WHERE_AND_FILTER_CLAUSE parameter is the empty string and that was the case that
- * was failing. This test checks that the request to the datasource is correct and the response is
- * 0, which is the successful request status.
+ * With these datasource parameters, the WHERE_AND_FILTER_CLAUSE parameter is the empty string and
+ * that was the case that was failing. This test checks that the request to the datasource is
+ * correct and the response is 0, which is the successful request status.
  * 
  * @author Naroa Iriarte
  * 
  */
+@Issue("32912")
 public class EmptyStringWhereAndFilterClauseParameter extends BaseDataSourceTestDal {
   private static final String WAREHOUSE_AND_STORAGE_BIN_WINDOW_ID = "139";
   private static final String STORAGE_BIN_TAB_ID = "178";

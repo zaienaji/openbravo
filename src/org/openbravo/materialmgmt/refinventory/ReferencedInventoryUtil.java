@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2017-2018 Openbravo SLU 
+ * All portions are Copyright (C) 2017-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -20,9 +20,11 @@
 package org.openbravo.materialmgmt.refinventory;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
@@ -186,7 +188,7 @@ public class ReferencedInventoryUtil {
     header.setClient(OBContext.getOBContext().getCurrentClient());
     header.setOrganization(organization);
     header.setName(name);
-    header.setMovementDate(new Date());
+    header.setMovementDate(DateUtils.truncate(new Date(), Calendar.DATE));
     OBDal.getInstance().save(header);
     return header;
   }

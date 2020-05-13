@@ -38,13 +38,11 @@ import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.dal.service.OBQuery;
-import org.openbravo.model.common.businesspartner.BusinessPartner;
 import org.openbravo.model.financialmgmt.gl.GLItem;
 import org.openbravo.model.financialmgmt.payment.FIN_BankStatement;
 import org.openbravo.model.financialmgmt.payment.FIN_BankStatementLine;
 import org.openbravo.model.financialmgmt.payment.FIN_FinaccTransaction;
 import org.openbravo.model.financialmgmt.payment.FIN_FinancialAccount;
-import org.openbravo.model.financialmgmt.payment.FIN_Payment;
 import org.openbravo.model.financialmgmt.payment.FIN_Reconciliation;
 
 public class MatchTransactionDao {
@@ -102,70 +100,56 @@ public class MatchTransactionDao {
 
   public static List<FIN_BankStatementLine> getUnMatchedBankStatementLines(
       FIN_FinancialAccount account) {
-    final StringBuilder whereClause = new StringBuilder();
-    whereClause.append(" as bsl ");
-    whereClause.append(" where bsl.").append(FIN_BankStatementLine.PROPERTY_BANKSTATEMENT);
-    whereClause.append(".").append(FIN_BankStatement.PROPERTY_ACCOUNT).append(".id = '");
-    whereClause.append(account.getId()).append("'");
-    whereClause.append("   and bsl.")
-        .append(FIN_BankStatementLine.PROPERTY_FINANCIALACCOUNTTRANSACTION);
-    whereClause.append(" is null");
-    whereClause.append(" and bsl.bankStatement.processed = 'Y'");
+    //@formatter:off
+    final String whereClause = " as bsl " 
+        + " where bsl.bankStatement.account.id = :accountId"
+        + "   and bsl.financialAccountTransaction is null"
+        + "   and bsl.bankStatement.processed = 'Y'";
+    //@formatter:on
     final OBQuery<FIN_BankStatementLine> obData = OBDal.getInstance()
-        .createQuery(FIN_BankStatementLine.class, whereClause.toString());
-
+        .createQuery(FIN_BankStatementLine.class, whereClause);
+    obData.setNamedParameter("accountId", account.getId());
     return obData.list();
   }
 
   public static List<FIN_FinaccTransaction> getMatchingFinancialTransaction(
       String strFinancialAccountId, Date transactionDate, String strReference, BigDecimal amount,
       String strBpartner, List<FIN_FinaccTransaction> excluded) {
-    final StringBuilder whereClause = new StringBuilder();
     final Map<String, Object> parameters = new HashMap<>();
     List<FIN_FinaccTransaction> result = null;
     OBContext.setAdminMode();
     try {
-      whereClause.append(" as ft ");
-      whereClause.append(" where ft.").append(FIN_FinaccTransaction.PROPERTY_ACCOUNT);
-      whereClause.append(".id = '").append(strFinancialAccountId).append("'");
-      whereClause.append("   and ft.").append(FIN_FinaccTransaction.PROPERTY_RECONCILIATION);
-      whereClause.append(" is null");
-      whereClause.append("   and ft.").append(FIN_FinaccTransaction.PROPERTY_PROCESSED);
-      whereClause.append(" = true");
-      whereClause.append("   and ft.").append(FIN_FinaccTransaction.PROPERTY_STATUS);
-      whereClause.append(" <> 'RPPC' ");
-      whereClause.append("   and (ft.").append(FIN_FinaccTransaction.PROPERTY_DEPOSITAMOUNT);
-      whereClause.append(" - ").append(FIN_FinaccTransaction.PROPERTY_PAYMENTAMOUNT).append(")");
-      whereClause.append(" = :amount");
+      //@formatter:off
+      String whereClause = " as ft " 
+          + " where ft.account.id = :financialAccountId"
+          + "   and ft.reconciliation is null" 
+          + "   and ft.processed = true"
+          + "   and ft.status <> 'RPPC' " 
+          + "   and (ft.depositAmount - paymentAmount) = :amount";
+      parameters.put("financialAccountId", strFinancialAccountId);
       parameters.put("amount", amount);
       if (transactionDate != null) {
-        whereClause.append("   and ft.").append(FIN_FinaccTransaction.PROPERTY_TRANSACTIONDATE);
-        whereClause.append(" = :transactionDate");
+        whereClause += " and ft.transactionDate = :transactionDate";
         parameters.put("transactionDate", transactionDate);
       }
-      whereClause.append("   and ft.").append(FIN_FinaccTransaction.PROPERTY_FINPAYMENT);
-      whereClause.append(".").append(FIN_Payment.PROPERTY_BUSINESSPARTNER);
-      whereClause.append(".").append(BusinessPartner.PROPERTY_NAME);
+      whereClause += "   and ft.finPayment.businessPartner.name";
 
       if (strBpartner != null) {
-        whereClause.append(" = :bpName");
+        whereClause += " = :bpName";
         parameters.put("bpName", strBpartner);
       } else {
-        whereClause.append(" is null");
+        whereClause += " is null";
       }
       if (!"".equals(strReference) && !"**".equals(strReference)) {
-        whereClause.append("   and (ft.").append(FIN_FinaccTransaction.PROPERTY_FINPAYMENT);
-        whereClause.append(".").append(FIN_Payment.PROPERTY_REFERENCENO);
-        whereClause.append(" = :referenceNo");
+        whereClause += " and (ft.finPayment.referenceNo = :referenceNo"
+                    +  "   or ft.finPayment.documentNo = :documentNo)";
         parameters.put("referenceNo", strReference);
-        whereClause.append("   or ft.").append(FIN_FinaccTransaction.PROPERTY_FINPAYMENT);
-        whereClause.append(".").append(FIN_Payment.PROPERTY_DOCUMENTNO);
-        whereClause.append(" = :documentNo)");
         parameters.put("documentNo", strReference);
       }
 
+      //@formatter:on
       final OBQuery<FIN_FinaccTransaction> obData = OBDal.getInstance()
-          .createQuery(FIN_FinaccTransaction.class, whereClause.toString());
+          .createQuery(FIN_FinaccTransaction.class, whereClause);
       obData.setNamedParameters(parameters);
 
       result = obData.list();
@@ -179,43 +163,34 @@ public class MatchTransactionDao {
   public static List<FIN_FinaccTransaction> getMatchingFinancialTransaction(
       String strFinancialAccountId, Date transactionDate, String strReference, BigDecimal amount,
       List<FIN_FinaccTransaction> excluded) {
-    final StringBuilder whereClause = new StringBuilder();
     final Map<String, Object> parameters = new HashMap<>();
     List<FIN_FinaccTransaction> result = null;
     OBContext.setAdminMode();
     try {
-      whereClause.append(" as ft ");
-      whereClause.append(" where ft.").append(FIN_FinaccTransaction.PROPERTY_ACCOUNT);
-      whereClause.append(".id = '").append(strFinancialAccountId).append("'");
-      whereClause.append("   and ft.").append(FIN_FinaccTransaction.PROPERTY_RECONCILIATION);
-      whereClause.append(" is null");
-      whereClause.append("   and ft.").append(FIN_FinaccTransaction.PROPERTY_PROCESSED);
-      whereClause.append(" = true");
-      whereClause.append("   and ft.").append(FIN_FinaccTransaction.PROPERTY_STATUS);
-      whereClause.append(" <> 'RPPC' ");
-      whereClause.append("   and (ft.").append(FIN_FinaccTransaction.PROPERTY_DEPOSITAMOUNT);
-      whereClause.append(" - ").append(FIN_FinaccTransaction.PROPERTY_PAYMENTAMOUNT).append(")");
-      whereClause.append(" = :amount");
+      //@formatter:off
+      String whereClause = " as ft "
+       + " where ft.account.id = :financialAccountId"
+       + "   and ft.reconciliation is null"
+       + "   and ft.processed = true"
+       + "   and ft.status <> 'RPPC' "
+       + "   and (ft.depositAmount - paymentAmount) = :amount";
+      parameters.put("financialAccountId", strFinancialAccountId);
       parameters.put("amount", amount);
       if (transactionDate != null) {
-        whereClause.append("   and ft.").append(FIN_FinaccTransaction.PROPERTY_TRANSACTIONDATE);
-        whereClause.append(" = :transactionDate");
+        whereClause += "   and ft.transactionDate = :transactionDate";
         parameters.put("transactionDate", transactionDate);
       }
 
       if (!"".equals(strReference) && !"**".equals(strReference)) {
-        whereClause.append("   and (ft.").append(FIN_FinaccTransaction.PROPERTY_FINPAYMENT);
-        whereClause.append(".").append(FIN_Payment.PROPERTY_REFERENCENO);
-        whereClause.append(" = :referenceNo");
+        whereClause += "   and (ft.finPayment.referenceNo = :referenceNo"
+                    +  "     or ft.finPayment.documentNo = :documentNo)";
         parameters.put("referenceNo", strReference);
-        whereClause.append("   or ft.").append(FIN_FinaccTransaction.PROPERTY_FINPAYMENT);
-        whereClause.append(".").append(FIN_Payment.PROPERTY_DOCUMENTNO);
-        whereClause.append(" = :documentNo)");
         parameters.put("documentNo", strReference);
       }
 
+      //@formatter:on
       final OBQuery<FIN_FinaccTransaction> obData = OBDal.getInstance()
-          .createQuery(FIN_FinaccTransaction.class, whereClause.toString());
+          .createQuery(FIN_FinaccTransaction.class, whereClause);
       obData.setNamedParameters(parameters);
 
       result = obData.list();
@@ -236,29 +211,24 @@ public class MatchTransactionDao {
   public static List<FIN_FinaccTransaction> getMatchingFinancialTransaction(
       String strFinancialAccountId, Date transactionDate, BigDecimal amount,
       List<FIN_FinaccTransaction> excluded) {
-    final StringBuilder whereClause = new StringBuilder();
     final Map<String, Object> parameters = new HashMap<>();
 
-    whereClause.append(" as ft ");
-    whereClause.append(" where ft.").append(FIN_FinaccTransaction.PROPERTY_ACCOUNT);
-    whereClause.append(".id = '").append(strFinancialAccountId).append("'");
-    whereClause.append("   and ft.").append(FIN_FinaccTransaction.PROPERTY_RECONCILIATION);
-    whereClause.append(" is null");
-    whereClause.append("   and ft.").append(FIN_FinaccTransaction.PROPERTY_PROCESSED);
-    whereClause.append(" = true");
-    whereClause.append("   and ft.").append(FIN_FinaccTransaction.PROPERTY_STATUS);
-    whereClause.append(" <> 'RPPC' ");
-    whereClause.append("   and (ft.").append(FIN_FinaccTransaction.PROPERTY_DEPOSITAMOUNT);
-    whereClause.append(" - ").append(FIN_FinaccTransaction.PROPERTY_PAYMENTAMOUNT).append(")");
-    whereClause.append(" = :amount");
+    //@formatter:off
+    String whereClause = " as ft "
+       + " where ft.account.id = :financialAccountId"
+       + "   and ft.reconciliation is null"
+       + "   and ft.processed = true"
+       + "   and ft.status <> 'RPPC' "
+       + "   and (ft.depositAmount - paymentAmount) = :amount";
+    parameters.put("financialAccountId", strFinancialAccountId);
     parameters.put("amount", amount);
     if (transactionDate != null) {
-      whereClause.append("   and ft.").append(FIN_FinaccTransaction.PROPERTY_TRANSACTIONDATE);
-      whereClause.append(" = :transactionDate");
+      whereClause += "   and ft.transactionDate = :transactionDate";
       parameters.put("transactionDate", transactionDate);
     }
+    //@formatter:on
     final OBQuery<FIN_FinaccTransaction> obData = OBDal.getInstance()
-        .createQuery(FIN_FinaccTransaction.class, whereClause.toString());
+        .createQuery(FIN_FinaccTransaction.class, whereClause);
     obData.setNamedParameters(parameters);
     List<FIN_FinaccTransaction> result = obData.list();
     result.removeAll(excluded);
@@ -268,33 +238,26 @@ public class MatchTransactionDao {
   public static List<FIN_FinaccTransaction> getMatchingGLItemTransaction(
       String strFinancialAccountId, GLItem glItem, Date transactionDate, BigDecimal amount,
       List<FIN_FinaccTransaction> excluded) {
-    final StringBuilder whereClause = new StringBuilder();
     final Map<String, Object> parameters = new HashMap<>();
 
-    whereClause.append(" as ft ");
-    whereClause.append(" where ft.").append(FIN_FinaccTransaction.PROPERTY_ACCOUNT);
-    whereClause.append(".id = '").append(strFinancialAccountId).append("'");
-    whereClause.append("   and ft.").append(FIN_FinaccTransaction.PROPERTY_RECONCILIATION);
-    whereClause.append(" is null");
-    whereClause.append("   and ft.")
-        .append(FIN_FinaccTransaction.PROPERTY_PROCESSED)
-        .append(" = true");
-    whereClause.append("   and ft.").append(FIN_FinaccTransaction.PROPERTY_GLITEM);
-    whereClause.append(" = :glItem");
+    //@formatter:off
+    String whereClause = " as ft "
+        + " where ft.account.id = :financialAccountId"
+        + "   and ft.reconciliation is null"
+        + "   and ft.processed = true"
+        + "   and ft.gLItem = :glItem"
+        + "   and ft.status <> 'RPPC' "
+        + "   and (ft.depositAmount - paymentAmount) = :amount";
+    parameters.put("financialAccountId", strFinancialAccountId);
     parameters.put("glItem", glItem);
-    whereClause.append("   and ft.").append(FIN_FinaccTransaction.PROPERTY_STATUS);
-    whereClause.append(" <> 'RPPC' ");
-    whereClause.append("   and (ft.").append(FIN_FinaccTransaction.PROPERTY_DEPOSITAMOUNT);
-    whereClause.append(" - ").append(FIN_FinaccTransaction.PROPERTY_PAYMENTAMOUNT).append(")");
-    whereClause.append(" = :amount");
     parameters.put("amount", amount);
     if (transactionDate != null) {
-      whereClause.append("   and ft.").append(FIN_FinaccTransaction.PROPERTY_TRANSACTIONDATE);
-      whereClause.append(" <= :transactionDate");
+      whereClause += "   and ft.transactionDate <= :transactionDate";
       parameters.put("transactionDate", transactionDate);
     }
+    //@formatter:on
     final OBQuery<FIN_FinaccTransaction> obData = OBDal.getInstance()
-        .createQuery(FIN_FinaccTransaction.class, whereClause.toString());
+        .createQuery(FIN_FinaccTransaction.class, whereClause);
     obData.setNamedParameters(parameters);
     List<FIN_FinaccTransaction> result = obData.list();
     result.removeAll(excluded);
@@ -447,17 +410,21 @@ public class MatchTransactionDao {
     BigDecimal total = BigDecimal.ZERO;
     OBContext.setAdminMode(false);
     try {
-      final StringBuilder hqlString = new StringBuilder();
-      hqlString.append("select coalesce(sum(e.depositAmount-e.paymentAmount),0)");
-      hqlString.append(" from FIN_Finacc_Transaction as e");
-      hqlString.append(" where e.account.id = :account");
-      hqlString.append(" and e.processed = true");
-      hqlString.append(" and e.reconciliation is not null");
-      hqlString.append(
-          " and not exists (select 1 from FIN_BankStatementLine as bsl where bsl.financialAccountTransaction = e)");
-      hqlString.append(" and e.transactionDate <= :date");
+      //@formatter:off
+      final String hqlString = "select coalesce(sum(e.depositAmount-e.paymentAmount),0)"
+          + " from FIN_Finacc_Transaction as e"
+          + " where e.account.id = :account"
+          + "   and e.processed = true"
+          + "   and e.reconciliation is not null"
+          + "   and not exists ("
+          + "       select 1 "
+          + "       from FIN_BankStatementLine as bsl "
+          + "       where bsl.financialAccountTransaction = e)"
+          + "   and e.transactionDate <= :date";
+      
+      //@formatter:on
       final Session session = OBDal.getInstance().getSession();
-      final Query<BigDecimal> query = session.createQuery(hqlString.toString(), BigDecimal.class);
+      final Query<BigDecimal> query = session.createQuery(hqlString, BigDecimal.class);
       query.setParameter("account", reconciliation.getAccount().getId());
       query.setParameter("date", reconciliation.getEndingDate());
       total = query.uniqueResult();

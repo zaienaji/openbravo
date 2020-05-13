@@ -135,7 +135,8 @@ public class OBBaseTest {
           + getTestName(description) + (errorOccured ? " - with errors" : ""));
 
       // if not an administrator but still admin mode set throw an exception
-      if (!OBContext.getOBContext().getUser().getId().equals("0")
+      if (OBContext.getOBContext() != null
+          && !OBContext.getOBContext().getUser().getId().equals("0")
           && !OBContext.getOBContext().getRole().getId().equals("0")
           && OBContext.getOBContext().isInAdministratorMode()) {
         OBContext.restorePreviousMode();
@@ -308,7 +309,7 @@ public class OBBaseTest {
     initializeDisabledTestCases();
   }
 
-  private static void initializeTestLogAppender() {
+  protected static void initializeTestLogAppender() {
     final LoggerContext context = LoggerContext.getContext(false);
     final Configuration config = context.getConfiguration();
 
@@ -426,7 +427,7 @@ public class OBBaseTest {
     return true;
   }
 
-  private static void staticInitializeDalLayer() throws Exception {
+  protected static void staticInitializeDalLayer() throws Exception {
     staticInitializeDalLayer(null);
   }
 
@@ -439,7 +440,7 @@ public class OBBaseTest {
     }
   }
 
-  private static void initializeDisabledTestCases() {
+  protected static void initializeDisabledTestCases() {
     boolean alreadyInitialized = disabledTestCases != null;
     if (alreadyInitialized) {
       return;

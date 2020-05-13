@@ -33,8 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.Vector;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 import javax.servlet.ServletConfig;
@@ -68,7 +66,7 @@ import org.openbravo.client.application.window.OBViewUtil;
 import org.openbravo.client.kernel.BaseKernelServlet;
 import org.openbravo.client.kernel.KernelUtils;
 import org.openbravo.client.kernel.OBUserException;
-import org.openbravo.client.kernel.RequestContext;
+import org.openbravo.client.kernel.reference.UIDefinitionController;
 import org.openbravo.dal.core.DalUtil;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.core.SessionHandler;
@@ -76,6 +74,7 @@ import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.database.SessionInfo;
 import org.openbravo.erpCommon.businessUtility.Preferences;
+import org.openbravo.erpCommon.utility.CsrfUtil;
 import org.openbravo.erpCommon.utility.OBMessageUtils;
 import org.openbravo.erpCommon.utility.PropertyException;
 import org.openbravo.erpCommon.utility.PropertyNotFoundException;
@@ -111,8 +110,6 @@ public class DataSourceServlet extends BaseKernelServlet {
   private static final long serialVersionUID = 1L;
 
   private static String servletPathPart = "org.openbravo.service.datasource";
-  private static Pattern csrfTokenPattern = Pattern
-      .compile("\"csrfToken\":\"(?<token>[A-Z0-9]+)\"");
   private static final String[] CSV_FORMULA_PREFIXES = new String[] { "=", "+", "-", "@" };
 
   public static String getServletPathPart() {
@@ -648,24 +645,15 @@ public class DataSourceServlet extends BaseKernelServlet {
           } else if (dateCols.contains(key) && keyValue != null
               && !keyValue.toString().equals("null")) {
             Date date = JsonUtils.createDateFormat().parse(keyValue.toString());
-            String pattern = RequestContext.get()
-                .getSessionAttribute("#AD_JAVADATEFORMAT")
-                .toString();
-            SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
-            dateFormat.setLenient(true);
-            keyValue = dateFormat.format(date);
+            keyValue = UIDefinitionController.DATE_UI_DEFINITION.convertToClassicString(date);
           } else if (dateTimeCols.contains(key) && keyValue != null
               && !keyValue.toString().equals("null")) {
             final String repairedString = JsonUtils.convertFromXSDToJavaFormat(keyValue.toString());
             Date localDate = JsonUtils.createDateTimeFormat().parse(repairedString);
             Date clientTimezoneDate = null;
             clientTimezoneDate = convertFromLocalToClientTimezone(localDate);
-            String pattern = RequestContext.get()
-                .getSessionAttribute("#AD_JAVADATETIMEFORMAT")
-                .toString();
-            SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
-            dateFormat.setLenient(true);
-            keyValue = dateFormat.format(clientTimezoneDate);
+            keyValue = UIDefinitionController.DATETIME_UI_DEFINITION
+                .convertToClassicString(clientTimezoneDate);
           } else if (timeCols.contains(key) && keyValue != null
               && !keyValue.toString().equals("null")) {
             Date UTCdate = JsonUtils.createTimeFormatWithoutGMTOffset().parse(keyValue.toString());
@@ -856,7 +844,7 @@ public class DataSourceServlet extends BaseKernelServlet {
 
       String content = getRequestContent(request);
 
-      checkCsrfToken(getCsrfTokenFromRequestContent(content), request);
+      CsrfUtil.checkCsrfToken(CsrfUtil.getCsrfTokenFromRequestContent(content), request);
 
       // note if clause updates parameter map
       if (checkSetIDDataSourceName(request, response, parameters)) {
@@ -883,7 +871,7 @@ public class DataSourceServlet extends BaseKernelServlet {
         throw new OBUserException("AccessTableNoView");
       }
 
-      checkCsrfToken(parameters.get(JsonConstants.CSRF_TOKEN_PARAMETER), request);
+      CsrfUtil.checkCsrfToken(parameters.get(JsonConstants.CSRF_TOKEN_PARAMETER), request);
 
       final String id = parameters.get(JsonConstants.ID);
       if (id == null) {
@@ -925,7 +913,7 @@ public class DataSourceServlet extends BaseKernelServlet {
 
       String requestContent = getRequestContent(request);
 
-      checkCsrfToken(getCsrfTokenFromRequestContent(requestContent), request);
+      CsrfUtil.checkCsrfToken(CsrfUtil.getCsrfTokenFromRequestContent(requestContent), request);
 
       // note if clause updates parameter map
       if (checkSetIDDataSourceName(request, response, parameters)) {
@@ -937,35 +925,6 @@ public class DataSourceServlet extends BaseKernelServlet {
     } catch (Exception e) {
       handleException(e, response);
     }
-  }
-
-  private void checkCsrfToken(String requestToken, HttpServletRequest request) {
-    String sessionToken = getSessionCsrfToken(request);
-    if (!hasValidCsrfToken(requestToken, sessionToken)) {
-      log.error("CSRF token check failed. Request=" + request.getRequestURI() + ", SessionID="
-          + request.getSession(false).getId() + ", SessionToken=" + sessionToken + ", RequestToken="
-          + requestToken);
-      throw new OBUserException("InvalidCSRFToken");
-    }
-  }
-
-  private boolean hasValidCsrfToken(String requestToken, String sessionToken) {
-    return StringUtils.isNotEmpty(requestToken) && StringUtils.isNotEmpty(sessionToken)
-        && requestToken.equals(sessionToken);
-  }
-
-  private String getCsrfTokenFromRequestContent(String requestContent) {
-    Matcher matcher = csrfTokenPattern.matcher(requestContent);
-    if (matcher.find()) {
-      return matcher.group("token");
-    }
-
-    return "";
-  }
-
-  private String getSessionCsrfToken(HttpServletRequest request) {
-    String token = (String) request.getSession(false).getAttribute("#CSRF_TOKEN");
-    return token != null ? token : "";
   }
 
   private boolean checkSetParameters(HttpServletRequest request, HttpServletResponse response,

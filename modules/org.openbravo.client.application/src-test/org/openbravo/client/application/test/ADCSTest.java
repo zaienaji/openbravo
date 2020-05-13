@@ -20,6 +20,7 @@
 package org.openbravo.client.application.test;
 
 import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.isEmptyString;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
@@ -39,8 +40,10 @@ import org.openbravo.client.application.window.ApplicationDictionaryCachedStruct
 import org.openbravo.client.application.window.StandardWindowComponent;
 import org.openbravo.client.kernel.ComponentGenerator;
 import org.openbravo.dal.service.OBDal;
+import org.openbravo.model.ad.domain.Reference;
 import org.openbravo.model.ad.ui.Tab;
 import org.openbravo.model.ad.ui.Window;
+import org.openbravo.test.base.Issue;
 import org.openbravo.test.base.TestConstants.Tabs;
 import org.openbravo.test.base.TestConstants.Windows;
 import org.openbravo.test.base.mock.HttpServletRequestMock;
@@ -59,8 +62,8 @@ public class ADCSTest extends WeldBaseTest {
     setSystemAdministratorContext();
   }
 
-  /** See issue #40633 */
   @Test
+  @Issue("40633")
   public void tabWithProductCharacteristicsIsGeneratedAfterADCSInitialization() {
     // given ADCS initialized with only Discounts and Promotions window
     adcs.init();
@@ -75,8 +78,8 @@ public class ADCSTest extends WeldBaseTest {
     assertThat(generatedView, not(isEmptyString()));
   }
 
-  /** See issue #41338 */
   @Test
+  @Issue("41338")
   public void tabsSharingTableAreCorrectlyInitialized() {
     // given ADCS initialized with only Sales Invoice header tab (uses c_order)
     adcs.init();
@@ -93,8 +96,8 @@ public class ADCSTest extends WeldBaseTest {
     assertThat(t.getTable().getADColumnList().size(), greaterThan(1));
   }
 
-  /** See issue #41338 */
   @Test
+  @Issue("41338")
   public void wsahDoesNotLeaveAdcsInInvalidState() {
     // given a clean ADCS
     adcs.init();
@@ -114,6 +117,27 @@ public class ADCSTest extends WeldBaseTest {
     HttpServletRequestMock.setRequestMockInRequestContext();
     String generatedView = ComponentGenerator.getInstance().generate(component);
     assertThat(generatedView, not(isEmptyString()));
+  }
+
+  @Test
+  @Issue("41892")
+  public void maskedStringsShouldntBreakADCS() {
+    // given a clean ADCS initialized with any window
+    adcs.init();
+    adcs.getWindow(Windows.PURCHASE_INVOICE);
+    OBDal.getInstance().commitAndClose();
+
+    // when any column from any tab in that window is obtained by another session
+    Reference anyColumnReference = adcs.getWindow(Windows.PURCHASE_INVOICE)
+        .getADTabList()
+        .get(0)
+        .getADFieldList()
+        .get(0)
+        .getColumn()
+        .getReference();
+
+    // then its mask list must be accessible
+    assertThat(anyColumnReference.getOBCLKERREFMASKList().size(), greaterThanOrEqualTo(0));
   }
 
   private static class WindowSettingsActionHandlerTest extends WindowSettingsActionHandler {

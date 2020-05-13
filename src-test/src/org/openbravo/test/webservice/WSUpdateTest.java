@@ -38,6 +38,7 @@ import org.openbravo.dal.service.OBDal;
 import org.openbravo.model.common.geography.City;
 import org.openbravo.model.common.geography.Country;
 import org.openbravo.model.common.geography.Region;
+import org.openbravo.test.base.Issue;
 
 /**
  * Test webservice for reading, updating and posting. The test cases here require a running
@@ -229,11 +230,9 @@ public class WSUpdateTest extends BaseWSTest {
     }
   }
 
-  /**
-   * Tests issue 14973 https://issues.openbravo.com/view.php?id=14973 DalWebServiceServlet does not
-   * report errors which occur at commit time
-   */
+  /** DalWebServiceServlet does not report errors which occur at commit time */
   @Test
+  @Issue("14973")
   public void testFDoTest14973() throws Exception {
     final HttpURLConnection hc = createConnection("/ws/dal/Product/1000004", "DELETE");
     hc.connect();

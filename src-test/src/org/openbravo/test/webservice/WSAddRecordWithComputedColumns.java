@@ -24,16 +24,16 @@ import static org.junit.Assert.assertEquals;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.Test;
+import org.openbravo.test.base.Issue;
 
 /**
  * Tests that ensure XML and JSON DAL REST web services are able to create records that include a
  * computed column.
  * 
- * See issue #25773
- * 
  * @author alostale
  * 
  */
+@Issue("25773")
 public class WSAddRecordWithComputedColumns extends BaseWSTest {
 
   /**

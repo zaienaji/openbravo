@@ -642,15 +642,19 @@ public class OBContext implements OBNotSingleton, Serializable {
       return new ArrayList<>(orgList);
     }
 
+    // @formatter:off
+    final String orgsQryStr = "select o.id"
+        + " from Organization o"
+        + "   inner join ADRoleOrganization roa on (o.id=roa.organization.id)"
+        + " where roa.role.id= :targetRoleId"
+        + "   and roa.active='Y'"
+        + "   and o.active= :active";
+    // @formatter:on
+
     final Query<String> qry = SessionHandler.getInstance()
-        .createQuery("select o.id from " + Organization.class.getName() + " o, "
-            + RoleOrganization.class.getName() + " roa where o." + Organization.PROPERTY_ID
-            + "=roa." + RoleOrganization.PROPERTY_ORGANIZATION + "." + Organization.PROPERTY_ID
-            + " and roa." + RoleOrganization.PROPERTY_ROLE + "." + Organization.PROPERTY_ID
-            + "= :targetRoleId" + " and roa." + RoleOrganization.PROPERTY_ACTIVE + "='Y' and o."
-            + Organization.PROPERTY_ACTIVE + "= :active", String.class);
-    qry.setParameter("targetRoleId", targetRole.getId());
-    qry.setParameter("active", isActiveOrganization);
+        .createQuery(orgsQryStr, String.class)
+        .setParameter("targetRoleId", targetRole.getId())
+        .setParameter("active", isActiveOrganization);
 
     List<String> currentOrgList = qry.list();
 
@@ -665,10 +669,14 @@ public class OBContext implements OBNotSingleton, Serializable {
   }
 
   private List<String> getOrganizations(Client client) {
+    // @formatter:off
+    final String orgQryStr = "select o.id"
+        + " from Organization o"
+        + " where o.client=:client";
+    // @formatter:on
     final Query<String> qry = SessionHandler.getInstance()
-        .createQuery("select o.id from " + Organization.class.getName() + " o where " + "o."
-            + Organization.PROPERTY_CLIENT + "=:client", String.class);
-    qry.setParameter("client", client);
+        .createQuery(orgQryStr, String.class)
+        .setParameter("client", client);
     organizationList = qry.list();
     return organizationList;
   }
@@ -857,23 +865,29 @@ public class OBContext implements OBNotSingleton, Serializable {
       // to be
       // selected.
       if (roleId != null) {
+        // @formatter:off
+        final String roleQryStr = "select r"
+            + " from ADRole r"
+            + " where r.id=:roleId";
+        // @formatter:on
         Map<String, String> params = new HashMap<>(1);
         params.put("roleId", roleId);
-        final Role r = getOne(Role.class, "select r from " + Role.class.getName() + " r where "
-            + " r." + Role.PROPERTY_ID + "=:roleId", params, true);
+        final Role r = getOne(Role.class, roleQryStr, params, true);
         setRole(r);
       } else if (getUser().getDefaultRole() != null && getUser().getDefaultRole().isActive()) {
         setRole(getUser().getDefaultRole());
       } else {
+        // @formatter:off
+        final String userRolesQryStr = "select ur"
+            + " from ADUserRoles ur"
+            + " where ur.userContact.id=:userId"
+            + "  and ur.active='Y'"
+            + "  and ur.role.active='Y'"
+            + " order by ur.role.id asc";
+        // @formatter:on
         Map<String, String> params = new HashMap<>(1);
         params.put("userId", u.getId());
-        final UserRoles ur = getOne(UserRoles.class,
-            "select ur from " + UserRoles.class.getName() + " ur where " + " ur."
-                + UserRoles.PROPERTY_USERCONTACT + "." + User.PROPERTY_ID + "=:userId and ur."
-                + UserRoles.PROPERTY_ACTIVE + "='Y' and ur." + UserRoles.PROPERTY_ROLE + "."
-                + Role.PROPERTY_ACTIVE + "='Y' order by ur." + UserRoles.PROPERTY_ROLE + "."
-                + Role.PROPERTY_ID + " asc",
-            params, false);
+        final UserRoles ur = getOne(UserRoles.class, userRolesQryStr, params, false);
         if (ur == null) {
           throw new OBSecurityException(
               "Your user is not assigned to a Role and it is required to login into Openbravo. Ask the Security Administrator");
@@ -885,27 +899,30 @@ public class OBContext implements OBNotSingleton, Serializable {
       Check.isNotNull(getRole(), "Role may not be null");
 
       if (orgId != null) {
+        // @formatter:off
+        final String orgQryStr = "select r"
+            + " from Organization r"
+            + " where r.id=:orgId";
+        // @formatter:on
         Map<String, String> params = new HashMap<>(1);
         params.put("orgId", orgId);
-        final Organization o = getOne(Organization.class,
-            "select r from " + Organization.class.getName() + " r where " + " r."
-                + Organization.PROPERTY_ID + "=:orgId",
-            params, true);
+        final Organization o = getOne(Organization.class, orgQryStr, params, true);
         setCurrentOrganization(o);
       } else if (getUser().getDefaultOrganization() != null
           && getUser().getDefaultOrganization().isActive()) {
         setCurrentOrganization(getUser().getDefaultOrganization());
       } else {
+        // @formatter:off
+        final String roleOrgQryStr = "select roa"
+            + " from ADRoleOrganization roa"
+            + " where roa.role.id=:roleId"
+            + "  and roa.active='Y'"
+            + "  and roa.organization.active='Y'"
+            + " order by roa.organization.id desc";
+        // @formatter:on
         Map<String, String> params = new HashMap<>(1);
         params.put("roleId", getRole().getId());
-        final RoleOrganization roa = getOne(RoleOrganization.class,
-            "select roa from " + RoleOrganization.class.getName() + " roa where roa."
-                + RoleOrganization.PROPERTY_ROLE + "." + Organization.PROPERTY_ID
-                + "=:roleId and roa." + RoleOrganization.PROPERTY_ACTIVE + "='Y' and roa."
-                + RoleOrganization.PROPERTY_ORGANIZATION + "." + Organization.PROPERTY_ACTIVE
-                + "='Y' order by roa." + RoleOrganization.PROPERTY_ORGANIZATION + "."
-                + Organization.PROPERTY_ID + " desc",
-            params, false);
+        final RoleOrganization roa = getOne(RoleOrganization.class, roleOrgQryStr, params, false);
         Hibernate.initialize(roa.getOrganization());
         setCurrentOrganization(roa.getOrganization());
 
@@ -937,10 +954,14 @@ public class OBContext implements OBNotSingleton, Serializable {
       }
 
       if (localClientId != null) {
+        // @formatter:off
+        final String clientQryStr = "select r"
+            + " from ADClient r"
+            + " where r.id=:clientId";
+        // @formatter:on
         Map<String, String> params = new HashMap<>(1);
         params.put("clientId", localClientId);
-        final Client c = getOne(Client.class, "select r from " + Client.class.getName()
-            + " r where " + " r." + Client.PROPERTY_ID + "=:clientId", params, true);
+        final Client c = getOne(Client.class, clientQryStr, params, true);
         setCurrentClient(c);
       } else if (getUser().getDefaultClient() != null && getUser().getDefaultClient().isActive()) {
         setCurrentClient(getUser().getDefaultClient());
@@ -961,10 +982,14 @@ public class OBContext implements OBNotSingleton, Serializable {
       Check.isTrue(getCurrentClient().isActive(),
           "Current Client " + getCurrentClient().getName() + " is not active!");
       if (languageCode != null) {
+        // @formatter:off
+        final String langQryStr = "select l"
+            + " from ADLanguage l"
+            + " where l.language=:languageCode";
+        // @formatter:on
         final Query<Language> qry = SessionHandler.getInstance()
-            .createQuery("select l from " + Language.class.getName() + " l where l."
-                + Language.PROPERTY_LANGUAGE + "=:languageCode ", Language.class);
-        qry.setParameter("languageCode", languageCode);
+            .createQuery(langQryStr, Language.class)
+            .setParameter("languageCode", languageCode);
         List<Language> languages = qry.list();
         if (languages.isEmpty()) {
           throw new IllegalArgumentException("No language found for code " + languageCode);
@@ -983,9 +1008,12 @@ public class OBContext implements OBNotSingleton, Serializable {
 
       Check.isNotNull(getLanguage(), "Language may not be null");
 
-      final Query<Long> trl = SessionHandler.getInstance()
-          .createQuery("select count(*) from " + Language.class.getName() + " l where l."
-              + Language.PROPERTY_SYSTEMLANGUAGE + "= true ", Long.class);
+      // @formatter:off
+      final String trlQryStr = "select count(*)"
+          + " from ADLanguage l"
+          + " where l.systemLanguage= true ";
+      // @formatter:on
+      final Query<Long> trl = SessionHandler.getInstance().createQuery(trlQryStr, Long.class);
 
       // There are translations installed in the system when there are more than one system
       // language. There's always at last one which is the base language.
@@ -996,10 +1024,14 @@ public class OBContext implements OBNotSingleton, Serializable {
       // note sometimes the warehouseId is an empty string
       // this happens when it is set from the session variables
       if (warehouseId != null && warehouseId.trim().length() > 0) {
+        // @formatter:off
+        final String warehouseQryStr = "select w"
+            + " from Warehouse w"
+            + " where w.id=:id";
+        // @formatter:on
         final Query<Warehouse> qry = SessionHandler.getInstance()
-            .createQuery("select w from " + Warehouse.class.getName() + " w where w.id=:id",
-                Warehouse.class);
-        qry.setParameter("id", warehouseId);
+            .createQuery(warehouseQryStr, Warehouse.class)
+            .setParameter("id", warehouseId);
         setWarehouse(qry.uniqueResult());
       } else if (getUser().getDefaultWarehouse() != null) {
         setWarehouse(getUser().getDefaultWarehouse());

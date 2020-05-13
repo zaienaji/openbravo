@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.Test;
+import org.openbravo.test.base.Issue;
 
 /**
  * Test cases to check behavior of FK filter drop downs
@@ -40,10 +41,9 @@ public class FKDropDownDatasource extends BaseDataSourceTestNoDal {
   /**
    * Drop down FK filter in Organization dataset is a special case because org filtering must be
    * done in the base entity.
-   * 
-   * See issue 28085
    */
   @Test
+  @Issue("28085")
   public void filterFKInOrganization() throws Exception {
     Map<String, String> params = new HashMap<String, String>();
 

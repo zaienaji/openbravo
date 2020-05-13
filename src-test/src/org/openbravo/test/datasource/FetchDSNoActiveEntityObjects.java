@@ -31,15 +31,15 @@ import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.model.common.enterprise.Organization;
 import org.openbravo.service.json.JsonConstants;
+import org.openbravo.test.base.Issue;
 
 /**
  * Tests that ensure datasources are able to fetch data with active and non active entity objects.
  * 
- * See issue https://issues.openbravo.com/view.php?id=32584
- * 
  * @author inigo.sanchez
  *
  */
+@Issue("32584")
 public class FetchDSNoActiveEntityObjects extends BaseDataSourceTestDal {
 
   private static final String CONTEXT_ROLE = "42D0EEB1C66F497A90DD526DC597E6F0";

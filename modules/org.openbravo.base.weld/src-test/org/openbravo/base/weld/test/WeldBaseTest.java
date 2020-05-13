@@ -153,10 +153,12 @@ public class WeldBaseTest extends OBBaseTest {
    */
   @AfterClass
   public static void resetOBInterceptors() {
-    final OBInterceptor interceptor = (OBInterceptor) SessionFactoryController.getInstance()
-        .getConfiguration()
-        .getInterceptor();
-    interceptor.setInterceptorListener(null);
+    if (SessionFactoryController.getInstance() != null) {
+      final OBInterceptor interceptor = (OBInterceptor) SessionFactoryController.getInstance()
+          .getConfiguration()
+          .getInterceptor();
+      interceptor.setInterceptorListener(null);
+    }
     initialized = false;
   }
 

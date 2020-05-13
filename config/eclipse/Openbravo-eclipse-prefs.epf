@@ -356,6 +356,7 @@
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.wrap_before_conditional_operator=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.wrap_before_or_operator_multicatch=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.wrap_outer_expressions_when_nested=true
+/instance/org.eclipse.jdt.ui/editor_save_participant_org.eclipse.jdt.ui.postsavelistener.cleanup=true
 /instance/org.eclipse.jdt.ui/formatter_profile=_Openbravo
 /instance/org.eclipse.jdt.ui/formatter_settings_version=15
 /instance/org.eclipse.jdt.ui/org.eclipse.jdt.ui.exception.name=e

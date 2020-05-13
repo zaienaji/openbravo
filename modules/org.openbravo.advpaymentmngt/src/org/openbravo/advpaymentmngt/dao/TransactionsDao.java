@@ -105,11 +105,12 @@ public class TransactionsDao {
   }
 
   public static Long getTransactionMaxLineNo(FIN_FinancialAccount financialAccount) {
-    Query<Long> query = OBDal.getInstance()
-        .getSession()
-        .createQuery(
-            "select max(f.lineNo) as maxLineno from FIN_Finacc_Transaction as f where account.id=:accountId",
-            Long.class);
+    //@formatter:off
+    String hql = "select max(f.lineNo) as maxLineno "
+        + "from FIN_Finacc_Transaction as f "
+        + "where account.id = :accountId";
+    //@formatter:on
+    Query<Long> query = OBDal.getInstance().getSession().createQuery(hql, Long.class);
     query.setParameter("accountId", financialAccount.getId());
     Long maxLineNo = query.uniqueResult();
     if (maxLineNo != null) {
@@ -165,21 +166,22 @@ public class TransactionsDao {
     try {
 
       final Map<String, Object> parameters = new HashMap<>();
-      final StringBuilder whereClause = new StringBuilder();
-      whereClause.append(" as ft");
-      whereClause.append(" left outer join ft.reconciliation as rec");
-      whereClause.append(" where ft.account.id = :accountId");
-      whereClause.append(" and (rec is null or rec.processed = 'N')");
-      whereClause.append(" and ft.processed = 'Y'");
+      //@formatter:off
+      String whereClause = " as ft"
+          + " left outer join ft.reconciliation as rec"
+          + " where ft.account.id = :accountId"
+          + "   and (rec is null or rec.processed = 'N')"
+          + "   and ft.processed = 'Y'";
       parameters.put("accountId", account.getId());
       if (hideAfterDate) {
-        whereClause.append(" and ft.transactionDate < :statementDate");
+        whereClause += " and ft.transactionDate < :statementDate";
         parameters.put("statementDate", statementDate);
       }
-      whereClause.append(" order by ft.transactionDate, ft.lineNo");
+      whereClause += " order by ft.transactionDate, ft.lineNo";
 
+      //@formatter:on
       final OBQuery<FIN_FinaccTransaction> obQuery = OBDal.getInstance()
-          .createQuery(FIN_FinaccTransaction.class, whereClause.toString(), parameters);
+          .createQuery(FIN_FinaccTransaction.class, whereClause, parameters);
 
       List<FIN_FinaccTransaction> transactionOBList = obQuery.list();
 
@@ -243,16 +245,18 @@ public class TransactionsDao {
   }
 
   public static BigDecimal getCurrentlyClearedAmt(String strAccountId) {
-    final StringBuilder hqlString = new StringBuilder();
-    hqlString.append("select sum(ft.depositAmount) - sum(ft.paymentAmount)");
-    hqlString.append(" from FIN_Finacc_Transaction as ft");
-    hqlString.append(" left outer join ft.reconciliation as rec");
-    hqlString.append(" where ft.account.id = '" + strAccountId + "'");
-    hqlString.append(" and rec.processed = 'N'");
-    hqlString.append(" and ft.processed = 'Y'");
+    //@formatter:off
+    final String hqlString = "select sum(ft.depositAmount) - sum(ft.paymentAmount)"
+        + " from FIN_Finacc_Transaction as ft"
+        + " left outer join ft.reconciliation as rec"
+        + " where ft.account.id = :accountId"
+        + "   and rec.processed = 'N'"
+        + "   and ft.processed = 'Y'";
 
+    //@formatter:on
     final Session session = OBDal.getInstance().getSession();
-    final Query<BigDecimal> query = session.createQuery(hqlString.toString(), BigDecimal.class);
+    final Query<BigDecimal> query = session.createQuery(hqlString, BigDecimal.class);
+    query.setParameter("accountId", strAccountId);
     BigDecimal resultObject = query.uniqueResult();
     if (resultObject != null) {
       return resultObject;

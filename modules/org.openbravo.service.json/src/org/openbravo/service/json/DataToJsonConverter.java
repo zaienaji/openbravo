@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2009-2018 Openbravo SLU 
+ * All portions are Copyright (C) 2009-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -143,7 +143,7 @@ public class DataToJsonConverter {
    *          the list of BaseOBObjects to convert
    * @return the corresponding list of JSONObjects
    */
-  public List<JSONObject> toJsonObjects(List<BaseOBObject> bobs) {
+  public List<JSONObject> toJsonObjects(List<? extends BaseOBObject> bobs) {
     final List<JSONObject> jsonObjects = new ArrayList<JSONObject>();
     for (BaseOBObject bob : bobs) {
       jsonObjects.add(toJsonObject(bob, DataResolvingMode.FULL));

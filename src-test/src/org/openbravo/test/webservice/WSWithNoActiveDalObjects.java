@@ -26,15 +26,15 @@ import org.junit.Test;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.model.common.currency.Currency;
+import org.openbravo.test.base.Issue;
 
 /**
  * Tests that ensure dal web services are able to work with non active dal objets.
  * 
- * See issue https://issues.openbravo.com/view.php?id=32584
- * 
  * @author inigo.sanchez
  *
  */
+@Issue("32584")
 public class WSWithNoActiveDalObjects extends BaseWSTest {
 
   private static final String CURRENCY_ID_DAL = "<id>100</id>";

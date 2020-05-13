@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2009-2019 Openbravo SLU 
+ * All portions are Copyright (C) 2009-2020 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -129,7 +129,7 @@ public class AlertActionHandler extends BaseActionHandler implements PortalAcces
         .setParameter("userId", OBContext.getOBContext().getUser().getId())
         .setParameter("roleId", OBContext.getOBContext().getRole().getId())
         .setParameterList("clients", OBContext.getOBContext().getReadableClients())
-        .setParameterList("orgs", OBContext.getOBContext().getReadableClients());
+        .setParameterList("orgs", OBContext.getOBContext().getReadableOrganizations());
 
     return qry.stream()
         .collect(groupingBy(rule -> Objects.toString(rule.getFilterClause(), ""))) // null can't be

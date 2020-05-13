@@ -19,7 +19,7 @@
   * parts created by ComPiere are Copyright (C) ComPiere, Inc.;
   * All Rights Reserved.
   * Contributor(s): Openbravo SLU
-  * Contributions are Copyright (C) 2001-2016 Openbravo, S.L.U.
+  * Contributions are Copyright (C) 2001-2019 Openbravo, S.L.U.
   *
   * Specifically, this derivative work is based upon the following Compiere
   * file and version.
@@ -231,7 +231,7 @@
               CUR_Project.DateContract, CUR_PLines.Description, v_M_Warehouse_ID, CUR_PLines.M_Product_ID,
                'N', v_C_UOM_ID, CUR_Project.C_Currency_ID, CUR_PLines.PlannedQty,
               v_PriceList,
-     M_Get_Offers_Price(CUR_Project.DateContract, CUR_Project.C_BPartner_ID, CUR_PLines.M_Product_ID, v_PriceStd, CUR_PLines.PlannedQty,v_M_PriceList_ID), v_PriceLimit, ROUND(CUR_PLines.PlannedQty*M_Get_Offers_Price(CUR_Project.DateContract, CUR_Project.C_BPartner_ID, CUR_PLines.M_Product_ID, v_PriceStd, CUR_PLines.PlannedQty,v_M_PriceList_ID), 2),
+              v_PriceStd, v_PriceLimit, ROUND(CUR_PLines.PlannedQty*v_PriceStd, 2),
               v_Discount,
               v_C_Tax_ID,  --MODIFIED BY F.IRIAZABAL
               CUR_PLines.PlannedQty, v_C_UOM_ID, CUR_PLines.PlannedPrice)

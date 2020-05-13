@@ -11,7 +11,7 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU
- * All portions are Copyright (C) 2012-2018 Openbravo SLU
+ * All portions are Copyright (C) 2012-2019 Openbravo SLU
  * All Rights Reserved.
  * Contributor(s):  ______________________________________.
  *************************************************************************
@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.hibernate.query.Query;
 import org.openbravo.base.filter.IsIDFilter;
 import org.openbravo.base.provider.OBProvider;
@@ -467,7 +469,7 @@ public class ProcessGoods extends HttpSecureAppServlet {
     inv.setOrganization(receipt.getOrganization());
     inv.setName(OBDateUtils.formatDate(new Date()));
     inv.setWarehouse(receipt.getWarehouse());
-    inv.setMovementDate(new Date());
+    inv.setMovementDate(DateUtils.truncate(new Date(), Calendar.DATE));
     inv.setInventoryType("N");
     inv.setDescription(Utility.messageBD(this, "AutoInventory", language));
     OBDal.getInstance().save(inv);

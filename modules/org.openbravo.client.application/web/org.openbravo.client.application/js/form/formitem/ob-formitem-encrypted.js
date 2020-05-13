@@ -27,7 +27,7 @@ isc.OBEncryptedItem.addProperties({
   changed: function(form, item, value) {
     this.Super('changed', arguments);
     this.form.setValue(item.name + '_cleartext', value);
-    if (this.grid.isEditing()) {
+    if (this.grid != null && this.grid.isEditing()) {
       this.grid.setEditValue(
         this.grid.getEditRow(),
         item.name + '_cleartext',

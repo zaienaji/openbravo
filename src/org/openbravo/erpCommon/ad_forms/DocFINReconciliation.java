@@ -11,7 +11,7 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU
- * All portions are Copyright (C) 2010-2018 Openbravo SLU
+ * All portions are Copyright (C) 2010-2019 Openbravo SLU
  * All Rights Reserved.
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -666,18 +666,21 @@ public class DocFINReconciliation extends AcctServer {
       VariablesSecureApp vars) throws ServletException {
     // Select specific definition
     String strClassname = "";
-    final StringBuilder whereClause = new StringBuilder();
     Fact fact = new Fact(this, as, Fact.POST_Actual);
     OBContext.setAdminMode();
     try {
-      whereClause.append(" as astdt ");
-      whereClause.append(
-          " where astdt.acctschemaTable.accountingSchema.id = '" + as.m_C_AcctSchema_ID + "'");
-      whereClause.append(" and astdt.acctschemaTable.table.id = '" + AD_Table_ID + "'");
-      whereClause.append(" and astdt.documentCategory = '" + DocumentType + "'");
+      //@formatter:off
+      final String whereClause = " as astdt "
+          + " where astdt.acctschemaTable.accountingSchema.id = :accountSchemaId"
+          + "   and astdt.acctschemaTable.table.id = :tableId"
+          + "   and astdt.documentCategory = :documentType";
 
+      //@formatter:on
       final OBQuery<AcctSchemaTableDocType> obqParameters = OBDal.getInstance()
-          .createQuery(AcctSchemaTableDocType.class, whereClause.toString());
+          .createQuery(AcctSchemaTableDocType.class, whereClause);
+      obqParameters.setNamedParameter("accountSchemaId", as.m_C_AcctSchema_ID);
+      obqParameters.setNamedParameter("tableId", AD_Table_ID);
+      obqParameters.setNamedParameter("documentType", DocumentType);
       final List<AcctSchemaTableDocType> acctSchemaTableDocTypes = obqParameters.list();
 
       if (acctSchemaTableDocTypes != null && acctSchemaTableDocTypes.size() > 0
@@ -686,14 +689,16 @@ public class DocFINReconciliation extends AcctServer {
       }
 
       if (strClassname.equals("")) {
-        final StringBuilder whereClause2 = new StringBuilder();
-
-        whereClause2.append(" as ast ");
-        whereClause2.append(" where ast.accountingSchema.id = '" + as.m_C_AcctSchema_ID + "'");
-        whereClause2.append(" and ast.table.id = '" + AD_Table_ID + "'");
-
+        //@formatter:off
+        final String whereClause2 = " as ast "
+            + " where ast.accountingSchema.id = :accountSchemaId"
+            + "   and ast.table.id = :tableId";
+        
+        //@formatter:on
         final OBQuery<AcctSchemaTable> obqParameters2 = OBDal.getInstance()
-            .createQuery(AcctSchemaTable.class, whereClause2.toString());
+            .createQuery(AcctSchemaTable.class, whereClause2);
+        obqParameters2.setNamedParameter("accountSchemaId", as.m_C_AcctSchema_ID);
+        obqParameters2.setNamedParameter("tableId", AD_Table_ID);
         final List<AcctSchemaTable> acctSchemaTables = obqParameters2.list();
         if (acctSchemaTables != null && acctSchemaTables.size() > 0
             && acctSchemaTables.get(0).getCreatefactTemplate() != null) {

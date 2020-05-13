@@ -179,10 +179,10 @@ public class ServletContextMock implements ServletContext {
   @Override
   public String getRealPath(String name) {
     File file = getFile(name);
-    return file.exists() ? file.getPath() : null;
+    return file != null && file.exists() ? file.getPath() : null;
   }
 
-  private File getFile(String name) {
+  protected File getFile(String name) {
     if (webAppRoot == null) {
       return null;
     }

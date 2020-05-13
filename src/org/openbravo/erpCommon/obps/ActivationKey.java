@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2009-2018 Openbravo SLU 
+ * All portions are Copyright (C) 2009-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -99,6 +99,7 @@ public class ActivationKey {
   private final static String OB_PUBLIC_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPwCM5RfisLvWhujHajnLEjEpLC7DOXLySuJmHBqcQ8AQ63yZjlcv3JMkHMsPqvoHF3s2ztxRcxBRLc9C2T3uXQg0PTH5IAxsV4tv05S+tNXMIajwTeYh1LCoQyeidiid7FwuhtQNQST9/FqffK1oVFBnWUfgZKLMO2ZSHoEAORwIDAQAB";
 
   private static final String HEARTBEAT_URL = "https://butler.openbravo.com:443/heartbeat-server/heartbeat";
+  private static final String STATELESS_REQUEST = "statelessRequest";
 
   private boolean isActive = false;
   private boolean hasActivationKey = false;
@@ -813,7 +814,7 @@ public class ActivationKey {
    * Checks the current activation key
    * 
    * @param currentSession
-   *          Current session, not to be taken into account
+   *          Current session, used for checking the concurrent users limitation.
    * @param sessionType
    *          Successful session type: if the session is finally successful this is the type that
    *          will be marked with in {@code AD_Session}, it is used to determine whether it should
@@ -849,7 +850,8 @@ public class ActivationKey {
     }
 
     // maxUsers==0 is unlimited concurrent users
-    boolean checkConcurrentUsers = maxUsers != 0 && consumesConcurrentUser(sessionType);
+    boolean checkConcurrentUsers = maxUsers != 0 && !STATELESS_REQUEST.equals(currentSession)
+        && consumesConcurrentUser(sessionType);
     if (checkConcurrentUsers) {
       OBContext.setAdminMode();
       int activeSessions = 0;
@@ -1768,9 +1770,8 @@ public class ActivationKey {
     Date firstDayOfPeriod = exceededInLastDays.get(0);
 
     long lastDayOfPeriod;
-    if (today.getTime()
-        + (getExtraWsExceededDaysAllowed() * MILLSECS_PER_DAY) < firstDayOfPeriod.getTime()
-            + WS_MS_EXCEEDING_ALLOWED_PERIOD) {
+    if (today.getTime() + (getExtraWsExceededDaysAllowed() * MILLSECS_PER_DAY) < firstDayOfPeriod
+        .getTime() + WS_MS_EXCEEDING_ALLOWED_PERIOD) {
       lastDayOfPeriod = firstDayOfPeriod.getTime() + WS_MS_EXCEEDING_ALLOWED_PERIOD;
     } else {
       lastDayOfPeriod = today.getTime() + WS_MS_EXCEEDING_ALLOWED_PERIOD;
@@ -1803,6 +1804,17 @@ public class ActivationKey {
       dbSessionId = (String) session.getAttribute("#AD_SESSION_ID");
     }
 
+    return hasLicenseLimitation(dbSessionId);
+  }
+
+  /**
+   * Returns whether the stateless request is allowed or not due to any license limitation.
+   */
+  public boolean isStatelessRequestAllowed() {
+    return !hasLicenseLimitation(STATELESS_REQUEST);
+  }
+
+  private boolean hasLicenseLimitation(String dbSessionId) {
     LicenseRestriction limitation = checkOPSLimitations(dbSessionId);
     return limitation == LicenseRestriction.OPS_INSTANCE_NOT_ACTIVE
         || limitation == LicenseRestriction.NUMBER_OF_CONCURRENT_USERS_REACHED

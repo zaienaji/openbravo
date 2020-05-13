@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2008-2018 Openbravo SLU 
+ * All portions are Copyright (C) 2008-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -21,6 +21,7 @@ package org.openbravo.erpCommon.utility;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,7 +48,8 @@ import org.openbravo.data.FieldProvider;
 public class FieldProviderFactory implements FieldProvider {
 
   private Object object;
-  private HashMap<String, String> properties;
+  private Map<String, String> properties;
+  private boolean usingMap;
   private static Logger log4j = LogManager.getLogger();
 
   /**
@@ -58,10 +60,11 @@ public class FieldProviderFactory implements FieldProvider {
   @SuppressWarnings("unchecked")
   public FieldProviderFactory(Object obj) {
     object = obj;
+    usingMap = obj instanceof Map;
     if (obj instanceof HashMap) {
-      properties = (HashMap<String, String>) obj;
+      properties = (Map<String, String>) obj;
     } else {
-      properties = new HashMap<String, String>();
+      properties = new HashMap<>();
     }
   }
 
@@ -76,17 +79,20 @@ public class FieldProviderFactory implements FieldProvider {
   @Override
   public String getField(String fieldName) {
     try {
-      String rt = properties.get(fieldName);
-      if (rt != null) {
-        return rt;
+      if (usingMap) {
+        return properties.get(fieldName);
       } else {
+        String value = properties.get(fieldName);
+        if (value != null) {
+          return value;
+        }
         String methodName = "get" + fieldName.substring(0, 1).toUpperCase()
             + fieldName.substring(1);
         Method method = object.getClass().getMethod(methodName, new Class[] {});
         return (String) method.invoke(object, new Object[] {});
       }
     } catch (Exception e) {
-      log4j.debug("Not found field" + fieldName);
+      log4j.debug("Not found field {}", fieldName);
       return null;
     }
   }
@@ -143,7 +149,7 @@ public class FieldProviderFactory implements FieldProvider {
         ((FieldProviderFactory) fp).setProperty(field, value);
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      log4j.error("Could not set field {}", field, e);
     }
   }
 

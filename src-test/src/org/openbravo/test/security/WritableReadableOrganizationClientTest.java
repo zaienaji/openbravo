@@ -42,6 +42,7 @@ import org.openbravo.model.ad.access.Role;
 import org.openbravo.model.ad.access.RoleOrganization;
 import org.openbravo.model.common.businesspartner.Category;
 import org.openbravo.model.common.plm.Product;
+import org.openbravo.test.base.Issue;
 import org.openbravo.test.base.OBBaseTest;
 import org.openbravo.test.base.TestConstants.Orgs;
 import org.openbravo.test.base.TestConstants.Roles;
@@ -167,8 +168,8 @@ public class WritableReadableOrganizationClientTest extends OBBaseTest {
     }
   }
 
-  /* see issue #38761 */
   @Test
+  @Issue("38761")
   public void readSibilingOrganizationsShouldBeAllowed() {
     RoleOrganization disabledAccess = null;
     try {

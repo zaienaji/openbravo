@@ -13,7 +13,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2008-2011 Openbravo SLU 
+ * All portions are Copyright (C) 2008-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -44,6 +44,26 @@ var baseDirectory = "../../../../../web/";
 
 
 <script language="JavaScript" type="text/javascript">
+  function search() {
+    setProcessingMode('window', true);
+    initialize_MessageBox('messageBoxID');
+    submitXmlHttpRequest(searchCallback, document.frmMain, "SEARCH", "ModuleManagement.html");
+  }
+
+  function searchCallback(p, requestObject) {
+    if (!getReadyStateHandler(requestObject)) {
+      return;
+    }
+
+    var result = JSON.parse(requestObject.responseText);
+    if (result.success) {
+      document.getElementById('searchResults').innerHTML = result.html;
+    } else {
+      setValues_MessageBox('messageBoxID','ERROR', result.title, result.msg);
+    }
+    setProcessingMode('window', false);
+  }
+
   function viewDetails(id) {
     document.frmMain.inpcRecordId.value = id;
     openServletNewWindow('DETAIL', false, 'ModuleManagement.html', 'BUTTON', null, true, 600, 900, null, null, null, null, true);
@@ -58,7 +78,7 @@ var baseDirectory = "../../../../../web/";
   
   function viewAll() {
     document.frmMain.inpSearchText.value="";
-    submitCommandForm('ADD_SEARCH', false, null, 'ModuleManagement.html', '_self', null, true);
+    search();
     return false;
   }
   
@@ -292,7 +312,7 @@ var baseDirectory = "../../../../../web/";
                       <button type="button" 
                         id="buttonSearch" 
                         class="ButtonLink" 
-                        onclick="setProcessingMode('window',true); submitCommandForm('ADD_SEARCH', false, null, 'ModuleManagement.html', '_self', null, true);return false;" 
+                        onclick="search();return false;" 
                         onfocus="buttonEvent('onfocus', this); window.status='Search'; return true;" 
                         onblur="buttonEvent('onblur', this);" 
                         onkeyup="buttonEvent('onkeyup', this);" 

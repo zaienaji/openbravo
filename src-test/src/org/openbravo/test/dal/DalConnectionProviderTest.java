@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.openbravo.erpCommon.businessUtility.Tax;
 import org.openbravo.erpCommon.utility.DateTimeData;
 import org.openbravo.service.db.DalConnectionProvider;
+import org.openbravo.test.base.Issue;
 import org.openbravo.test.base.OBBaseTest;
 
 /**
@@ -38,6 +39,7 @@ public class DalConnectionProviderTest extends OBBaseTest {
    * Tests calling database procedures using the dal connection provider
    */
   @Test
+  @Issue("10330")
   public void testDalConnectionProvider() throws Exception {
     setSystemAdministratorContext();
 
@@ -47,8 +49,7 @@ public class DalConnectionProviderTest extends OBBaseTest {
 
     // now compute a tax for a certain business partner using the date string
     // by passing the date str the check is done that the dbSessionConfig has been
-    // executed. See this issue:
-    // https://issues.openbravo.com/view.php?id=10330
+    // executed.
     String productId = "1000004";
     String orgId = "1000002";
     String whId = "1000000";

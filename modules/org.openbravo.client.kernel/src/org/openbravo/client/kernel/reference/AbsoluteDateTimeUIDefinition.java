@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2014 Openbravo SLU 
+ * All portions are Copyright (C) 2014-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -23,7 +23,7 @@ import java.util.Date;
 
 import org.openbravo.base.exception.OBException;
 import org.openbravo.base.model.domaintype.PrimitiveDomainType;
-import org.openbravo.client.kernel.RequestContext;
+import org.openbravo.base.session.OBPropertiesProvider;
 
 /**
  * Implementation of the absolute date time ui definition.
@@ -31,7 +31,6 @@ import org.openbravo.client.kernel.RequestContext;
  * @author dbaz
  */
 public class AbsoluteDateTimeUIDefinition extends DateUIDefinition {
-  private String lastUsedPattern = null;
   private SimpleDateFormat dateFormat = null;
 
   @Override
@@ -51,10 +50,11 @@ public class AbsoluteDateTimeUIDefinition extends DateUIDefinition {
 
   @Override
   protected SimpleDateFormat getClassicFormat() {
-    String pattern = RequestContext.get().getSessionAttribute("#AD_JavaDateTimeFormat").toString();
-    if (dateFormat == null || !pattern.equals(lastUsedPattern)) {
+    if (dateFormat == null) {
+      String pattern = OBPropertiesProvider.getInstance()
+          .getOpenbravoProperties()
+          .getProperty("dateTimeFormat.java");
       dateFormat = new SimpleDateFormat(pattern);
-      lastUsedPattern = pattern;
       dateFormat.setLenient(true);
     }
     return dateFormat;

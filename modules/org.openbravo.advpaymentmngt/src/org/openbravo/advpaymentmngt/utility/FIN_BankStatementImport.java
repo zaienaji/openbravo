@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.apache.commons.fileupload.FileItem;
@@ -254,8 +253,12 @@ public abstract class FIN_BankStatementImport {
             businessPartner = null;
           }
         }
-        bankStatementLine.setBusinessPartner(businessPartner);
-        bankStatementLine.setGLItem(glItem);
+        if (bankStatementLine.getBusinessPartner() == null) {
+          bankStatementLine.setBusinessPartner(businessPartner);
+        }
+        if (bankStatementLine.getGLItem() == null) {
+          bankStatementLine.setGLItem(glItem);
+        }
         bankStatementLine.setLineNo((counter + 1) * 10L);
         OBDal.getInstance().save(bankStatementLine);
         counter++;
@@ -306,27 +309,24 @@ public abstract class FIN_BankStatementImport {
     if (partnername == null || "".equals(partnername.trim())) {
       return null;
     }
-    final StringBuilder whereClause = new StringBuilder();
-    Map<String, Object> parameters = new HashMap<>(2);
     OBContext.setAdminMode();
     try {
-      whereClause.append(" as bsl ");
-      whereClause.append(" where translate(replace(bsl."
-          + FIN_BankStatementLine.PROPERTY_BPARTNERNAME
-          + ",' ', ''),'0123456789', '          ') = translate( replace(:bpName,' ',''),'0123456789', '          ')");
-      parameters.put("bpName", partnername.replaceAll("\\r\\n|\\r|\\n", " "));
-      whereClause.append(" and (bsl." + FIN_BankStatementLine.PROPERTY_BUSINESSPARTNER
-          + " is not null or bsl." + FIN_BankStatementLine.PROPERTY_GLITEM + " is not null)");
-      whereClause.append(" and bsl." + FIN_BankStatementLine.PROPERTY_BANKSTATEMENT + ".");
-      whereClause.append(FIN_BankStatement.PROPERTY_ACCOUNT + ".id = :account");
-      parameters.put("account", account.getId());
-      whereClause.append(" and bsl." + FIN_BankStatementLine.PROPERTY_ORGANIZATION + ".id in (");
-      whereClause.append(Utility.getInStrSet(
-          new OrganizationStructureProvider().getNaturalTree(organization.getId())) + ") ");
-      whereClause.append(" and bsl.bankStatement.processed = 'Y'");
-      whereClause.append(" order by bsl." + FIN_BankStatementLine.PROPERTY_CREATIONDATE + " desc");
+      //@formatter:off
+      String whereClause = " as bsl "
+          + " where translate(replace(bsl.bpartnername,' ', ''),'0123456789', '          ') "
+          + "  = translate( replace(:bpName,' ',''),'0123456789', '          ')"
+          + "  and (bsl.businessPartner is not null or bsl.gLItem is not null)"
+          + "  and bsl.bankStatement.account.id = :account"
+          + "  and bsl.organization.id in :orgNaturalTree"
+          + "  and bsl.bankStatement.processed = 'Y'"
+          + " order by bsl.creationDate desc";
+      //@formatter:on
       final OBQuery<FIN_BankStatementLine> bsl = OBDal.getInstance()
-          .createQuery(FIN_BankStatementLine.class, whereClause.toString(), parameters);
+          .createQuery(FIN_BankStatementLine.class, whereClause);
+      bsl.setNamedParameter("bpName", partnername.replaceAll("\\r\\n|\\r|\\n", " "));
+      bsl.setNamedParameter("account", account.getId());
+      bsl.setNamedParameter("orgNaturalTree",
+          new OrganizationStructureProvider().getNaturalTree(organization.getId()));
       bsl.setFilterOnReadableOrganization(false);
       // Just look in 10 matches
       bsl.setMaxResult(10);
@@ -351,19 +351,18 @@ public abstract class FIN_BankStatementImport {
     if (partnername == null || "".equals(partnername.trim())) {
       return null;
     }
-    final StringBuilder whereClause = new StringBuilder();
-    Map<String, Object> parameters = new HashMap<>(1);
-
     OBContext.setAdminMode();
     try {
-      whereClause.append(" as bp ");
-      whereClause.append(" where bp." + BusinessPartner.PROPERTY_NAME + " = :bpName");
-      parameters.put("bpName", partnername);
-      whereClause.append(" and bp." + BusinessPartner.PROPERTY_ORGANIZATION + ".id in (");
-      whereClause.append(Utility.getInStrSet(
-          new OrganizationStructureProvider().getNaturalTree(organization.getId())) + ") ");
+      //@formatter:off
+      String whereClause = " as bp "
+          + " where bp.name = :bpName"
+          + "  and bp.organization.id in :orgNaturalTree"; 
+      //@formatter:on
       final OBQuery<BusinessPartner> bp = OBDal.getInstance()
-          .createQuery(BusinessPartner.class, whereClause.toString(), parameters);
+          .createQuery(BusinessPartner.class, whereClause);
+      bp.setNamedParameter("bpName", partnername);
+      bp.setNamedParameter("orgNaturalTree",
+          new OrganizationStructureProvider().getNaturalTree(organization.getId()));
       bp.setFilterOnReadableOrganization(false);
       bp.setMaxResult(1);
       List<BusinessPartner> matchedBP = bp.list();
@@ -402,30 +401,34 @@ public abstract class FIN_BankStatementImport {
     if (list.isEmpty()) {
       return null;
     }
-    final StringBuilder whereClause = new StringBuilder();
     OBContext.setAdminMode();
     ScrollableResults businessPartnersScroll = null;
     try {
-      whereClause.append("select b.id as id, b.name as name from ");
-      whereClause.append(" BusinessPartner b ");
-      whereClause.append(" where (");
+      //@formatter:off
+      String whereClause = "select b.id as id, b.name as name "
+          + " from BusinessPartner b "
+          + " where (";
       HashMap<String, String> tokenPrams = new HashMap<>();
       int tokenIndex = 0;
       for (String token : list) {
         String tokenParamName = String.format("token_%d", tokenIndex);
         tokenPrams.put(tokenParamName, "%" + token + "%");
-        whereClause.append(" lower(b." + BusinessPartner.PROPERTY_NAME + ") like lower(:"
-            + tokenParamName + " ) or ");
+        if(tokenIndex != 0) {
+          whereClause += " or ";
+        }
+        whereClause += " lower(b.name) like lower(:" + tokenParamName + " ) ";
         tokenIndex++;
       }
-      whereClause.delete(whereClause.length() - 3, whereClause.length()).append(")");
-      whereClause.append(" and b." + BusinessPartner.PROPERTY_ORGANIZATION + ".id in (");
-      whereClause.append(Utility.getInStrSet(
-          new OrganizationStructureProvider().getNaturalTree(organization.getId())) + ") ");
+      whereClause += ")"
+            + "  and b.organization.id in :orgNaturalTree";
+      //@formatter:on
       final Query<Object[]> bl = OBDal.getInstance()
           .getSession()
-          .createQuery(whereClause.toString(), Object[].class);
+          .createQuery(whereClause, Object[].class);
       bl.setProperties(tokenPrams);
+      bl.setParameterList("orgNaturalTree",
+          new OrganizationStructureProvider().getNaturalTree(organization.getId()));
+
       businessPartnersScroll = bl.scroll(ScrollMode.SCROLL_SENSITIVE);
 
       if (!businessPartnersScroll.next()) {

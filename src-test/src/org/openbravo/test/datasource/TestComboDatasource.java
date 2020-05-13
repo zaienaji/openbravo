@@ -45,6 +45,7 @@ import org.codehaus.jettison.json.JSONObject;
 import org.junit.Test;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.service.json.JsonConstants;
+import org.openbravo.test.base.Issue;
 
 public class TestComboDatasource extends BaseDataSourceTestDal {
 
@@ -117,11 +118,9 @@ public class TestComboDatasource extends BaseDataSourceTestDal {
     assertEquals("paginated combo number of records", 75, data.length());
   }
 
-  /**
-   * Checks selected value not in 1st page
-   * 
-   * see issue #27233
-   */
+  /** Checks selected value not in 1st page */
+  @Test
+  @Issue("27233")
   public void testDefaultNotInFirstPage() throws Exception {
     String US_ID = "100";
 
@@ -240,13 +239,9 @@ public class TestComboDatasource extends BaseDataSourceTestDal {
     assertResponseStatusIs(jsonResponse, JsonConstants.RPCREQUEST_STATUS_VALIDATION_ERROR);
   }
 
-  /**
-   * Test to check when empty value is rendered in UIDefinition, proper data is returned. Refer
-   * issue https://issues.openbravo.com/view.php?id=27612
-   * 
-   * @throws Exception
-   */
+  /** Test to check when empty value is rendered in UIDefinition, proper data is returned. */
   @Test
+  @Issue("27612")
   public void testForIssue27612() throws Exception {
     String ficRequest = "/org.openbravo.client.kernel?_action=org.openbravo.client.application.window.FormInitializationComponent" //
         + "&MODE=CHANGE" //
@@ -266,11 +261,9 @@ public class TestComboDatasource extends BaseDataSourceTestDal {
         isEmptyOrNullString());
   }
 
-  /**
-   * Tests a request to a combo with a role that has no access to field entity. This case was
-   * failing (see issue #27057)
-   */
+  /** Tests a request to a combo with a role that has no access to field entity. */
   @Test
+  @Issue("27057")
   public void testRequestWithoutFieldAccess() throws Exception {
     // Set employee role
     changeProfile("D615084948E046E3A439915008F464A6", "192", "E443A31992CB4635AFCAEABE7183CE85",

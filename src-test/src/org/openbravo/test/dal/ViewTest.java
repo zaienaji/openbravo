@@ -36,6 +36,7 @@ import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.dal.service.OBQuery;
 import org.openbravo.model.common.invoice.Invoice;
+import org.openbravo.test.base.Issue;
 import org.openbravo.test.base.OBBaseTest;
 
 /**
@@ -71,10 +72,9 @@ public class ViewTest extends OBBaseTest {
     assertThat("Entity is correctly set", aViewBOB.getEntity(), is(aViewEntity));
   }
 
-  /**
-   * Tests issue https://issues.openbravo.com/view.php?id=14914 that view objects are not copied.
-   */
+  /** View objects are not copied. */
   @Test
+  @Issue("14914")
   public void test14914() {
     setTestUserContext();
     OBContext.setAdminMode();

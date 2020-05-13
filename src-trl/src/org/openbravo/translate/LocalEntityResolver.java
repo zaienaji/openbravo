@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2001-2010 Openbravo SLU 
+ * All portions are Copyright (C) 2001-2020 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  _Ville Lindfors_____________________________________.
  ************************************************************************
@@ -34,13 +34,13 @@ import org.xml.sax.SAXException;
 public class LocalEntityResolver implements EntityResolver {
 
   @Override
-  public InputSource resolveEntity(String publicId, String systemId) throws SAXException,
-      IOException {
+  public InputSource resolveEntity(String publicId, String systemId)
+      throws SAXException, IOException {
 
     if (systemId.equals("http://jasperreports.sourceforge.net/dtds/jasperreport.dtd")) {
-      // return a special input source using the system classloader.
-      return new InputSource(
-          System.class.getResourceAsStream("/net/sf/jasperreports/engine/dtds/jasperreport.dtd"));
+      // obtain Jasper dtd from classpath
+      return new InputSource(LocalEntityResolver.class
+          .getResourceAsStream("/net/sf/jasperreports/engine/dtds/jasperreport.dtd"));
     } else {
       // Use default behavior.
       return null;

@@ -53,11 +53,13 @@
           </div>
         </div>
       </div>
-      
-      
-      
-      
-      <div class="AddModule_Text_Description" id="description">xxdesc</div>
+      <div class="AddModule_Text_Description">
+          <span id="mergeInfo" style='color: orange; display:xx;'>
+            <b><span id="mergedModule"/></b> has been discontinued and merged into <span id="mergedIntoVersion"/>. 
+            It is strongly recommended to install this version of <b><span id="mergedInto"/></b> in order to get the latest version of the functionality 
+            included in <span id="mergedModule"/> and keep getting maintenance packs.<br/></span>
+         <span id="description">xxdesc</span>
+      </div>
       <div class="AddModule_Text_Help" id="help">xxhelp</div>
       <div class="AddModule_Options">
         <div class="AddModule_Text_Option"><a class="LabelLink_noicon" id="details" href="#" onclick="viewDetails('xx');return false;">View Details</a></div>

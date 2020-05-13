@@ -12,7 +12,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2001-2010 Openbravo SLU 
+ * All portions are Copyright (C) 2001-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -24,17 +24,12 @@
   <SqlMethod name="getOffersPriceCurrency" type="preparedStatement" return="String" default="0">
     <SqlMethodComment>Retrieves the price for product on a certain date for a certain quantity using the price-precision of the currency.</SqlMethodComment>
     <Sql>
-      SELECT ROUND(M_GET_OFFERS_PRICE(TO_DATE(?),?,?,TO_NUMBER(?), TO_NUMBER(?), ?),
+      SELECT ROUND(TO_NUMBER(?),
                    (SELECT PRICEPRECISION 
                        FROM C_CURRENCY C
                       WHERE C.C_CURRENCY_ID = ?)) AS TOTAL FROM DUAL
     </Sql>
-    <Parameter name="dateordered"/>
-    <Parameter name="cBpartnerId"/>
-    <Parameter name="mProductId"/>
     <Parameter name="pricestd"/>
-    <Parameter name="qty"/>
-    <Parameter name="pricelist"/>
     <Parameter name="currencyid"/>
     
   </SqlMethod>
@@ -42,17 +37,12 @@
    <!--SqlMethod name="getOffersStdPriceCurrency" type="preparedStatement" return="String" default="0">
     <SqlMethodComment></SqlMethodComment>
     <Sql>
-      SELECT ROUND(M_GET_OFFERS_STD_PRICE(?,TO_NUMBER(?),?,TO_DATE(?), TO_NUMBER(?), ?),
+      SELECT ROUND(TO_NUMBER(?),
                     (SELECT PRICEPRECISION 
                        FROM C_CURRENCY C 
                       WHERE C.C_CURRENCY_ID = ?)) as TOTAL FROM DUAL
      </Sql>
-    <Parameter name="cBpartnerId"/>
     <Parameter name="pricestd"/>
-    <Parameter name="mProductId"/>
-    <Parameter name="dateordered"/>
-    <Parameter name="qty"/>
-    <Parameter name="pricelistId"/>
     <Parameter name="currencyid"/>
   </SqlMethod-->
 </SqlClass>

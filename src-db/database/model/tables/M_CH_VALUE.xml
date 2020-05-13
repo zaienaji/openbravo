@@ -69,6 +69,10 @@
       <index name="M_CH_VALUE_CHARACTERISTIC" unique="false">
         <index-column name="M_CHARACTERISTIC_ID"/>
       </index>
+      <unique name="M_CH_VALUE_NAME">
+        <unique-column name="M_CHARACTERISTIC_ID"/>
+        <unique-column name="NAME"/>
+      </unique>
       <check name="M_CH_VALUE_ISACTIVE"><![CDATA[ISACTIVE IN ('Y', 'N')]]></check>
       <check name="M_CH_VALUE_ISSUMMARY"><![CDATA[ISSUMMARY IN ('Y', 'N')]]></check>
     </table>

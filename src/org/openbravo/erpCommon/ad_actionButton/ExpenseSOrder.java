@@ -11,7 +11,7 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU
- * All portions are Copyright (C) 2001-2015 Openbravo SLU
+ * All portions are Copyright (C) 2001-2019 Openbravo SLU
  * All Rights Reserved.
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -513,7 +513,7 @@ public class ExpenseSOrder extends HttpSecureAppServlet {
               data.mWarehouseId.equals("") ? vars.getWarehouse() : data.mWarehouseId,
               data.cUomId.equals("") ? Utility.getContext(this, vars, "#C_UOM_ID", "ExpenseSOrder")
                   : data.cUomId,
-              data.qty, strBPCCurrencyId, pricelist, priceactual, data.mPricelistId, pricelimit,
+              data.qty, strBPCCurrencyId, pricelist, priceactual, pricelimit,
               strCTaxID, data.sResourceassignmentId, strDiscount, grossprice, grosspricelist,
               data.lineCProjectId, data.lineUser1Id, data.lineUser2Id, data.lineCCostcenterId,
               data.lineAAssetId);

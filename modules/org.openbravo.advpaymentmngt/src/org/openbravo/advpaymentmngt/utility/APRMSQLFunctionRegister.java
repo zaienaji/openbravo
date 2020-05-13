@@ -19,9 +19,6 @@
 
 package org.openbravo.advpaymentmngt.utility;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,10 +28,7 @@ import org.hibernate.dialect.function.SQLFunction;
 import org.hibernate.dialect.function.SQLFunctionTemplate;
 import org.hibernate.dialect.function.StandardSQLFunction;
 import org.hibernate.type.StandardBasicTypes;
-import org.openbravo.base.session.OBPropertiesProvider;
 import org.openbravo.dal.core.SQLFunctionRegister;
-import org.openbravo.database.ConnectionProviderImpl;
-import org.openbravo.erpCommon.utility.SystemInfo;
 import org.openbravo.service.db.DalConnectionProvider;
 
 /**
@@ -56,44 +50,9 @@ public class APRMSQLFunctionRegister implements SQLFunctionRegister {
 
   private String getAggregationSQL() {
     if ("ORACLE".equals(RDBMS)) {
-      if (is11R2orNewer()) {
-        return "listagg(to_char(?1), ',') WITHIN GROUP (ORDER BY ?1)";
-      } else if (existsStrAgg()) {
-        return "stragg(to_char(?1))";
-      } else {
-        return "wm_concat(to_char(?1))";
-      }
+      return "listagg(to_char(?1), ',') WITHIN GROUP (ORDER BY ?1)";
     } else {
       return "array_to_string(array_agg(?1), ',')";
     }
-  }
-
-  private boolean existsStrAgg() {
-    try {
-      ConnectionProviderImpl connectionProvider = new ConnectionProviderImpl(
-          OBPropertiesProvider.getInstance().getOpenbravoProperties());
-      String sql = "select stragg(1) from dual";
-      try (PreparedStatement st = connectionProvider.getPreparedStatement(sql);
-          Connection connection = st.getConnection();
-          ResultSet result = st.executeQuery()) {
-        return true;
-      }
-    } catch (Exception ignore) {
-    }
-    return false;
-  }
-
-  private boolean is11R2orNewer() {
-    String dbVersion = null;
-    try {
-      dbVersion = SystemInfo.getDatabaseVersion(
-          new ConnectionProviderImpl(OBPropertiesProvider.getInstance().getOpenbravoProperties()));
-    } catch (Exception ignore) {
-    }
-    if (dbVersion == null) {
-      return false;
-    }
-    int version = Integer.parseInt(dbVersion.replaceAll("\\.", "").substring(0, 3));
-    return version >= 112;
   }
 }

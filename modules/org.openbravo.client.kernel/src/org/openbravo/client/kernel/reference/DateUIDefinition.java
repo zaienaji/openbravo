@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2010-2012 Openbravo SLU 
+ * All portions are Copyright (C) 2010-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -20,6 +20,7 @@ package org.openbravo.client.kernel.reference;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -28,7 +29,6 @@ import org.openbravo.base.exception.OBException;
 import org.openbravo.base.session.OBPropertiesProvider;
 import org.openbravo.client.application.Parameter;
 import org.openbravo.client.kernel.KernelConstants;
-import org.openbravo.client.kernel.RequestContext;
 import org.openbravo.model.ad.ui.Field;
 
 /**
@@ -41,7 +41,6 @@ public class DateUIDefinition extends UIDefinition {
   private static final String UIPATTERN = "yyyy-MM-dd";
 
   private SimpleDateFormat format = null;
-  private String lastUsedPattern = null;
   private SimpleDateFormat dateFormat = null;
   private SimpleDateFormat uiDateFormat = null;
 
@@ -106,10 +105,11 @@ public class DateUIDefinition extends UIDefinition {
   }
 
   protected SimpleDateFormat getClassicFormat() {
-    String pattern = RequestContext.get().getSessionAttribute("#AD_JAVADATEFORMAT").toString();
-    if (dateFormat == null || !pattern.equals(lastUsedPattern)) {
+    if (dateFormat == null) {
+      String pattern = OBPropertiesProvider.getInstance()
+          .getOpenbravoProperties()
+          .getProperty("dateFormat.java");
       dateFormat = new SimpleDateFormat(pattern);
-      lastUsedPattern = pattern;
       dateFormat.setLenient(true);
     }
     return dateFormat;
@@ -143,9 +143,19 @@ public class DateUIDefinition extends UIDefinition {
       if (value.contains("T")) {
         return value;
       }
-      final Date date = getClassicFormat().parse(value);
+      final Date date = parse(value);
       return getUIFormat().format(date);
     } catch (Exception e) {
+      throw new OBException(e);
+    }
+  }
+
+  /** Parses an {@link String} to a {@link Date} using reference's classic format. */
+  public synchronized Date parse(String value) {
+    try {
+      return getClassicFormat().parse(value);
+    } catch (ParseException e) {
+      log.error("Could not parse date {}", value, e);
       throw new OBException(e);
     }
   }

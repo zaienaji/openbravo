@@ -129,9 +129,7 @@ public class CopyFromInvoice extends HttpSecureAppServlet {
         String strSequence = SequenceIdData.getUUID();
         try {
           InvoiceLine invLine = OBDal.getInstance().get(InvoiceLine.class, data[i].cInvoicelineId);
-          String strDateInvoiced = "";
           String strInvPriceList = "";
-          String strBPartnerId = "";
           String strmProductId = "";
 
           BigDecimal priceActual, priceStd, priceList, priceLimit, priceGross, priceListGross,
@@ -139,9 +137,7 @@ public class CopyFromInvoice extends HttpSecureAppServlet {
           priceActual = priceStd = priceList = priceLimit = priceGross = priceListGross = priceStdGross = BigDecimal.ZERO;
           BigDecimal lineNetAmt, lineGrossAmt;
           lineNetAmt = lineGrossAmt = BigDecimal.ZERO;
-          strDateInvoiced = dataInvoice[0].dateinvoiced;
           strInvPriceList = dataInvoice[0].mPricelistId;
-          strBPartnerId = dataInvoice[0].mPricelistId;
           strmProductId = data[i].productId;
 
           String strWindowId = vars.getStringParameter("inpwindowId");
@@ -202,9 +198,8 @@ public class CopyFromInvoice extends HttpSecureAppServlet {
                   }
                 } else {
                   // Calculate price adjustments (offers)
-                  priceActual = new BigDecimal(CopyFromInvoiceData.getOffersStdPrice(this,
-                      strBPartnerId, priceStd.toString(), strmProductId, strDateInvoiced,
-                      invLine.getInvoicedQuantity().toString(), strInvPriceList, strKey));
+                  priceActual = new BigDecimal(
+                      CopyFromInvoiceData.getOffersStdPrice(this, priceStd.toString(), strKey));
                   if (priceActual.scale() > pricePrecision) {
                     priceActual = priceActual.setScale(pricePrecision, RoundingMode.HALF_UP);
                   }

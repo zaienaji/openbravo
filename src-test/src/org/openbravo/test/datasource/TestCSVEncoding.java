@@ -33,15 +33,14 @@ import org.openbravo.dal.service.OBDal;
 import org.openbravo.model.ad.domain.Preference;
 import org.openbravo.model.ad.system.Client;
 import org.openbravo.model.common.enterprise.Organization;
+import org.openbravo.test.base.Issue;
 
 /**
  * Test cases to verify CSV Encoding behavior with Arabic characters
  * 
- * See issue https://issues.openbravo.com/view.php?id=26162
- * 
  * @author guillermogil
  */
-
+@Issue("26162")
 public class TestCSVEncoding extends BaseDataSourceTestDal {
 
   /**

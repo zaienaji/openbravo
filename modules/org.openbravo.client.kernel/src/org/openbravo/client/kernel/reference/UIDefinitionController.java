@@ -58,6 +58,11 @@ public class UIDefinitionController extends BaseTemplateComponent {
   public static final String INPUTFORMAT_QUALIFIER = "Edition";
   public static final String NORMALFORMAT_QUALIFIER = "Inform";
 
+  public static final DateUIDefinition DATE_UI_DEFINITION = (DateUIDefinition) instance
+      .getUIDefinitionByReferenceId("15");
+  public static final DateUIDefinition DATETIME_UI_DEFINITION = (DateTimeUIDefinition) instance
+      .getUIDefinitionByReferenceId("16");
+
   private static final String EncryptedStringReferenceID = "16EC6DF4A59747749FDF256B7FBBB058";
   private static final String HashedStringReferenecID = "C5C21C28B39E4683A91779F16C112E40";
 
@@ -85,12 +90,16 @@ public class UIDefinitionController extends BaseTemplateComponent {
   }
 
   public UIDefinition getUIDefinition(Reference reference) {
+    return getUIDefinitionByReferenceId(reference.getId());
+  }
+
+  private UIDefinition getUIDefinitionByReferenceId(String referenceId) {
     if (cachedDefinitions == null) {
       setInitCachedDefinitions();
     }
-    final UIDefinition uiDefinition = cachedDefinitions.get(reference.getId());
+    final UIDefinition uiDefinition = cachedDefinitions.get(referenceId);
     if (uiDefinition == null) {
-      log.warn("NO UIDefinition found for reference " + reference.getId());
+      log.warn("NO UIDefinition found for reference {}", referenceId);
     }
     return uiDefinition;
   }

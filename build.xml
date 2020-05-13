@@ -36,8 +36,6 @@ database.lib: refer to jar target of src-db.
 clean: refer to clean target of src.
 trl.clean: refer to trl.clean target of src.
 translate: refer to translate target of src.
-installWebService: refer to installWebService target of src.
-uninstallWebService: refer to uninstallWebService target of src.
 deploy.context: deploy the context into Tomcat using the manager
 install.source: install the ERP from sources (from subversion).
 create.database: refer to create.database target of database.
@@ -356,8 +354,6 @@ export.database: exports database structure and data to xml files.
      </sequential>
   </macrodef>
   
-  <taskdef resource="axis-tasks.properties" classpathref="project.class.path" />
-  
   <target name="init">
     <fail if="root.user" message="Don't run ant tasks with the root user" />
     <fail if="no.java.home" message="The environment variable JAVA_HOME is not set." />
@@ -652,16 +648,6 @@ export.database: exports database structure and data to xml files.
     <ant dir="${base.src}" target="translate" inheritAll="true" inheritRefs="true" />
   </target>
 
-  <target name="installWebService" depends="init">
-    <ant dir="${base.src}" target="installWebService" inheritAll="true" inheritRefs="true">
-      <property name="wsdd" value="1" />
-    </ant>
-  </target>
-
-  <target name="uninstallWebService" depends="init">
-    <ant dir="${base.src}" target="uninstallWebService" inheritAll="true" inheritRefs="true" />
-  </target>
-
   <target name="install.source" depends="init, cleanSubfolders, create.database, wad.lib, trl.lib, compile.complete.deploy">
     <echo message="applying modules" />    
     <antcall inheritall="true" inheritrefs="true" target="apply.module" />
@@ -856,10 +842,6 @@ export.database: exports database structure and data to xml files.
     <start url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}" path="/${context.name}" />
   </target>
 
-  <target name="generate-wsdd">
-    <ant dir="${base.src}" target="generate-wsdd" inheritAll="true" inheritRefs="true" />
-  </target>
-
   <target name="obx.export.database" if="obx.exp.DB">
     <antcall target="export.database" />
   </target>
@@ -991,7 +973,7 @@ export.database: exports database structure and data to xml files.
     <java classname="org.openbravo.base.BuildTask" jvm="${env.JAVA_HOME}/bin/java" fork="yes" maxmemory="${build.maxmemory}">
       <arg line="'${base.config}/Openbravo.properties' ${logFileName}" />
       <classpath>
-        <pathelement path="${base.config}" />
+        <pathelement path="${base.config}"/>
         <pathelement path="${build.core.lib}/openbravo-core.jar" />
         <pathelement path="${base.lib}/runtime/log4j-1.2-api-2.11.1.jar" />
         <pathelement path="${base.lib}/runtime/log4j-api-2.11.1.jar" />

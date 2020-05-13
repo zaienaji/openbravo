@@ -16,7 +16,7 @@
 * under the License.
 * The Original Code is Openbravo ERP.
 * The Initial Developer of the Original Code is Openbravo SLU
-* All portions are Copyright (C) 2001-2013 Openbravo SLU
+* All portions are Copyright (C) 2001-2019 Openbravo SLU
 * All Rights Reserved.
 * Contributor(s):  ______________________________________.
 ************************************************************************/
@@ -240,9 +240,9 @@
                 SOLINES.M_PRODUCT_ID, v_UOM, 'N', v_AD_User_ID,
                 v_AD_User_ID, 0, NULL, 0,
                 now(), Cur_SO.AD_ORG_ID, NULL, Cur_SO.C_BPARTNER_ID,
-                M_Get_Offers_Price(now(), Cur_SO.C_BPARTNER_ID, SOLINES.M_PRODUCT_ID, v_PriceStd, SOLINES.InvoicedQty,  v_M_PriceList_ID),
+                v_PriceStd,
     C_Gettax(SOLINES.M_PRODUCT_ID, TRUNC(now(), 'DD'), Cur_SO.AD_ORG_ID, Cur_SO.M_WAREHOUSE_ID, Cur_SO.C_BPARTNER_LOCATION_ID, Cur_SO.C_BPARTNER_LOCATION_ID, Cur_SO.C_PROJECT_ID, 'Y'), Cur_SO.C_BPARTNER_LOCATION_ID,
-                (v_PriceList-v_PriceStd) *100/v_PriceList, v_PriceLimit, NULL, (M_Get_Offers_Price(now(), Cur_SO.C_BPARTNER_ID, SOLINES.M_PRODUCT_ID, v_PriceStd, SOLINES.InvoicedQty,  v_M_PriceList_ID) * SOLINES.InvoicedQty),
+                (v_PriceList-v_PriceStd) *100/v_PriceList, v_PriceLimit, NULL, (v_PriceStd * SOLINES.InvoicedQty),
                 NULL, 'N', v_PriceStd
               )
               ;

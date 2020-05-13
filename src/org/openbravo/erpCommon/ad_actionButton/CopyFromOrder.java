@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2001-2017 Openbravo SLU 
+ * All portions are Copyright (C) 2001-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -157,9 +157,7 @@ public class CopyFromOrder extends HttpSecureAppServlet {
           }
         }
 
-        priceStd = new BigDecimal(CopyFromOrderData.getOffersStdPrice(this,
-            orderData[0].cBpartnerId, strLastpriceso, strmProductId, orderData[0].dateordered,
-            strQty, orderData[0].mPricelistId, strKey));
+        priceStd = new BigDecimal(CopyFromOrderData.getOffersStdPrice(this, strLastpriceso, strKey));
         ProductPrice prices = FinancialUtils.getProductPrice(
             OBDal.getInstance().get(Product.class, strmProductId), order.getOrderDate(),
             order.isSalesTransaction(), order.getPriceList(), false);

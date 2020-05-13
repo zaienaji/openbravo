@@ -18,6 +18,8 @@
  */
 package org.openbravo.test.base.mock;
 
+import java.nio.file.Path;
+
 import org.openbravo.base.session.OBPropertiesProvider;
 
 /**
@@ -33,6 +35,16 @@ public class OBServletContextMock extends ServletContextMock {
     addInitParameter("BaseConfigPath", "WEB-INF");
     addInitParameter("BaseDesignPath", "src-loc");
     addInitParameter("AttachmentDirectory", getAttachmentPath());
+  }
+
+  /**
+   * @param name
+   *          the name of the file in the base context path.
+   * 
+   * @return the path of the provided file name in base context path.
+   */
+  public Path getPath(String name) {
+    return getFile(name).toPath();
   }
 
   private static String getWebContentPath() {

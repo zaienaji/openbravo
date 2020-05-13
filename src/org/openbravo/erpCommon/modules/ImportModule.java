@@ -30,9 +30,10 @@ import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.rmi.RemoteException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +51,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.axis.AxisFault;
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.io.FileUtils;
 import org.apache.ddlutils.io.DataReader;
@@ -59,8 +59,11 @@ import org.apache.ddlutils.io.DatabaseDataIO;
 import org.apache.ddlutils.model.Database;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.hibernate.criterion.Restrictions;
+import org.openbravo.base.exception.OBException;
 import org.openbravo.base.secureApp.VariablesSecureApp;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.core.OBInterceptor;
@@ -77,13 +80,13 @@ import org.openbravo.erpCommon.utility.Utility;
 import org.openbravo.erpCommon.utility.Zip;
 import org.openbravo.model.ad.module.ModuleInstall;
 import org.openbravo.model.ad.system.SystemInformation;
+import org.openbravo.service.centralrepository.CentralRepository;
+import org.openbravo.service.centralrepository.CentralRepository.Service;
+import org.openbravo.service.centralrepository.Module;
+import org.openbravo.service.centralrepository.ModuleDependency;
+import org.openbravo.service.centralrepository.ModuleInstallDetail;
+import org.openbravo.service.centralrepository.SimpleModule;
 import org.openbravo.service.web.ResourceNotFoundException;
-import org.openbravo.services.webservice.Module;
-import org.openbravo.services.webservice.ModuleDependency;
-import org.openbravo.services.webservice.ModuleInstallDetail;
-import org.openbravo.services.webservice.SimpleModule;
-import org.openbravo.services.webservice.WebService3Impl;
-import org.openbravo.services.webservice.WebService3ImplServiceLocator;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -252,7 +255,7 @@ public class ImportModule implements Serializable {
         // Merged module is installed locally, add it as merge to uninstall. In case it is not
         // installed, it does not make sense to show any message to user.
         Module mergedModule = getWsModuleFromDalModule(mergedDALModule);
-        HashMap<String, String> additionalInfo = new HashMap<String, String>();
+        Map<String, Object> additionalInfo = new HashMap<>();
         additionalInfo.put("remove", "true");
         additionalInfo.put("mergedWith", getMergedWith(merge.getValue()));
         mergedModule.setAdditionalInfo(additionalInfo);
@@ -292,7 +295,6 @@ public class ImportModule implements Serializable {
       HashMap<String, String> maturityLevels) throws Exception {
     // just for remote usage
     errors = new OBError();
-    VersionUtility.setPool(pool);
     final ModuleInstallDetail mid = VersionUtility.checkRemote(vars, installableModules,
         updateableModules, errors, maturityLevels);
     modulesToInstall = mid.getModulesToInstall();
@@ -1614,33 +1616,33 @@ public class ImportModule implements Serializable {
    * @param vars
    * @return the list of updates keyed by module id
    */
-  @SuppressWarnings("unchecked")
-  public static HashMap<String, String> scanForUpdates(ConnectionProvider conn,
+  public static Map<String, String> scanForUpdates(ConnectionProvider conn,
       VariablesSecureApp vars) {
     scanError = new StringBuilder();
     try {
-      final HashMap<String, String> updateModules = new HashMap<String, String>();
       final String user = vars == null ? "0" : vars.getUser();
       ImportModuleData.insertLog(conn, user, "", "", "", "Scanning For Updates", "S");
 
-      if (!HttpsUtils.isInternetAvailable()) {
-        // Check Internet availability and set proxy if required
-        ImportModuleData.insertLog(conn, user, "", "", "",
-            "Scan for updates: Couldn't contact with webservice server", "E");
-        log4j.error("Scan for updates, error cound't reach ws server");
-        scanError.append("InternetNotAvailable");
-        return updateModules;
-      }
-
-      WebService3ImplServiceLocator loc;
-      WebService3Impl ws = null;
-      SimpleModule[] updates;
+      List<SimpleModule> updates;
       try {
-        loc = new WebService3ImplServiceLocator();
-        ws = loc.getWebService3();
+        JSONObject mods = getJsonInstalledModulesAndDeps();
+        JSONObject additionalInfo = new JSONObject(ModuleUtiltiy.getSystemMaturityLevels(false));
+        JSONObject req = new JSONObject();
+        req.put("modules", mods);
+        req.put("additionalInfo", additionalInfo);
 
-        updates = ws.moduleScanForUpdates(getInstalledModulesAndDeps(),
-            ModuleUtiltiy.getSystemMaturityLevels(false));
+        JSONObject r = CentralRepository.executeRequest(Service.SCAN, req);
+        if (r.getBoolean("success")) {
+          JSONArray jsonUpdates = r.getJSONObject("response").getJSONArray("updates");
+          updates = new ArrayList<>(jsonUpdates.length());
+          for (int i = 0; i < jsonUpdates.length(); i++) {
+            JSONObject update = jsonUpdates.getJSONObject(i);
+            updates.add(SimpleModule.fromJson(update));
+          }
+        } else {
+          scanError.append(r.getJSONObject("response").getString("msg"));
+          return Collections.emptyMap();
+        }
       } catch (final Exception e) {
         // do nothing just log the error
         log4j.error("Scan for updates coulnd't contact WS", e);
@@ -1651,43 +1653,40 @@ public class ImportModule implements Serializable {
           log4j.error("Error inserting log", e);
         }
         scanError.append("WSServerNotReachable");
-        return updateModules; // return empty hashmap
+        return Collections.emptyMap(); // return empty hashmap
       }
 
-      if (updates != null && updates.length > 0) {
-        for (int i = 0; i < updates.length; i++) {
+      final Map<String, String> updateModules = new HashMap<>(updates.size());
+      for (SimpleModule update : updates) {
+        if (!ImportModuleData.existsVersion(conn, update.getVersionNo(),
+            update.getModuleVersionID())) {
+          ImportModuleData.updateNewVersionAvailable(conn, update.getVersionNo(),
+              update.getModuleVersionID(), update.getUpdateDescription(), update.getModuleID());
+          ImportModuleData.insertLog(conn, user, update.getModuleID(), update.getModuleVersionID(),
+              update.getName(),
+              "Found new version " + update.getVersionNo() + " for module " + update.getName(),
+              "S");
+          updateModules.put(update.getModuleID(), "U");
+        }
 
-          if (!ImportModuleData.existsVersion(conn, updates[i].getVersionNo(),
-              updates[i].getModuleVersionID())) {
-            ImportModuleData.updateNewVersionAvailable(conn, updates[i].getVersionNo(),
-                updates[i].getModuleVersionID(), updates[i].getUpdateDescription(),
-                updates[i].getModuleID());
-            ImportModuleData.insertLog(conn, user, updates[i].getModuleID(),
-                updates[i].getModuleVersionID(), updates[i].getName(), "Found new version "
-                    + updates[i].getVersionNo() + " for module " + updates[i].getName(),
-                "S");
-            updateModules.put(updates[i].getModuleID(), "U");
-          }
-
-          HashMap<String, String> additionalInfo = updates[i].getAdditionalInfo();
-          if (additionalInfo != null && additionalInfo.containsKey("upgrade")) {
-            log4j.info("Upgrade found:" + additionalInfo.get("upgrade"));
-            JSONObject upgrade = new JSONObject(additionalInfo.get("upgrade"));
-            final String moduleId = upgrade.getString("moduleId");
-            org.openbravo.model.ad.module.Module module = OBDal.getInstance()
-                .get(org.openbravo.model.ad.module.Module.class, moduleId);
-            if (module != null) {
-              try {
-                OBInterceptor.setPreventUpdateInfoChange(true);
-                module.setUpgradeAvailable(upgrade.getJSONArray("showVersion").toString());
-                OBDal.getInstance().flush();
-              } finally {
-                OBInterceptor.setPreventUpdateInfoChange(false);
-              }
-            } else {
-              log4j.error("There is an upgrade for module " + moduleId
-                  + ", but it is not present in the instance.");
+        Map<String, Object> additionalInfo = update.getAdditionalInfo();
+        if (additionalInfo != null && additionalInfo.containsKey("upgrade")) {
+          log4j.info("Upgrade found:" + additionalInfo.get("upgrade"));
+          JSONObject upgrade = new JSONObject((String) additionalInfo.get("upgrade"));
+          final String moduleId = upgrade.getString("moduleId");
+          org.openbravo.model.ad.module.Module module = OBDal.getInstance()
+              .get(org.openbravo.model.ad.module.Module.class, moduleId);
+          if (module != null) {
+            try {
+              OBInterceptor.setPreventUpdateInfoChange(true);
+              module.setUpgradeAvailable(upgrade.getJSONArray("showVersion").toString());
+              OBDal.getInstance().flush();
+            } finally {
+              OBInterceptor.setPreventUpdateInfoChange(false);
             }
+          } else {
+            log4j.error("There is an upgrade for module " + moduleId
+                + ", but it is not present in the instance.");
           }
         }
         addParentUpdates(updateModules, conn);
@@ -1708,19 +1707,20 @@ public class ImportModule implements Serializable {
         log4j.error("Error inserting log", ex);
       }
       scanError.append("ScanUpdatesFailed");
-      return new HashMap<String, String>();
+      return Collections.emptyMap();
     }
   }
 
-  private static void addParentUpdates(HashMap<String, String> updates, ConnectionProvider conn) {
+  private static void addParentUpdates(Map<String, String> updates, ConnectionProvider conn) {
     @SuppressWarnings("unchecked")
-    final HashMap<String, String> iniUpdates = (HashMap<String, String>) updates.clone();
+    final HashMap<String, String> iniUpdates = (HashMap<String, String>) ((HashMap<String, String>) updates)
+        .clone();
     for (final String node : iniUpdates.keySet()) {
       addParentNode(node, updates, iniUpdates, conn);
     }
   }
 
-  private static void addParentNode(String node, HashMap<String, String> updates,
+  private static void addParentNode(String node, Map<String, String> updates,
       HashMap<String, String> iniUpdates, ConnectionProvider conn) {
     String parentId;
     try {
@@ -1841,6 +1841,25 @@ public class ImportModule implements Serializable {
     }
   }
 
+  public static JSONObject getJsonInstalledModulesAndDeps() {
+    JSONObject r = new JSONObject();
+    try {
+      HashMap<String, String[][]> mods = getInstalledModulesAndDeps();
+      for (Entry<String, String[][]> mod : mods.entrySet()) {
+        String[][] origVerInfo = mod.getValue();
+        JSONArray verInfo = new JSONArray();
+        for (String[] verInfoRow : origVerInfo) {
+          verInfo.put(Arrays.asList(verInfoRow));
+        }
+
+        r.put(mod.getKey(), verInfo);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return r;
+  }
+
   /**
    * Returns a File array with the directories that are part of core
    * 
@@ -1885,38 +1904,18 @@ public class ImportModule implements Serializable {
    */
   private RemoteModule getRemoteModule(String moduleVersionID) {
     RemoteModule remoteModule = new RemoteModule();
-    WebService3ImplServiceLocator loc;
-    WebService3Impl ws = null;
-    String strUrl = "";
+    String strUrl;
     boolean isCommercial;
 
+    JSONObject versionInfo = CentralRepository.executeRequest(Service.VERSION_INFO,
+        Arrays.asList(moduleVersionID));
     try {
-      loc = new WebService3ImplServiceLocator();
-      ws = loc.getWebService3();
-    } catch (final Exception e) {
-      log4j.error(e);
-      addLog("@CouldntConnectToWS@", ImportModule.MSG_ERROR);
-      try {
-        ImportModuleData.insertLog(ImportModule.pool, (vars == null ? "0" : vars.getUser()), "", "",
-            "", "Couldn't contact with webservice server", "E");
-      } catch (final ServletException ex) {
-        log4j.error(ex);
-      }
-      remoteModule.setError(true);
-      return remoteModule;
-    }
+      log4j.debug("version info: {}", versionInfo);
 
-    try {
-      isCommercial = ws.isCommercial(moduleVersionID);
-      strUrl = ws.getURLforDownload(moduleVersionID);
-    } catch (AxisFault e1) {
-      addLog("@" + e1.getFaultCode() + "@", ImportModule.MSG_ERROR);
-      remoteModule.setError(true);
-      return remoteModule;
-    } catch (RemoteException e) {
-      addLog(e.getMessage(), ImportModule.MSG_ERROR);
-      remoteModule.setError(true);
-      return remoteModule;
+      isCommercial = versionInfo.getJSONObject("response").getBoolean("commercial");
+      strUrl = versionInfo.getJSONObject("response").getString("url");
+    } catch (JSONException e) {
+      throw new OBException(e);
     }
 
     if (isCommercial && !ActivationKey.isActiveInstance()) {
@@ -1929,7 +1928,7 @@ public class ImportModule implements Serializable {
       URL url = new URL(strUrl);
       HttpURLConnection conn = null;
 
-      if (strUrl.startsWith("https://")) {
+      if (isCommercial) {
         ActivationKey ak = ActivationKey.getInstance();
         String instanceKey = "obinstance=" + URLEncoder.encode(ak.getPublicKey(), "utf-8");
         conn = HttpsUtils.sendHttpsRequest(url, instanceKey);

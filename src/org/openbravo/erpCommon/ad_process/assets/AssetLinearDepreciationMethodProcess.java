@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2013-2018 Openbravo SLU 
+ * All portions are Copyright (C) 2013-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -22,12 +22,14 @@ package org.openbravo.erpCommon.ad_process.assets;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.codec.binary.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.criterion.Restrictions;
@@ -139,6 +141,20 @@ public class AssetLinearDepreciationMethodProcess extends DalBaseProcess {
     BigDecimal amountPerPeriod = BigDecimal.ZERO; // Amount to depreciate per period (month or year)
 
     List<AmortizationLine> amortizationLineList = asset.getFinancialMgmtAmortizationLineList();
+
+    // Remove unprocessed Amortization and its line when recalculating
+    List<AmortizationLine> amortizationLineListToRemove = new ArrayList<AmortizationLine>();
+    for (AmortizationLine al : amortizationLineList) {
+      Amortization amortization = OBDal.getInstance()
+          .get(Amortization.class, al.getAmortization().getId());
+      if (StringUtils.equals(amortization.getProcessed(), "N")) {
+        amortizationLineListToRemove.add(al);
+        amortization.getFinancialMgmtAmortizationLineList().clear();
+        OBDal.getInstance().remove(amortization);
+      }
+    }
+    asset.getFinancialMgmtAmortizationLineList().removeAll(amortizationLineListToRemove);
+    OBDal.getInstance().flush();
     BigDecimal alreadyAmortizedPeriods = new BigDecimal(amortizationLineList.size());
     // When recalculating the amortization the asset can be partially amortized
     BigDecimal alreadyAmortizedAmount = BigDecimal.ZERO;

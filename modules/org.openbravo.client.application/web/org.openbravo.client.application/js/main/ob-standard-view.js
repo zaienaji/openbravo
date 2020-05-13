@@ -2379,10 +2379,17 @@ isc.OBStandardView.addProperties({
       //      me.getDataSource().updateCaches(resp, req);
       // therefore do an explicit update of the visual components
       if (me.viewGrid.data) {
-        var recordIndex = me.viewGrid.getRecordIndex(
-          me.viewGrid.getSelectedRecord()
-        );
-        me.viewGrid.updateRecord(recordIndex, data, req);
+        if (data.length !== 0) {
+          var recordIndex = me.viewGrid.getRecordIndex(
+            me.viewGrid.getSelectedRecord()
+          );
+          me.viewGrid.updateRecord(recordIndex, data, req);
+        } else {
+          me.viewGrid.data.localData.remove(me.viewGrid.getSelectedRecord());
+          me.viewGrid.deselectAllRecords();
+          me.markForRedraw();
+          this.view.updateSubtabVisibility();
+        }
       }
 
       if (callBackFunction) {

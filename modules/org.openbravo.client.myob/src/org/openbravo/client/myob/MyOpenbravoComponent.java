@@ -316,9 +316,7 @@ public class MyOpenbravoComponent extends SessionDynamicTemplateComponent {
       log.debug("Copied widget instance: " + copy.getId() + " of Widget Class: "
           + copy.getWidgetClass().getWidgetTitle());
       copyDone = true;
-      if (accessibleWidgetClasses.contains(copy.getWidgetClass().getId())) {
-        contextWidgets.add(copy);
-      }
+      contextWidgets.add(copy);
     }
     if (copyDone) {
       OBDal.getInstance().flush();

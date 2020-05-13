@@ -24,15 +24,16 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.openbravo.base.secureApp.VariablesSecureApp;
 import org.openbravo.dal.core.OBContext;
+import org.openbravo.test.base.Issue;
 import org.openbravo.test.base.OBBaseTest;
 
 /**
- * Tests this issue: https://issues.openbravo.com/view.php?id=29934 Extend VariablesBase to
- * internally store session values even if there is no session object
+ * Extend VariablesBase to internally store session values even if there is no session object
  * 
  * @author mtaal
  */
 
+@Issue("29934")
 public class Issue29934Test extends OBBaseTest {
 
   @Test

@@ -16,7 +16,7 @@
 * under the License.
 * The Original Code is Openbravo ERP.
 * The Initial Developer of the Original Code is Openbravo SLU
-* All portions are Copyright (C) 2001-2016 Openbravo SLU
+* All portions are Copyright (C) 2001-2019 Openbravo SLU
 * All Rights Reserved.
 * Contributor(s):  ______________________________________.
 ************************************************************************/
@@ -125,7 +125,7 @@
         )
         AND M_PRICELIST_VERSION.M_PRICELIST_ID=v_Mpricelist
         AND M_PRODUCTPRICE.M_PRODUCT_ID=Cur_ProductTemplate.M_PRODUCT_ID;
-      v_Linenetamount:=C_Currency_Round(M_Get_Offers_Price(now(), v_Bpartner, Cur_ProductTemplate.M_Product_ID, v_Pricestd,Cur_ProductTemplate.QTY,v_Mpricelist ) *Cur_ProductTemplate.QTY, v_Currency, NULL) ;
+      v_Linenetamount:=C_Currency_Round(v_Pricestd*Cur_ProductTemplate.QTY, v_Currency, NULL) ;
       SELECT C_Gettax(Cur_ProductTemplate.M_PRODUCT_ID, v_Dateordered, v_org, v_Warehouse, v_BillTo, v_BpartnerLocation, v_projectID, v_Issotrx)
       INTO v_tax
       FROM DUAL;
@@ -175,7 +175,7 @@
           NULL, Cur_ProductTemplate.M_PRODUCT_ID, v_Warehouse, 'N',
           Cur_ProductTemplate.C_UOM_ID, Cur_ProductTemplate.QTY, 0, 0,
           0, NULL, v_Currency, v_Pricelist,
-          M_Get_Offers_Price(now(), v_Bpartner, Cur_ProductTemplate.M_Product_ID, v_Pricestd, Cur_ProductTemplate.QTY, v_Mpricelist), v_Pricelimit, v_Linenetamount, v_Discount,
+          v_Pricestd, v_Pricelimit, v_Linenetamount, v_Discount,
           0, NULL, 0, v_tax,
           NULL, NULL,
           NULL, 'N', NULL, NULL,

@@ -11,7 +11,7 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU
- * All portions are Copyright (C) 2010-2016 Openbravo SLU
+ * All portions are Copyright (C) 2010-2019 Openbravo SLU
  * All Rights Reserved.
  * Contributor(s):  ______________________________________.
  *************************************************************************
@@ -551,15 +551,16 @@ public class Reconciliation extends HttpSecureAppServlet {
   }
 
   private String linesInNotAvailablePeriod(String reconciliationId) {
-    final StringBuilder hql = new StringBuilder();
+    //@formatter:off
+    final String hql = " as rl "
+    + " where rl.reconciliation.id = :reconciliationId"
+    + "   and c_chk_open_period(rl.organization, rl.transactionDate, 'REC', null) = 0 "
+    + " order by rl.transactionDate";
 
-    hql.append(" as rl ");
-    hql.append(" where rl.reconciliation.id = '").append(reconciliationId).append("' ");
-    hql.append("   and c_chk_open_period(rl.organization, rl.transactionDate, 'REC', null) = 0 ");
-    hql.append(" order by rl.transactionDate");
-
+    //@formatter:on
     final OBQuery<FIN_ReconciliationLine_v> obqRL = OBDal.getInstance()
-        .createQuery(FIN_ReconciliationLine_v.class, hql.toString());
+        .createQuery(FIN_ReconciliationLine_v.class, hql);
+    obqRL.setNamedParameter("reconciliationId", reconciliationId);
     obqRL.setMaxResult(1);
 
     List<FIN_ReconciliationLine_v> obqRLlist = obqRL.list();

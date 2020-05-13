@@ -385,6 +385,7 @@ public class CostingServer {
         .get(0);
     boolean isCostPermanent = transaction.isCostPermanent();
     transaction.setCostPermanent(false);
+    OBDal.getInstance().save(transaction);
     try (ScrollableResults scroll = getCostAdjustmentLines(origInOutLineTrx)) {
       while (scroll.next()) {
         Tuple result = (Tuple) scroll.get()[0];

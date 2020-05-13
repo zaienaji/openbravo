@@ -11,7 +11,7 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU
- * All portions are Copyright (C) 2016 Openbravo SLU
+ * All portions are Copyright (C) 2016-2019 Openbravo SLU
  * All Rights Reserved.
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -27,6 +27,7 @@ OB.PROC.CreateLinesOnChangeQuantityAum = function(item, view, form, grid) {
   var aumQty = item.getValue();
   var record = item.grid.getSelectionObject().lastSelectionItem;
   var aum = item.form.getItems()[item.grid.getColNum('aum')].getValue();
+  var rowNum = null;
   if (aumQty !== undefined) {
     OB.RemoteCallManager.call(
       'org.openbravo.common.actionhandler.GetConvertedQtyActionHandler',
@@ -34,16 +35,14 @@ OB.PROC.CreateLinesOnChangeQuantityAum = function(item, view, form, grid) {
         mProductId: record.product,
         qty: aumQty,
         toUOM: aum,
-        reverse: false
+        reverse: false,
+        rowNum: item.rowNum
       },
       {},
       function(response, data, request) {
         if (data.qty) {
-          item.grid.setEditValue(
-            item.grid.getEditRow(),
-            'orderedQuantity',
-            data.qty
-          );
+          rowNum = JSON.parse(request.data).rowNum;
+          item.grid.setEditValue(rowNum, 'orderedQuantity', data.qty);
         }
       }
     );
@@ -58,6 +57,7 @@ OB.PROC.CreateLinesOnChangeQuantity = function(item, view, form, grid) {
   var qty = item.getValue();
   var record = grid.getSelectionObject().lastSelectionItem;
   var aum = item.grid.getEditValues(item.grid.getRecordIndex(item.record)).aum;
+  var rowNum = null;
   if (qty !== undefined) {
     OB.RemoteCallManager.call(
       'org.openbravo.common.actionhandler.GetConvertedQtyActionHandler',
@@ -65,16 +65,14 @@ OB.PROC.CreateLinesOnChangeQuantity = function(item, view, form, grid) {
         mProductId: record.product,
         qty: qty,
         toUOM: aum,
-        reverse: true
+        reverse: true,
+        rowNum: item.rowNum
       },
       {},
       function(response, data, request) {
         if (data.qty) {
-          item.grid.setEditValue(
-            item.grid.getEditRow(),
-            'aumQuantity',
-            data.qty
-          );
+          rowNum = JSON.parse(request.data).rowNum;
+          item.grid.setEditValue(rowNum, 'aumQuantity', data.qty);
         }
       }
     );
@@ -90,6 +88,7 @@ OB.PROC.CreateLinesOnChangeAum = function(item, validator, value, record) {
   var changed_record = item.grid.getSelectionObject().lastSelectionItem;
   var aumQty = item.grid.getEditValues(item.grid.getRecordIndex(item.record))
     .aumQuantity;
+  var rowNum = null;
   if (aumQty !== undefined) {
     OB.RemoteCallManager.call(
       'org.openbravo.common.actionhandler.GetConvertedQtyActionHandler',
@@ -97,16 +96,14 @@ OB.PROC.CreateLinesOnChangeAum = function(item, validator, value, record) {
         mProductId: changed_record.product,
         qty: aumQty,
         toUOM: aum,
-        reverse: false
+        reverse: false,
+        rowNum: item.rowNum
       },
       {},
       function(response, data, request) {
         if (data.qty) {
-          item.grid.setEditValue(
-            item.grid.getEditRow(),
-            'orderedQuantity',
-            data.qty
-          );
+          rowNum = JSON.parse(request.data).rowNum;
+          item.grid.setEditValue(rowNum, 'orderedQuantity', data.qty);
         }
       }
     );

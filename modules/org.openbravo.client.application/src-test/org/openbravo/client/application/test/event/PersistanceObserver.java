@@ -27,8 +27,10 @@ import org.openbravo.base.provider.OBProvider;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.model.common.order.OrderLine;
+import org.openbravo.test.base.Issue;
 
-/** Test cases ensuring PersistanceObservers are executed when they should (see issue #35060). */
+/** Test cases ensuring PersistanceObservers are executed when they should. */
+@Issue("35060")
 public class PersistanceObserver extends ObserverBaseTest {
 
   @Test

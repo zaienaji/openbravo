@@ -12,7 +12,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2001-2018 Openbravo SLU 
+ * All portions are Copyright (C) 2001-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -91,6 +91,7 @@
       AND 0=0 AND C_INVOICE.AD_ORG_ID IN ('1')
       AND C_INVOICE.AD_CLIENT_ID IN ('7')
       AND 1=1
+      AND ((trxcost.m_transaction_cost_id is not null and trxcost.isunitcost = 'Y') or (trxcost.m_transaction_cost_id is null))
       GROUP BY trxcost.m_transaction_id, C_INVOICELINE.C_INVOICELINE_ID, C_BPARTNER.C_BPARTNER_ID, M_PRODUCT_CATEGORY.NAME, C_INVOICE.DOCUMENTNO, AD_ORG.NAME, AD_USER.AD_USER_ID, C_PROJECT.NAME, AD_USER.FIRSTNAME, AD_USER.LASTNAME, C_BP_GROUP.NAME, M_INOUT.C_BPARTNER_LOCATION_ID, C_INVOICELINE.AD_CLIENT_ID, C_INVOICELINE.AD_ORG_ID, C_INVOICELINE.LINENETAMT, C_INVOICELINE.QTYINVOICED, C_UOM.UOMSYMBOL, c_doctype.docbasetype, ad_org.ad_org_id, C_INVOICE.C_CURRENCY_ID, C_INVOICE.DATEINVOICED, trx.movementqty, trx.movementdate, trx.ad_client_id, trx.ad_org_id, trxcost.c_currency_id, M_PRODUCT.WEIGHT, M_PRODUCT.M_PRODUCT_ID, M_PRODUCT.ISSTOCKED, M_PRODUCT.PRODUCTTYPE
       UNION ALL SELECT to_char('8') AS NIVEL1 , to_char('9') AS NIVEL2 , to_char('10') AS NIVEL3 , to_char('11') AS NIVEL4 , to_char('12') AS NIVEL5 , to_char('13') AS NIVEL6 , to_char('14') AS NIVEL7 , to_char('17') AS NIVEL8 , to_char('19') AS NIVEL9 , to_char('21') AS NIVEL10,
       0 AS LINENETAMT, 0 AS QTYINVOICED, 0 AS WEIGHT, 
@@ -132,6 +133,7 @@
       AND C_INVOICE.PROCESSED = 'Y'
       AND 3=3 AND C_INVOICE.AD_ORG_ID IN ('1')
       AND C_INVOICE.AD_CLIENT_ID IN('14')
+      AND ((trxcost.m_transaction_cost_id is not null and trxcost.isunitcost = 'Y') or (trxcost.m_transaction_cost_id is null))
       AND 2=2
       GROUP BY trxcost.m_transaction_id, C_INVOICELINE.C_INVOICELINE_ID, C_BPARTNER.C_BPARTNER_ID, M_PRODUCT_CATEGORY.NAME, C_INVOICE.DOCUMENTNO, AD_ORG.NAME, AD_USER.AD_USER_ID, C_PROJECT.NAME, AD_USER.FIRSTNAME, AD_USER.LASTNAME, C_BP_GROUP.NAME, M_INOUT.C_BPARTNER_LOCATION_ID, C_INVOICELINE.AD_CLIENT_ID, C_INVOICELINE.AD_ORG_ID, C_INVOICELINE.LINENETAMT, C_INVOICELINE.QTYINVOICED, C_UOM.UOMSYMBOL, c_doctype.docbasetype, ad_org.ad_org_id, C_INVOICE.C_CURRENCY_ID, C_INVOICE.DATEINVOICED, trx.movementqty, trx.movementdate, trx.ad_client_id, trx.ad_org_id, trxcost.c_currency_id, M_PRODUCT.WEIGHT, M_PRODUCT.M_PRODUCT_ID, M_PRODUCT.ISSTOCKED, M_PRODUCT.PRODUCTTYPE
       ORDER BY NIVEL1, NIVEL2, NIVEL3, NIVEL4, NIVEL5, NIVEL6, NIVEL7, NIVEL8, NIVEL9, NIVEL10) AA
@@ -278,6 +280,7 @@
       AND C_INVOICE.PROCESSED = 'Y'
       AND 0=0 AND C_INVOICE.AD_ORG_ID IN ('1')
       AND C_INVOICE.AD_CLIENT_ID IN ('7')
+      AND ((trxcost.m_transaction_cost_id is not null and trxcost.isunitcost = 'Y') or (trxcost.m_transaction_cost_id is null))
       AND 1=1
       GROUP BY trxcost.m_transaction_id, C_INVOICELINE.C_INVOICELINE_ID, C_BPARTNER.C_BPARTNER_ID, M_PRODUCT_CATEGORY.NAME, C_INVOICE.DOCUMENTNO, AD_ORG.NAME, AD_USER.AD_USER_ID, C_PROJECT.NAME, AD_USER.FIRSTNAME, AD_USER.LASTNAME, C_BP_GROUP.NAME, M_INOUT.C_BPARTNER_LOCATION_ID, C_INVOICELINE.AD_CLIENT_ID, C_INVOICELINE.AD_ORG_ID, C_INVOICELINE.LINENETAMT, C_INVOICELINE.QTYINVOICED, C_UOM.UOMSYMBOL, c_doctype.docbasetype, ad_org.ad_org_id, C_INVOICE.C_CURRENCY_ID, C_INVOICE.DATEINVOICED, trx.movementqty, trx.movementdate, trx.ad_client_id, trx.ad_org_id, trxcost.c_currency_id, M_PRODUCT.WEIGHT, M_PRODUCT.M_PRODUCT_ID, M_PRODUCT.ISSTOCKED, M_PRODUCT.PRODUCTTYPE
       UNION ALL SELECT to_char('8') AS NIVEL1 , to_char('9') AS NIVEL2 , to_char('10') AS NIVEL3 , to_char('11') AS NIVEL4 , to_char('12') AS NIVEL5 , to_char('13') AS NIVEL6 , to_char('14') AS NIVEL7 , to_char('17') AS NIVEL8 , to_char('19') AS NIVEL9 , to_char('21') AS NIVEL10,
@@ -323,6 +326,7 @@
       AND C_INVOICE.PROCESSED = 'Y'
       AND 3=3 AND C_INVOICE.AD_ORG_ID IN ('1')
       AND C_INVOICE.AD_CLIENT_ID IN('14')
+      AND ((trxcost.m_transaction_cost_id is not null and trxcost.isunitcost = 'Y') or (trxcost.m_transaction_cost_id is null))
       AND 2=2
       GROUP BY trxcost.m_transaction_id, C_INVOICELINE.C_INVOICELINE_ID, C_BPARTNER.C_BPARTNER_ID, M_PRODUCT_CATEGORY.NAME, C_INVOICE.DOCUMENTNO, AD_ORG.NAME, AD_USER.AD_USER_ID, C_PROJECT.NAME, AD_USER.FIRSTNAME, AD_USER.LASTNAME, C_BP_GROUP.NAME, M_INOUT.C_BPARTNER_LOCATION_ID, C_INVOICELINE.AD_CLIENT_ID, C_INVOICELINE.AD_ORG_ID, C_INVOICELINE.LINENETAMT, C_INVOICELINE.QTYINVOICED, C_UOM.UOMSYMBOL, c_doctype.docbasetype, ad_org.ad_org_id, C_INVOICE.C_CURRENCY_ID, C_INVOICE.DATEINVOICED, trx.movementqty, trx.movementdate, trx.ad_client_id, trx.ad_org_id, trxcost.c_currency_id, M_PRODUCT.WEIGHT, M_PRODUCT.M_PRODUCT_ID, M_PRODUCT.ISSTOCKED, M_PRODUCT.PRODUCTTYPE
       UNION ALL SELECT  to_char('28') AS NIVEL1 ,to_char('29') AS NIVEL2 ,to_char('30') AS NIVEL3 ,to_char('31') AS NIVEL4 ,to_char('32') AS NIVEL5 ,to_char('33') AS NIVEL6 ,to_char('34') AS NIVEL7 ,to_char('35') AS NIVEL8 ,to_char('36') AS NIVEL9 ,to_char('37') AS NIVEL10,
@@ -368,6 +372,7 @@
       AND C_INVOICE.PROCESSED = 'Y'
       AND 5=5 AND C_INVOICE.AD_ORG_ID IN ('1')
       AND C_INVOICE.AD_CLIENT_ID  IN('38')
+      AND ((trxcost.m_transaction_cost_id is not null and trxcost.isunitcost = 'Y') or (trxcost.m_transaction_cost_id is null))
       AND 4=4
       GROUP BY trxcost.m_transaction_id, C_INVOICELINE.C_INVOICELINE_ID, C_BPARTNER.C_BPARTNER_ID, M_PRODUCT_CATEGORY.NAME, C_INVOICE.DOCUMENTNO, AD_ORG.NAME, AD_USER.AD_USER_ID, C_PROJECT.NAME, AD_USER.FIRSTNAME, AD_USER.LASTNAME, C_BP_GROUP.NAME, M_INOUT.C_BPARTNER_LOCATION_ID, C_INVOICELINE.AD_CLIENT_ID, C_INVOICELINE.AD_ORG_ID, C_INVOICELINE.LINENETAMT, C_INVOICELINE.QTYINVOICED, C_UOM.UOMSYMBOL, c_doctype.docbasetype, ad_org.ad_org_id, C_INVOICE.C_CURRENCY_ID, C_INVOICE.DATEINVOICED, trx.movementqty, trx.movementdate, trx.ad_client_id, trx.ad_org_id, trxcost.c_currency_id, M_PRODUCT.WEIGHT, M_PRODUCT.M_PRODUCT_ID, M_PRODUCT.ISSTOCKED, M_PRODUCT.PRODUCTTYPE
       ORDER BY NIVEL1, NIVEL2, NIVEL3, NIVEL4, NIVEL5, NIVEL6, NIVEL7, NIVEL8, NIVEL9, NIVEL10) AA
@@ -551,6 +556,7 @@
       AND C_INVOICE.PROCESSED = 'Y'
       AND 0=0 AND C_INVOICE.AD_ORG_ID IN ('1')
       AND C_INVOICE.AD_CLIENT_ID IN ('7')
+      AND ((trxcost.m_transaction_cost_id is not null and trxcost.isunitcost = 'Y') or (trxcost.m_transaction_cost_id is null))
       AND 1=1
       GROUP BY trxcost.m_transaction_id, C_INVOICELINE.C_INVOICELINE_ID, C_BPARTNER.C_BPARTNER_ID, M_PRODUCT_CATEGORY.NAME, C_INVOICE.DOCUMENTNO, AD_ORG.NAME, AD_USER.AD_USER_ID, C_PROJECT.NAME, AD_USER.FIRSTNAME, AD_USER.LASTNAME, C_BP_GROUP.NAME, M_INOUT.C_BPARTNER_LOCATION_ID, C_INVOICELINE.AD_CLIENT_ID, C_INVOICELINE.AD_ORG_ID, C_INVOICELINE.LINENETAMT, C_INVOICELINE.QTYINVOICED, C_UOM.UOMSYMBOL, c_doctype.docbasetype, ad_org.ad_org_id, C_INVOICE.C_CURRENCY_ID, C_INVOICE.DATEINVOICED, trx.movementqty, trx.movementdate, trx.ad_client_id, trx.ad_org_id, trxcost.c_currency_id, M_PRODUCT.WEIGHT, M_PRODUCT.M_PRODUCT_ID, M_PRODUCT.ISSTOCKED, M_PRODUCT.PRODUCTTYPE
       UNION ALL SELECT to_char('8') AS NIVEL1 , to_char('9') AS NIVEL2 , to_char('10') AS NIVEL3 , to_char('11') AS NIVEL4 , to_char('12') AS NIVEL5 , to_char('13') AS NIVEL6 , to_char('14') AS NIVEL7 , to_char('17') AS NIVEL8 , to_char('19') AS NIVEL9 , to_char('21') AS NIVEL10,
@@ -599,6 +605,7 @@
       AND C_INVOICE.PROCESSED = 'Y'
       AND 3=3 AND C_INVOICE.AD_ORG_ID IN ('1')
       AND C_INVOICE.AD_CLIENT_ID IN('14')
+      AND ((trxcost.m_transaction_cost_id is not null and trxcost.isunitcost = 'Y') or (trxcost.m_transaction_cost_id is null))
       AND 2=2
       GROUP BY trxcost.m_transaction_id, C_INVOICELINE.C_INVOICELINE_ID, C_BPARTNER.C_BPARTNER_ID, M_PRODUCT_CATEGORY.NAME, C_INVOICE.DOCUMENTNO, AD_ORG.NAME, AD_USER.AD_USER_ID, C_PROJECT.NAME, AD_USER.FIRSTNAME, AD_USER.LASTNAME, C_BP_GROUP.NAME, M_INOUT.C_BPARTNER_LOCATION_ID, C_INVOICELINE.AD_CLIENT_ID, C_INVOICELINE.AD_ORG_ID, C_INVOICELINE.LINENETAMT, C_INVOICELINE.QTYINVOICED, C_UOM.UOMSYMBOL, c_doctype.docbasetype, ad_org.ad_org_id, C_INVOICE.C_CURRENCY_ID, C_INVOICE.DATEINVOICED, trx.movementqty, trx.movementdate, trx.ad_client_id, trx.ad_org_id, trxcost.c_currency_id, M_PRODUCT.WEIGHT, M_PRODUCT.M_PRODUCT_ID, M_PRODUCT.ISSTOCKED, M_PRODUCT.PRODUCTTYPE
       UNION ALL SELECT  to_char('28') AS NIVEL1 ,to_char('29') AS NIVEL2 ,to_char('30') AS NIVEL3 ,to_char('31') AS NIVEL4 ,to_char('32') AS NIVEL5 ,to_char('33') AS NIVEL6 ,to_char('34') AS NIVEL7 ,to_char('35') AS NIVEL8 ,to_char('36') AS NIVEL9 ,to_char('37') AS NIVEL10,
@@ -647,6 +654,7 @@
       AND C_INVOICE.PROCESSED = 'Y'
       AND 5=5 AND C_INVOICE.AD_ORG_ID IN ('1')
       AND C_INVOICE.AD_CLIENT_ID  IN('38')
+      AND ((trxcost.m_transaction_cost_id is not null and trxcost.isunitcost = 'Y') or (trxcost.m_transaction_cost_id is null))
       AND 4=4
       GROUP BY trxcost.m_transaction_id, C_INVOICELINE.C_INVOICELINE_ID, C_BPARTNER.C_BPARTNER_ID, M_PRODUCT_CATEGORY.NAME, C_INVOICE.DOCUMENTNO, AD_ORG.NAME, AD_USER.AD_USER_ID, C_PROJECT.NAME, AD_USER.FIRSTNAME, AD_USER.LASTNAME, C_BP_GROUP.NAME, M_INOUT.C_BPARTNER_LOCATION_ID, C_INVOICELINE.AD_CLIENT_ID, C_INVOICELINE.AD_ORG_ID, C_INVOICELINE.LINENETAMT, C_INVOICELINE.QTYINVOICED, C_UOM.UOMSYMBOL, c_doctype.docbasetype, ad_org.ad_org_id, C_INVOICE.C_CURRENCY_ID, C_INVOICE.DATEINVOICED, trx.movementqty, trx.movementdate, trx.ad_client_id, trx.ad_org_id, trxcost.c_currency_id, M_PRODUCT.WEIGHT, M_PRODUCT.M_PRODUCT_ID, M_PRODUCT.ISSTOCKED, M_PRODUCT.PRODUCTTYPE
       UNION ALL  SELECT  to_char('39') AS NIVEL1  ,to_char('40') AS NIVEL2  ,to_char('41') AS NIVEL3  ,to_char('42') AS NIVEL4  ,to_char('43') AS NIVEL5  ,to_char('44') AS NIVEL6  ,to_char('45') AS NIVEL7  ,to_char('46') AS NIVEL8  ,to_char('47') AS NIVEL9  ,to_char('48') AS NIVEL10,
@@ -695,6 +703,7 @@
       AND C_INVOICE.PROCESSED = 'Y'
       AND 7=7 AND C_INVOICE.AD_ORG_ID IN ('1')
       AND  C_INVOICE.AD_CLIENT_ID  IN('49')
+      AND ((trxcost.m_transaction_cost_id is not null and trxcost.isunitcost = 'Y') or (trxcost.m_transaction_cost_id is null))
       AND 6=6
       GROUP BY trxcost.m_transaction_id, C_INVOICELINE.C_INVOICELINE_ID, C_BPARTNER.C_BPARTNER_ID, M_PRODUCT_CATEGORY.NAME, C_INVOICE.DOCUMENTNO, AD_ORG.NAME, AD_USER.AD_USER_ID, C_PROJECT.NAME, AD_USER.FIRSTNAME, AD_USER.LASTNAME, C_BP_GROUP.NAME, M_INOUT.C_BPARTNER_LOCATION_ID, C_INVOICELINE.AD_CLIENT_ID, C_INVOICELINE.AD_ORG_ID, C_INVOICELINE.LINENETAMT, C_INVOICELINE.QTYINVOICED, C_UOM.UOMSYMBOL, c_doctype.docbasetype, ad_org.ad_org_id, C_INVOICE.C_CURRENCY_ID, C_INVOICE.DATEINVOICED, trx.movementqty, trx.movementdate, trx.ad_client_id, trx.ad_org_id, trxcost.c_currency_id, M_PRODUCT.WEIGHT, M_PRODUCT.M_PRODUCT_ID, M_PRODUCT.ISSTOCKED, M_PRODUCT.PRODUCTTYPE
       ORDER BY NIVEL1, NIVEL2, NIVEL3, NIVEL4, NIVEL5, NIVEL6, NIVEL7, NIVEL8, NIVEL9, NIVEL10) AA
@@ -878,6 +887,7 @@
         AND C_INVOICE.PROCESSED = 'Y'
         AND C_INVOICE.AD_ORG_ID IN ('1')
         AND C_INVOICE.AD_CLIENT_ID IN ('7')
+        AND ((trxcost.m_transaction_cost_id is not null and trxcost.isunitcost = 'Y') or (trxcost.m_transaction_cost_id is null))
         AND 1=1
       GROUP BY trxcost.m_transaction_id, C_INVOICELINE.C_INVOICELINE_ID, C_BPARTNER.C_BPARTNER_ID, M_PRODUCT_CATEGORY.NAME, C_INVOICE.DOCUMENTNO, AD_ORG.NAME, AD_USER.AD_USER_ID, C_PROJECT.NAME, AD_USER.FIRSTNAME, AD_USER.LASTNAME, C_BP_GROUP.NAME, M_INOUT.C_BPARTNER_LOCATION_ID, C_INVOICELINE.AD_CLIENT_ID, C_INVOICELINE.AD_ORG_ID, C_INVOICELINE.LINENETAMT, C_INVOICELINE.QTYINVOICED, C_UOM.UOMSYMBOL, c_doctype.docbasetype, ad_org.ad_org_id, C_INVOICE.C_CURRENCY_ID, C_INVOICE.DATEINVOICED, trx.movementqty, trx.movementdate, trx.ad_client_id, trx.ad_org_id, trxcost.c_currency_id, M_PRODUCT.WEIGHT, M_PRODUCT.M_PRODUCT_ID, M_PRODUCT.ISSTOCKED, M_PRODUCT.PRODUCTTYPE
       ORDER BY NIVEL1, NIVEL2, NIVEL3, NIVEL4, NIVEL5, NIVEL6, NIVEL7, NIVEL8, NIVEL9, NIVEL10) AA
@@ -1092,6 +1102,7 @@
             AND C_INVOICE.PROCESSED = 'Y'
             AND C_INVOICE.AD_ORG_ID IN ('1')
             AND C_INVOICE.AD_CLIENT_ID IN ('7')
+            AND ((trxcost.m_transaction_cost_id is not null and trxcost.isunitcost = 'Y') or (trxcost.m_transaction_cost_id is null))
             AND 1=1
           AND 1=1
           GROUP BY trxcost.m_transaction_id, C_INVOICELINE.C_INVOICELINE_ID, C_DOCTYPE_TRL.NAME, C_DOCTYPE.NAME, C_BPARTNER.NAME, C_BPARTNER.C_BPARTNER_ID, M_PRODUCT_CATEGORY.NAME, M_PRODUCT.NAME, M_PRODUCT.VALUE, C_INVOICE.DOCUMENTNO, AD_ORG.NAME, C_INVOICE.AD_USER_ID, C_INVOICE.SALESREP_ID, C_INVOICE.C_PROJECT_ID, C_BP_GROUP.NAME, M_INOUT.C_BPARTNER_LOCATION_ID, C_INVOICE.AD_CLIENT_ID, C_INVOICE.AD_ORG_ID, C_INVOICELINE.LINENETAMT, C_INVOICELINE.QTYINVOICED, C_UOM.UOMSYMBOL, c_doctype.docbasetype, ad_org.ad_org_id, C_INVOICE.C_CURRENCY_ID, C_INVOICE.DATEINVOICED, trx.movementqty, trx.movementdate, trx.ad_client_id, trx.ad_org_id, trxcost.c_currency_id, M_PRODUCT.WEIGHT, M_PRODUCT.M_PRODUCT_ID, M_PRODUCT.ISSTOCKED, M_PRODUCT.PRODUCTTYPE) AA

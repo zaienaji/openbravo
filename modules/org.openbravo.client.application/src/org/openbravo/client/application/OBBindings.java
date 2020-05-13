@@ -11,7 +11,7 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU
- * All portions are Copyright (C) 2010-2018 Openbravo SLU
+ * All portions are Copyright (C) 2010-2019 Openbravo SLU
  * All Rights Reserved.
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -33,6 +33,7 @@ import org.openbravo.base.util.Check;
 import org.openbravo.base.util.OBClassLoader;
 import org.openbravo.base.weld.WeldUtils;
 import org.openbravo.client.application.window.ApplicationDictionaryCachedStructures;
+import org.openbravo.client.kernel.reference.UIDefinitionController;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.model.ad.ui.Window;
@@ -50,8 +51,6 @@ public class OBBindings {
   private OBContext context;
   private Map<String, String> requestMap;
   private HttpSession httpSession;
-  private SimpleDateFormat dateFormat = null;
-  private SimpleDateFormat dateTimeFormat = null;
   private SimpleDateFormat jsDateTimeFormat = null;
 
   public OBBindings(OBContext obContext) {
@@ -73,11 +72,6 @@ public class OBBindings {
     httpSession = session;
 
     requestMap = parameters;
-
-    dateFormat = new SimpleDateFormat((String) httpSession.getAttribute("#AD_JAVADATEFORMAT"));
-
-    dateTimeFormat = new SimpleDateFormat(
-        (String) httpSession.getAttribute("#AD_JAVADATETIMEFORMAT"));
 
     jsDateTimeFormat = JsonUtils.createJSTimeFormat();
   }
@@ -188,7 +182,7 @@ public class OBBindings {
   }
 
   public String formatDate(Date d) {
-    return dateFormat.format(d);
+    return UIDefinitionController.DATE_UI_DEFINITION.convertToClassicString(d);
   }
 
   public String formatDate(Object d) {
@@ -216,7 +210,7 @@ public class OBBindings {
   }
 
   public String formatDateTime(Date d) {
-    return dateTimeFormat.format(d);
+    return UIDefinitionController.DATETIME_UI_DEFINITION.convertToClassicString(d);
   }
 
   public String formatDateTime(Object d) {
@@ -225,26 +219,22 @@ public class OBBindings {
 
   public Date parseDate(String date) {
     try {
-      return dateFormat.parse(date);
+      return UIDefinitionController.DATE_UI_DEFINITION.parse(date);
     } catch (Exception e) {
-      log.error("Error parsing string date " + date + " with format: " + dateFormat, e);
+      return null;
     }
-    return null;
   }
 
   public Date parseDateTime(String dateTime) {
     try {
-      Date result = convertToLocalTime(jsDateTimeFormat.parse(dateTime));
-      return result;
+      return convertToLocalTime(jsDateTimeFormat.parse(dateTime));
     } catch (Exception e) {
       try {
-        Date result = convertToLocalTime(dateTimeFormat.parse(dateTime));
-        return result;
+        return convertToLocalTime(UIDefinitionController.DATETIME_UI_DEFINITION.parse(dateTime));
       } catch (Exception ex) {
-        log.error("Error parsing string date " + dateTime + " with format: " + dateTimeFormat, e);
+        return null;
       }
     }
-    return null;
   }
 
   private static Date convertToLocalTime(Date UTCTime) {

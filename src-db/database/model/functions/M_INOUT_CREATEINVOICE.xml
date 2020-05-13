@@ -320,8 +320,8 @@
                 v_PriceLimit:= 0;
                 v_LineNetAmt:= 0;
               ELSE
-                v_PriceActual:=M_Get_Offers_Price(now(), CUR_Shipment.C_BPartner_ID, CUR_ShipmentLines.M_Product_ID, v_PriceActual, CUR_ShipmentLines.MovementQty, v_M_PriceList_ID);
-                v_LineNetAmt:=ROUND(M_Get_Offers_Price(now(), CUR_Shipment.C_BPartner_ID, CUR_ShipmentLines.M_Product_ID, v_PriceActual, CUR_ShipmentLines.MovementQty, v_M_PriceList_ID) *CUR_ShipmentLines.MovementQty, v_stdprecision) ;
+                v_PriceActual:=v_PriceActual;
+                v_LineNetAmt:=ROUND(v_PriceActual * CUR_ShipmentLines.MovementQty, v_stdprecision) ;
               END IF;
             END IF;
             -- Get UOM + Tax -- VERY simplified, but should work in most cases

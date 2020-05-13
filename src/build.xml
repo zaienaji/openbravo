@@ -38,8 +38,6 @@ compile.src: comiles only the src files.
 compile: compiles specified WAD window and src and also translates.
 compile.complete: compiles all WAD windows and src and also translates.
 translate: Translate the modified files.
-installWebService: install the web services configuration file.
-uninstallWebService: uninstall the web services configuration file.
 copy.files: copy the local files to the context.
 compile.development: like compile, but also copies the files to the context.
 compile.complete.development: like compile.complete, but also copies the files 
@@ -594,24 +592,6 @@ build.war: build a war file in the lib directory.
   <target name="compile" depends="wad,compileSqlc, postsrc, translate">
   </target>
 
-  <target name="installWebService" depends="init" if="wsdd">
-    <taskdef name="wsAdmin" classname="org.openbravo.erpCommon.utility.WebServiceAdmin">
-      <classpath refid="project.class.path" />
-    </taskdef>
-    <wsAdmin axisServlet="${context.url}/servlet/AxisServlet"
-             baseDir="${source.path}"
-             action="deploy"/>
-  </target>
-
-  <target name="uninstallWebService" depends="init">
-    <taskdef name="wsAdmin" classname="org.openbravo.erpCommon.utility.WebServiceAdmin">
-      <classpath refid="project.class.path" />
-    </taskdef>
-    <wsAdmin axisServlet="${context.url}/servlet/AxisServlet"
-             baseDir="${source.path}"
-             action="undeploy"/>
-  </target>
-
   <!-- Note (see issue 15709 for details):
        orphan jarfiles are not deleted from the webapp as deployed in tomcat when
        this rebuild is running inside the rebuild UI (started from MMC). See also the related
@@ -670,18 +650,6 @@ build.war: build a war file in the lib directory.
       <classes dir="${build}" />
     </war>
     <updatesystemstatus v="RB51"/>
-  </target>
-
-  <target name="generate-wsdd">
-    <delete failonerror="false">
-      <fileset dir="${base.src}/org/openbravo/services/webservice" includes="**/*" />
-    </delete>
-
-    <mkdir dir="${build}" />
-     <axis-wsdl2java output="${base.src}" verbose="false" url="http://centralrepository.openbravo.com/openbravo/services/WebService3?wsdl" serverside="true" debug="false">
-      <mapping namespace="http://centralrepository.openbravo.com/openbravo/services/WebService3" package="org.openbravo.services.webservice" />
-      <mapping namespace="/services/WebService3" package="org.openbravo.services.webservice" />
-    </axis-wsdl2java>
   </target>
 
   <target name="update.build.timestamp" unless="timestamp">

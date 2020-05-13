@@ -47,6 +47,7 @@ import org.openbravo.base.model.Reference;
 import org.openbravo.base.model.Table;
 import org.openbravo.base.model.domaintype.BasePrimitiveDomainType;
 import org.openbravo.base.session.SessionFactoryController;
+import org.openbravo.test.base.Issue;
 import org.openbravo.test.base.OBBaseTest;
 
 /**
@@ -109,10 +110,11 @@ public class RuntimeModelTest extends OBBaseTest {
   /**
    * Check the AD_Table.name for illegal characters.
    * 
-   * See issue https://issues.openbravo.com/view.php?id=10624 Spaces in AD_TABLE.name should be
-   * handled better, currently the entity name contains a space resulting in errors in HQL
+   * Spaces in AD_TABLE.name should be handled better, currently the entity name contains a space
+   * resulting in errors in HQL
    */
   @Test
+  @Issue("10624")
   public void testTableName() {
     for (final Table t : allTables) {
       final char[] chars = t.getName().toCharArray();

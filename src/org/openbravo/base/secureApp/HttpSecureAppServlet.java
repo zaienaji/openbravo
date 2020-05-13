@@ -222,7 +222,7 @@ public class HttpSecureAppServlet extends HttpBaseServlet {
 
       // if stateless then stop here, the remaining logic uses the httpsession
       if (AuthenticationManager.isStatelessRequest(request)) {
-        if (ActivationKey.getInstance().forceSysAdminLogin(null)) {
+        if (!ActivationKey.getInstance().isStatelessRequestAllowed()) {
           throw new AuthenticationException("No valid license");
         }
         // make sure that there is an OBContext for the logged in user also in case of stateless

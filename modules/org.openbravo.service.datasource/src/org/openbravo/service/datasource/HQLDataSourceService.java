@@ -213,7 +213,13 @@ public class HQLDataSourceService extends ReadOnlyDataSourceService {
         int i = 0;
         for (TupleElement<?> tupleElement : tuple.getElements()) {
           String alias = tupleElement.getAlias();
-          String propertyName = getPropertyName(entity, alias, columns.get(i).getDBColumnName());
+
+          // Aliases should be properly set in HQL, column name can be used only as fallback in case
+          // alias is not set or it does not match any actual property. Even in this case it will
+          // only work in case columns in HQL are in the same order as defined by AD_Column.seqNo.
+          String columnName = columns.size() > i ? columns.get(i).getDBColumnName() : null;
+
+          String propertyName = getPropertyName(entity, alias, columnName);
           record.put(propertyName, alias != null ? tuple.get(alias) : tuple.get(i));
           i++;
         }

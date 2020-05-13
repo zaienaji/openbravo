@@ -11,7 +11,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2010-2011 Openbravo SLU 
+ * All portions are Copyright (C) 2010-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -25,8 +25,7 @@ import org.apache.tools.ant.BuildException;
 import org.openbravo.base.secureApp.VariablesSecureApp;
 import org.openbravo.dal.core.DalInitializingTask;
 import org.openbravo.erpCommon.utility.OBError;
-import org.openbravo.service.db.DalConnectionProvider;
-import org.openbravo.services.webservice.Module;
+import org.openbravo.service.centralrepository.Module;
 
 public class CheckLocalConsistency extends DalInitializingTask {
   private static final Logger log4j = LogManager.getLogger();
@@ -40,8 +39,6 @@ public class CheckLocalConsistency extends DalInitializingTask {
     Module[] modulesToInstall = new Module[0];
     Module[] modulesToUpdate = new Module[0];
     Module[] modulesToMerge = new Module[0];
-
-    VersionUtility.setPool(new DalConnectionProvider());
 
     boolean checked;
     try {

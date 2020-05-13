@@ -40,6 +40,7 @@ import org.junit.Test;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.model.common.enterprise.Organization;
+import org.openbravo.test.base.Issue;
 import org.openbravo.test.base.OBBaseTest;
 
 /**
@@ -92,10 +93,9 @@ public class OBContextTest extends OBBaseTest {
    * Tests if the {@link OBContext#setAdminMode()} and {@link OBContext#restorePreviousMode()} work
    * correctly if the same OBContext is used by multiple threads. This is possible in case of
    * simultaneous ajax requests.
-   * 
-   * See: https://issues.openbravo.com/view.php?id=8853
    */
   @Test
+  @Issue("8853")
   public void testMultiThreadedOBContext() throws Exception {
     setTestUserContext();
     Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
@@ -195,12 +195,12 @@ public class OBContextTest extends OBBaseTest {
   }
 
   /**
-   * See issue: https://issues.openbravo.com/view.php?id=13572 Maintain and print stacktraces when
-   * calls to setAdminMode and restoreAdminMode are unbalanced
+   * Maintain and print stacktraces when calls to setAdminMode and restoreAdminMode are unbalanced
    * 
    * To test this issue set the OBContext.ADMIN_TRACE_SIZE to a higher value than 0
    */
   @Test
+  @Issue("13572")
   public void testUnbalancedCallsToAdminMode() {
     OBContext.setAdminMode();
     OBContext.setAdminMode();

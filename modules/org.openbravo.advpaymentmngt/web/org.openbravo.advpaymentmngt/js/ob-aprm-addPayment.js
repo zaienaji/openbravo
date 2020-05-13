@@ -625,8 +625,8 @@ OB.APRM.AddPayment.distributeAmount = function(
             );
             orderInvoice.selectRecord(i);
           } else {
-            orderInvoice.setEditValue(i, 'amount', Number('0'));
             orderInvoice.deselectRecord(i);
+            orderInvoice.setEditValue(i, 'amount', Number('0'));
           }
         } else if (amount.signum() === 1) {
           orderInvoice.setEditValue(
@@ -650,8 +650,8 @@ OB.APRM.AddPayment.distributeAmount = function(
               amount = amount.subtract(outstandingAmount);
             }
           } else {
-            orderInvoice.setEditValue(i, 'amount', Number('0'));
             orderInvoice.deselectRecord(i);
+            orderInvoice.setEditValue(i, 'amount', Number('0'));
           }
         }
         delete orderInvoice.preventDistributingOnSelectionChanged;

@@ -36,6 +36,7 @@ import org.openbravo.model.ad.datamodel.Table;
 import org.openbravo.model.ad.system.Client;
 import org.openbravo.model.common.order.Order;
 import org.openbravo.model.common.order.OrderLine;
+import org.openbravo.test.base.Issue;
 import org.openbravo.test.base.OBBaseTest;
 
 /**
@@ -76,11 +77,9 @@ public class EvaluationTest extends OBBaseTest {
     assertTrue(found);
   }
 
-  /**
-   * Tests https://issues.openbravo.com/view.php?id=12575 It is neccessary to create a testcase for
-   * Transient Condition
-   */
+  /** It is necessary to create a testcase for Transient Condition */
   @Test
+  @Issue("12575")
   public void testOrderEvaluation() {
     setTestUserContext();
     addReadWriteAccess(Order.class);

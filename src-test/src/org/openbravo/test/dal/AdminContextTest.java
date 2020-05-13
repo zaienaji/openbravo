@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.openbravo.dal.core.OBContext;
+import org.openbravo.test.base.Issue;
 import org.openbravo.test.base.OBBaseTest;
 
 /**
@@ -41,6 +42,8 @@ import org.openbravo.test.base.OBBaseTest;
  * @author mtaal
  */
 
+@Issue("12594")
+@Issue("12660")
 public class AdminContextTest extends OBBaseTest {
 
   /**

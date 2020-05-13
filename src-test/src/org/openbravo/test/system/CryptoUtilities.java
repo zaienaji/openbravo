@@ -36,6 +36,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
+import org.openbravo.test.base.Issue;
 import org.openbravo.utils.CryptoUtility;
 
 /** Test cases for org.openbravo.utils.CryptoUtility */
@@ -45,8 +46,9 @@ public class CryptoUtilities {
 
   private static Logger log = LogManager.getLogger();
 
-  /** Covers concurrent utilization of encrypt/decrypt methods. See issue #36909 */
+  /** Covers concurrent utilization of encrypt/decrypt methods. */
   @Test
+  @Issue("36909")
   public void shouldWorkConcurrently() throws InterruptedException, ExecutionException {
     ExecutorService executor = Executors.newFixedThreadPool(THREAD_NUM);
 

@@ -25,12 +25,13 @@ import static org.junit.Assert.assertThat;
 import java.util.regex.Pattern;
 
 import org.junit.Test;
+import org.openbravo.test.base.Issue;
 
 /** Tests CSS minification */
 public class CSSMinifier {
 
-  /** see issue #41060 */
   @Test
+  @Issue("4160")
   public void minLowerCase() {
     //@formatter:off
     String original =".testGridContainer {\n" + 
@@ -47,8 +48,8 @@ public class CSSMinifier {
     assertMinification(original, shouldBe);
   }
 
-  /** see issue #41068 */
   @Test
+  @Issue("41068")
   public void repeatedParamaters() {
     String original = ".testElement { grid-template-columns: 1fr 1fr 1fr; }";
     String shouldBe = "1fr 1fr 1fr";

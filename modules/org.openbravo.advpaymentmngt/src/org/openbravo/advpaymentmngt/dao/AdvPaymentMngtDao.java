@@ -42,16 +42,12 @@ import org.openbravo.advpaymentmngt.utility.FIN_Utility;
 import org.openbravo.advpaymentmngt.utility.Value;
 import org.openbravo.base.exception.OBException;
 import org.openbravo.base.provider.OBProvider;
-import org.openbravo.base.secureApp.VariablesSecureApp;
 import org.openbravo.base.structure.BaseOBObject;
 import org.openbravo.dal.core.DalUtil;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBCriteria;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.dal.service.OBQuery;
-import org.openbravo.data.FieldProvider;
-import org.openbravo.erpCommon.utility.FieldProviderFactory;
-import org.openbravo.erpCommon.utility.Utility;
 import org.openbravo.model.ad.domain.Preference;
 import org.openbravo.model.ad.system.Client;
 import org.openbravo.model.common.businesspartner.BusinessPartner;
@@ -109,33 +105,22 @@ public class AdvPaymentMngtDao {
   }
 
   public List<FIN_PaymentScheduleDetail> getInvoicePendingScheduledPaymentDetails(Invoice invoice) {
-    final StringBuilder whereClause = new StringBuilder();
 
     // FIXME: added to access the FIN_PaymentSchedule and FIN_PaymentScheduleDetail tables to be
     // removed when new security implementation is done
     OBContext.setAdminMode();
     try {
 
-      whereClause.append(" as psd ");
-      whereClause.append(" where psd.");
-      whereClause.append(FIN_PaymentScheduleDetail.PROPERTY_PAYMENTDETAILS);
-      whereClause.append(" is null");
-      whereClause.append("   and psd.");
-      whereClause.append(FIN_PaymentScheduleDetail.PROPERTY_INVOICEPAYMENTSCHEDULE);
-      whereClause.append(".");
-      whereClause.append(FIN_PaymentSchedule.PROPERTY_INVOICE);
-      whereClause.append(".id = '");
-      whereClause.append(invoice.getId());
-      whereClause.append("'");
-      whereClause.append(" order by psd.");
-      whereClause.append(FIN_PaymentScheduleDetail.PROPERTY_INVOICEPAYMENTSCHEDULE);
-      whereClause.append(".");
-      whereClause.append(FIN_PaymentSchedule.PROPERTY_EXPECTEDDATE);
-      whereClause.append(", psd.");
-      whereClause.append(FIN_PaymentScheduleDetail.PROPERTY_AMOUNT);
+      //@formatter:off
+      final String whereClause = " as psd "
+           + " where psd.paymentDetails is null"
+           + "   and psd.invoicePaymentSchedule.invoice.id = :invoiceId"
+           + " order by psd.invoicePaymentSchedule.expectedDate, psd.amount";
+      
+      //@formatter:on
       final OBQuery<FIN_PaymentScheduleDetail> obqPSD = OBDal.getInstance()
-          .createQuery(FIN_PaymentScheduleDetail.class, whereClause.toString());
-
+          .createQuery(FIN_PaymentScheduleDetail.class, whereClause);
+      obqPSD.setNamedParameter("invoiceId", invoice.getId());
       return obqPSD.list();
 
     } finally {
@@ -144,33 +129,21 @@ public class AdvPaymentMngtDao {
   }
 
   public List<FIN_PaymentScheduleDetail> getOrderPendingScheduledPaymentDetails(Order order) {
-    final StringBuilder whereClause = new StringBuilder();
 
     // FIXME: added to access the FIN_PaymentSchedule and FIN_PaymentScheduleDetail tables to be
     // removed when new security implementation is done
     OBContext.setAdminMode();
     try {
+      //@formatter:off
+      final String whereClause = " as psd "
+           + " where psd.paymentDetails is null"
+           + "   and psd.orderPaymentSchedule.order.id = :orderId"
+           + " order by psd.orderPaymentSchedule.expectedDate, psd.amount";
 
-      whereClause.append(" as psd ");
-      whereClause.append(" where psd.");
-      whereClause.append(FIN_PaymentScheduleDetail.PROPERTY_PAYMENTDETAILS);
-      whereClause.append(" is null");
-      whereClause.append("   and psd.");
-      whereClause.append(FIN_PaymentScheduleDetail.PROPERTY_ORDERPAYMENTSCHEDULE);
-      whereClause.append(".");
-      whereClause.append(FIN_PaymentSchedule.PROPERTY_ORDER);
-      whereClause.append(".id = '");
-      whereClause.append(order.getId());
-      whereClause.append("'");
-      whereClause.append(" order by psd.");
-      whereClause.append(FIN_PaymentScheduleDetail.PROPERTY_ORDERPAYMENTSCHEDULE);
-      whereClause.append(".");
-      whereClause.append(FIN_PaymentSchedule.PROPERTY_EXPECTEDDATE);
-      whereClause.append(", psd.");
-      whereClause.append(FIN_PaymentScheduleDetail.PROPERTY_AMOUNT);
+      //@formatter:on
       final OBQuery<FIN_PaymentScheduleDetail> obqPSD = OBDal.getInstance()
-          .createQuery(FIN_PaymentScheduleDetail.class, whereClause.toString());
-
+          .createQuery(FIN_PaymentScheduleDetail.class, whereClause);
+      obqPSD.setNamedParameter("orderId", order.getId());
       return obqPSD.list();
 
     } finally {
@@ -538,8 +511,8 @@ public class AdvPaymentMngtDao {
     String truncateDescription = null;
     if (description != null) {
       truncateDescription = (description.length() > 255)
-          ? description.substring(0, 252).concat("...").toString()
-          : description.toString();
+          ? description.substring(0, 252).concat("...")
+          : description;
     }
     finTrans.setDescription(truncateDescription);
     finTrans.setDateAcct(accountingDate);
@@ -731,96 +704,28 @@ public class AdvPaymentMngtDao {
   public List<FIN_PaymentPropDetail> getOrderedPaymentProposalDetails(
       FIN_PaymentProposal paymentProposal) {
 
-    final StringBuilder whereClause = new StringBuilder();
-
     OBContext.setAdminMode();
     try {
+      //@formatter:off
+      final String whereClause = " as ppd "
+           + " left outer join ppd.fINPaymentScheduledetail as psd"
+           + " left outer join psd.invoicePaymentSchedule as ips"
+           + " left outer join ips.invoice as inv"
+           + " left outer join psd.orderPaymentSchedule as ops"
+           + " left outer join ops.order as ord"
+           + " where ppd.finPaymentProposal.id= :paymentProposalId"
+           + " order by COALESCE (inv.businessPartner, ord.businessPartner)";
 
-      whereClause.append(" as ppd ");
-      whereClause.append(" left outer join ppd.fINPaymentScheduledetail as psd");
-      whereClause.append(" left outer join psd.invoicePaymentSchedule as ips");
-      whereClause.append(" left outer join ips.invoice as inv");
-      whereClause.append(" left outer join psd.orderPaymentSchedule as ops");
-      whereClause.append(" left outer join ops.order as ord");
-      whereClause.append(" where ppd.finPaymentProposal.id='");
-      whereClause.append(paymentProposal.getId());
-      whereClause.append("' ");
-      whereClause.append(" order by COALESCE (inv.businessPartner, ord.businessPartner)");
-
+      //@formatter:on
       final OBQuery<FIN_PaymentPropDetail> obqPSD = OBDal.getInstance()
-          .createQuery(FIN_PaymentPropDetail.class, whereClause.toString());
-
+          .createQuery(FIN_PaymentPropDetail.class, whereClause);
+      obqPSD.setNamedParameter("paymentProposalId", paymentProposal.getId());
       return obqPSD.list();
 
     } finally {
       OBContext.restorePreviousMode();
     }
 
-  }
-
-  public FieldProvider[] getReconciliationDetailReport(VariablesSecureApp vars, String strDate,
-      String strReconID) {
-    final StringBuilder hsqlScript = new StringBuilder();
-
-    OBContext.setAdminMode();
-    try {
-      hsqlScript.append(" as recon ");
-      hsqlScript.append(" where recon.id='");
-      hsqlScript.append(strReconID);
-      hsqlScript.append("'");
-      final OBQuery<FIN_Reconciliation> obqRecon = OBDal.getInstance()
-          .createQuery(FIN_Reconciliation.class, hsqlScript.toString());
-
-      List<FIN_Reconciliation> obqRecList = obqRecon.list();
-      FIN_Reconciliation[] FIN_Reconcile = new FIN_Reconciliation[0];
-      FIN_Reconcile = obqRecList.toArray(FIN_Reconcile);
-
-      FieldProvider[] data = FieldProviderFactory.getFieldProviderArray(obqRecList);
-      for (int i = 0; i < data.length; i++) {
-        FieldProviderFactory.setField(data[i], "FIN_RECONCILIATION_ID", FIN_Reconcile[i].getId());
-        FieldProviderFactory.setField(data[i], "ENDDATE",
-            Utility.formatDate(FIN_Reconcile[i].getEndingDate(), vars.getJavaDateFormat()));
-        FieldProviderFactory.setField(data[i], "BPARTNER", "Account Balance in Openbravo");
-        FieldProviderFactory.setField(data[i], "REFERENCE", "");
-        FieldProviderFactory.setField(data[i], "STARTINGBALANCE",
-            FIN_Reconcile[i].getStartingbalance().toString());
-      }
-      return data;
-    } finally {
-      OBContext.restorePreviousMode();
-    }
-  }
-
-  public FieldProvider[] getReconciliationSummaryReport(VariablesSecureApp vars, String strDate,
-      String strReconID) {
-    final StringBuilder hsqlScript = new StringBuilder();
-
-    OBContext.setAdminMode();
-    try {
-      hsqlScript.append(" as recon ");
-      hsqlScript.append(" where recon.id='");
-      hsqlScript.append(strReconID);
-      hsqlScript.append("'");
-      final OBQuery<FIN_Reconciliation> obqRecon = OBDal.getInstance()
-          .createQuery(FIN_Reconciliation.class, hsqlScript.toString());
-      List<FIN_Reconciliation> obqRecList = obqRecon.list();
-      FIN_Reconciliation[] FIN_Reconcile = new FIN_Reconciliation[0];
-      FIN_Reconcile = obqRecList.toArray(FIN_Reconcile);
-
-      FieldProvider[] data = FieldProviderFactory.getFieldProviderArray(obqRecList);
-      for (int i = 0; i < data.length; i++) {
-        FieldProviderFactory.setField(data[i], "FIN_RECONCILIATION_ID", FIN_Reconcile[i].getId());
-        FieldProviderFactory.setField(data[i], "ENDDATE",
-            Utility.formatDate(FIN_Reconcile[i].getEndingDate(), vars.getJavaDateFormat()));
-        FieldProviderFactory.setField(data[i], "ENDINGBALANCE",
-            FIN_Reconcile[i].getEndingBalance().toString());
-        FieldProviderFactory.setField(data[i], "STARTINGBALANCE",
-            FIN_Reconcile[i].getStartingbalance().toString());
-      }
-      return data;
-    } finally {
-      OBContext.restorePreviousMode();
-    }
   }
 
   public List<FIN_PaymentMethod> getFilteredPaymentMethods(String strFinancialAccountId,
@@ -1314,28 +1219,28 @@ public class AdvPaymentMngtDao {
 
       final Map<String, Object> params = new HashMap<String, Object>();
 
-      final StringBuffer hql = new StringBuffer("select p ");
-      hql.append(" from " + FIN_Payment.ENTITY_NAME + " as p ");
-      hql.append(" where p." + FIN_Payment.PROPERTY_BUSINESSPARTNER + ".id = :bpartnerId ");
-      hql.append("  and p." + FIN_Payment.PROPERTY_RECEIPT + " = :isReceipt ");
-      hql.append("  and p." + FIN_Payment.PROPERTY_ORGANIZATION + ".id in (:orgIds) ");
-      hql.append("  and obequals(p." + FIN_Payment.PROPERTY_GENERATEDCREDIT + ", p."
-          + FIN_Payment.PROPERTY_USEDCREDIT + ") = 'N' ");
-      hql.append("  and p." + FIN_Payment.PROPERTY_GENERATEDCREDIT + " <> 0 ");
+      //@formatter:off
+      String hql = "select p "
+           + " from FIN_Payment as p "
+           + " where p.businessPartner.id = :bpartnerId "
+           + "  and p.receipt = :isReceipt "
+           + "  and p.organization.id in (:orgIds) "
+           + "  and obequals(p.generatedCredit, p.usedCredit) = 'N' "
+           + "  and p.generatedCredit <> 0 ";
       if (currency != null) {
-        hql.append(" and p." + FIN_Payment.PROPERTY_CURRENCY + ".id = :currencyId");
+        hql += " and p.currency.id = :currencyId";
         params.put("currencyId", currency.getId());
       }
 
-      hql.append(" order by p." + FIN_Payment.PROPERTY_PAYMENTDATE + " asc, ");
-      hql.append(" p." + FIN_Payment.PROPERTY_DOCUMENTNO + " asc ");
+      hql += " order by p.paymentDate asc, p.documentNo asc ";
 
       params.put("bpartnerId", bp.getId());
       params.put("isReceipt", isReceipt);
       params.put("orgIds", orgIds);
 
+      //@formatter:on
       final Session session = OBDal.getInstance().getSession();
-      final Query<FIN_Payment> query = session.createQuery(hql.toString(), FIN_Payment.class);
+      final Query<FIN_Payment> query = session.createQuery(hql, FIN_Payment.class);
       query.setProperties(params);
 
       final List<FIN_Payment> queryList = query.list();

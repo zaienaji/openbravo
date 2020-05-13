@@ -36,6 +36,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.Test;
 import org.openbravo.base.exception.OBException;
+import org.openbravo.test.base.Issue;
 
 /**
  * Test cases for JSON dal web services
@@ -67,12 +68,9 @@ public class JSONWebServices extends BaseWSTest {
     assertSingleRecord(resp);
   }
 
-  /**
-   * When getting a set of records without id, selected properties should be taken into account.
-   * 
-   * See https://issues.openbravo.com/view.php?id=28214
-   */
+  /** When getting a set of records without id, selected properties should be taken into account. */
   @Test
+  @Issue("28214")
   public void selectedPropertiesNotUsingId() throws JSONException {
     JSONObject resp = new JSONObject(request("Country", "", "_selectedProperties=id,name", "GET"));
     JSONObject firstRecord = resp.getJSONObject("response").getJSONArray("data").getJSONObject(0);
@@ -91,12 +89,9 @@ public class JSONWebServices extends BaseWSTest {
     assertThat("Properties received in JSON", receivedProperties, is(equalTo(expectedProperties)));
   }
 
-  /**
-   * Asserts JSON REST web services support distinct parameter.
-   * 
-   * See https://issues.openbravo.com/view.php?id=29385
-   */
+  /** Asserts JSON REST web services support distinct parameter. */
   @Test
+  @Issue("29385")
   public void distinctParameterShouldWork() throws JSONException {
     JSONObject resp = new JSONObject(request("ADPreference", null, "_distinct=module", "GET"))
         .getJSONObject("response");
@@ -111,10 +106,9 @@ public class JSONWebServices extends BaseWSTest {
   /**
    * Asserts JSON REST web services support distinct parameter for Organization, this case is
    * internally managed differently.
-   * 
-   * See https://issues.openbravo.com/view.php?id=29385
    */
   @Test
+  @Issue("29385")
   public void distinctOrgParameterShouldWork() throws JSONException {
     JSONObject resp = new JSONObject(request("ADPreference", null, "_distinct=organization", "GET"))
         .getJSONObject("response");

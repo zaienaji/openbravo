@@ -12,7 +12,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2001-2017 Openbravo SLU
+ * All portions are Copyright (C) 2001-2019 Openbravo SLU
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -101,7 +101,7 @@
       <Parameter name="cCurrencyConv"/>
       <Parameter name="legalEntity"/>
       <Parameter name="cCurrencyConv"/>
-      <Parameter name="datePlus"/>
+      <Parameter name="reportDate"/>
       <Parameter name="legalEntity"/>
       <Parameter name="datePlus"/>
       <Parameter name="maxaggDate"/>
@@ -234,9 +234,9 @@
      ]]></Sql>
       <Field name="rownum" value="count"/>
       <Parameter name="adLanguage"/>
-      <Parameter name="datePlus"/>
+      <Parameter name="reportDate"/>
       <Parameter name="legalEntity"/>
-      <Parameter name="datePlus"/>
+      <Parameter name="reportDate"/>
       <Parameter name="legalEntity"/>
       <Parameter name="cCurrencyConv"/>
       <Parameter name="legalEntity"/>

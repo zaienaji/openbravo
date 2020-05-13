@@ -76,15 +76,15 @@ public class FIN_AddPaymentFromJournalLine extends DalBaseProcess {
       OBContext.setAdminMode(false);
       try {
         if (!journalLine.getJournalEntry().isMultigeneralLedger()) {
-          final StringBuilder hsqlScript = new StringBuilder();
-          hsqlScript.append("select distinct(o.generalLedger) ");
-          hsqlScript.append("from Organization o ");
-          hsqlScript.append("where ad_isorgincluded('" + journalLine.getOrganization().getId()
-              + "', o.id, o.client) <> -1 ");
-          hsqlScript.append("and o.generalLedger is not null ");
+          //@formatter:off
+          final String hsqlScript = "select distinct(o.generalLedger) "
+              + "from Organization o "
+              + "where ad_isorgincluded(:orgId, o.id, o.client) <> -1 "
+              + "and o.generalLedger is not null ";
+          //@formatter:on
           final Session session = OBDal.getInstance().getSession();
-          final Query<AcctSchema> query = session.createQuery(hsqlScript.toString(),
-              AcctSchema.class);
+          final Query<AcctSchema> query = session.createQuery(hsqlScript, AcctSchema.class);
+          query.setParameter("orgId", journalLine.getOrganization().getId());
           if (query.list().size() != 1) {
             throw new OBException("@FIN_NoMultiAccountingAllowed@");
           }

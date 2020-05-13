@@ -74,7 +74,8 @@
      
     SELECT C_INVOICE.c_invoice_id, c_invoiceline.explode
       INTO v_invoiceID, v_explode
-    FROM C_INVOICE JOIN c_invoiceline ON C_INVOICE.c_invoice_id = c_invoiceline.c_invoice_id
+    FROM C_INVOICE
+      JOIN c_invoiceline ON C_INVOICE.c_invoice_id = c_invoiceline.c_invoice_id
     WHERE c_invoiceline.c_invoiceline_id=v_Record_ID  FOR UPDATE;
 
     IF (v_explode = 'Y') THEN

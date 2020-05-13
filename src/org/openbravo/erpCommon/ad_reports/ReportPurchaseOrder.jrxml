@@ -9,40 +9,40 @@
 	<import value="java.util.*"/>
 	<import value="org.openbravo.dal.core.OBContext"/>
 	<import value="net.sf.jasperreports.engine.data.*"/>
-	<style name="default" vAlign="Middle" fontName="Bitstream Vera Sans" fontSize="8"/>
-	<style name="Report_Title" fontName="Bitstream Vera Sans" fontSize="18">
+	<style name="default" vAlign="Middle" fontName="DejaVu Sans" fontSize="8"/>
+	<style name="Report_Title" fontName="DejaVu Sans" fontSize="18">
 		<box leftPadding="5"/>
 	</style>
-	<style name="Report_Subtitle" forecolor="#555555" fontName="Bitstream Vera Sans" fontSize="14">
+	<style name="Report_Subtitle" forecolor="#555555" fontName="DejaVu Sans" fontSize="14">
 		<box leftPadding="5"/>
 	</style>
-	<style name="Report_Data_Label" fontName="Bitstream Vera Sans" fontSize="10" isBold="true"/>
-	<style name="Report_Data_Field" fontName="Bitstream Vera Sans" fontSize="10" isBold="false"/>
-	<style name="Total_Field" mode="Opaque" forecolor="#000000" backcolor="#CCCCCC" vAlign="Middle" fontName="Bitstream Vera Sans" fontSize="11" isBold="true">
+	<style name="Report_Data_Label" fontName="DejaVu Sans" fontSize="10" isBold="true"/>
+	<style name="Report_Data_Field" fontName="DejaVu Sans" fontSize="10" isBold="false"/>
+	<style name="Total_Field" mode="Opaque" forecolor="#000000" backcolor="#CCCCCC" vAlign="Middle" fontName="DejaVu Sans" fontSize="11" isBold="true">
 		<box leftPadding="5"/>
 	</style>
-	<style name="GroupHeader_DarkGray" mode="Opaque" forecolor="#FFFFFF" backcolor="#555555" vAlign="Middle" fontName="Bitstream Vera Sans" fontSize="12" isBold="true">
+	<style name="GroupHeader_DarkGray" mode="Opaque" forecolor="#FFFFFF" backcolor="#555555" vAlign="Middle" fontName="DejaVu Sans" fontSize="12" isBold="true">
 		<box leftPadding="5"/>
 	</style>
-	<style name="Group_Data_Label" fontName="Bitstream Vera Sans" fontSize="11" isBold="true"/>
-	<style name="Group_Data_Field" fontName="Bitstream Vera Sans" fontSize="11"/>
-	<style name="Detail_Header" mode="Opaque" forecolor="#FFFFFF" backcolor="#5D5D5D" vAlign="Middle" fontName="Bitstream Vera Sans" fontSize="10" isBold="true">
+	<style name="Group_Data_Label" fontName="DejaVu Sans" fontSize="11" isBold="true"/>
+	<style name="Group_Data_Field" fontName="DejaVu Sans" fontSize="11"/>
+	<style name="Detail_Header" mode="Opaque" forecolor="#FFFFFF" backcolor="#5D5D5D" vAlign="Middle" fontName="DejaVu Sans" fontSize="10" isBold="true">
 		<box leftPadding="5">
 			<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#FFFFFF"/>
 			<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#FFFFFF"/>
 		</box>
 	</style>
-	<style name="Detail_Line" fontName="Bitstream Vera Sans" fontSize="10">
+	<style name="Detail_Line" fontName="DejaVu Sans" fontSize="10">
 		<conditionalStyle>
 			<conditionExpression><![CDATA[new Boolean($V{DOCUMENTNO_COUNT}.intValue()%2==0)]]></conditionExpression>
 			<style mode="Opaque" backcolor="#CCCCCC"/>
 		</conditionalStyle>
 	</style>
 	<style name="Total_Gray" mode="Opaque" forecolor="#000000" backcolor="#CCCCCC"/>
-	<style name="Detail_Data_Label" mode="Opaque" backcolor="#CCCCCC" fontName="Bitstream Vera Sans" fontSize="10" isBold="true"/>
-	<style name="Detail_Data_Field" mode="Opaque" backcolor="#CCCCCC" fontName="Bitstream Vera Sans" fontSize="10"/>
-	<style name="Group_Footer" fontName="Bitstream Vera Sans" fontSize="11" isBold="true"/>
-	<style name="Report_Footer" isDefault="true" vAlign="Middle" fontName="Bitstream Vera Sans" fontSize="11"/>
+	<style name="Detail_Data_Label" mode="Opaque" backcolor="#CCCCCC" fontName="DejaVu Sans" fontSize="10" isBold="true"/>
+	<style name="Detail_Data_Field" mode="Opaque" backcolor="#CCCCCC" fontName="DejaVu Sans" fontSize="10"/>
+	<style name="Group_Footer" fontName="DejaVu Sans" fontSize="11" isBold="true"/>
+	<style name="Report_Footer" isDefault="true" vAlign="Middle" fontName="DejaVu Sans" fontSize="11"/>
 	<parameter name="DateFrom" class="java.util.Date" isForPrompting="false"/>
 	<parameter name="AD_Org_ID" class="org.codehaus.jettison.json.JSONObject" isForPrompting="false">
 		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
@@ -206,6 +206,9 @@
 						<bottomPen lineWidth="0.0" lineColor="#000000"/>
 						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="DejaVu Sans" />
+					</textElement>
 					<textFieldExpression><![CDATA[$F{CLIENT_NAME}]]></textFieldExpression>
 				</textField>
 				<line>
@@ -258,7 +261,9 @@
 						<bottomPen lineWidth="0.0" lineColor="#000000"/>
 						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8" fontName="DejaVu Sans" />
+					</textElement>
 					<textFieldExpression><![CDATA[($V{TOTAL_CLIENT}!=null)?$F{CONVSYM}:new String(" ")]]></textFieldExpression>
 				</textField>
 				<line>
@@ -288,7 +293,7 @@
 						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
 					</box>
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None">
-						<font size="8" pdfFontName="Helvetica-Bold"/>
+						<font size="8" fontName="DejaVu Sans"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{CONVISOSYM}]]></textFieldExpression>
 				</textField>
@@ -313,7 +318,7 @@
 						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
-						<font pdfFontName="Helvetica"/>
+						<font fontName="DejaVu Sans"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{DOCUMENTNO}]]></textFieldExpression>
 				</textField>
@@ -338,7 +343,7 @@
 						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
-						<font pdfFontName="Helvetica-Bold"/>
+						<font fontName="DejaVu Sans"/>
 					</textElement>
 					<text><![CDATA[Date:]]></text>
 				</staticText>
@@ -352,7 +357,7 @@
 						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#FFFFFF"/>
 					</box>
 					<textElement verticalAlignment="Middle">
-						<font size="8"/>
+						<font size="8" fontName="DejaVu Sans"/>
 					</textElement>
 					<text><![CDATA[Product]]></text>
 				</staticText>
@@ -368,7 +373,7 @@
 						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#FFFFFF"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="8" pdfFontName="Helvetica-Bold"/>
+						<font size="8" fontName="DejaVu Sans"/>
 					</textElement>
 					<text><![CDATA[Quantity]]></text>
 				</staticText>
@@ -384,7 +389,7 @@
 						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#FFFFFF"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="8" pdfFontName="Helvetica-Bold"/>
+						<font size="8" fontName="DejaVu Sans"/>
 					</textElement>
 					<text><![CDATA[UOM]]></text>
 				</staticText>
@@ -398,7 +403,7 @@
 						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#FFFFFF"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="8" pdfFontName="Helvetica-Bold"/>
+						<font size="8" fontName="DejaVu Sans"/>
 					</textElement>
 					<text><![CDATA[Price]]></text>
 				</staticText>
@@ -412,7 +417,7 @@
 						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#FFFFFF"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="8" pdfFontName="Helvetica-Bold"/>
+						<font size="8" fontName="DejaVu Sans"/>
 					</textElement>
 					<text><![CDATA[Amount]]></text>
 				</staticText>
@@ -435,7 +440,7 @@
 						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
-						<font pdfFontName="Helvetica-Bold"/>
+						<font fontName="DejaVu Sans"/>
 					</textElement>
 					<text><![CDATA[]]></text>
 				</staticText>
@@ -449,7 +454,7 @@
 						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font size="8" pdfFontName="Helvetica-Bold"/>
+						<font size="8" fontName="DejaVu Sans"/>
 					</textElement>
 					<text><![CDATA[Price]]></text>
 				</staticText>
@@ -463,7 +468,7 @@
 						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
 					</box>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font size="8" pdfFontName="Helvetica-Bold"/>
+						<font size="8" fontName="DejaVu Sans"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{CONVISOSYM}]]></textFieldExpression>
 				</textField>
@@ -479,7 +484,7 @@
 						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#FFFFFF"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="8" pdfFontName="Helvetica-Bold"/>
+						<font size="8" fontName="DejaVu Sans"/>
 					</textElement>
 					<text><![CDATA[Qty in AUM]]></text>
 				</staticText>
@@ -495,7 +500,7 @@
 						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#FFFFFF"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="8" pdfFontName="Helvetica-Bold"/>
+						<font size="8" fontName="DejaVu Sans"/>
 					</textElement>
 					<text><![CDATA[AUM]]></text>
 				</staticText>
@@ -515,7 +520,7 @@
 						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font size="8" pdfFontName="Helvetica-Bold"/>
+						<font size="8" fontName="DejaVu Sans"/>
 					</textElement>
 					<text><![CDATA[Amount]]></text>
 				</staticText>
@@ -537,7 +542,7 @@
 						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#FFFFFF"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="8" pdfFontName="Helvetica-Bold"/>
+						<font size="8" fontName="DejaVu Sans"/>
 					</textElement>
 					<text><![CDATA[Quantity]]></text>
 				</staticText>
@@ -559,7 +564,7 @@
 						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#FFFFFF"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="8" pdfFontName="Helvetica-Bold"/>
+						<font size="8" fontName="DejaVu Sans"/>
 					</textElement>
 					<text><![CDATA[UOM]]></text>
 				</staticText>
@@ -621,7 +626,9 @@
 						<bottomPen lineWidth="0.0" lineColor="#000000"/>
 						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="DejaVu Sans"/>
+					</textElement>
 					<textFieldExpression><![CDATA[($V{TOTAL_DOCNO}!=null)?$F{CONVSYM}:new String(" ")]]></textFieldExpression>
 				</textField>
 				<line>
@@ -670,7 +677,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font size="8"/>
+					<font size="8" fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{PRODUCT_NAME}!=null)?$F{PRODUCT_NAME}:new String(" ")]]></textFieldExpression>
 			</textField>
@@ -685,7 +692,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="8"/>
+					<font size="8" fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{QUANTITYORDER}!=null)?$P{QUANTITYFORMAT}.format($F{QUANTITYORDER}):new String(" ")]]></textFieldExpression>
 			</textField>
@@ -700,7 +707,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
+					<font size="8" fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{UOMNAME}!=null)?$F{UOMNAME}:new String(" ")]]></textFieldExpression>
 			</textField>
@@ -713,7 +720,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="8"/>
+					<font size="8" fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{PRICEACTUAL}!=null)?$P{AMOUNTFORMAT}.format($F{PRICEACTUAL}):new String(" ")]]></textFieldExpression>
 			</textField>
@@ -726,7 +733,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="8"/>
+					<font size="8" fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{PRICELIST}!=null)?$P{AMOUNTFORMAT}.format($F{PRICELIST}):new String(" ")]]></textFieldExpression>
 			</textField>
@@ -748,7 +755,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="8"/>
+					<font size="8" fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{CONVPRICELIST}!=null)?$P{AMOUNTFORMAT}.format($F{CONVPRICELIST}):new String(" ")]]></textFieldExpression>
 			</textField>
@@ -761,7 +768,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="8"/>
+					<font size="8" fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{CONVPRICEACTUAL}!=null)?$P{AMOUNTFORMAT}.format($F{CONVPRICEACTUAL}):new String(" ")]]></textFieldExpression>
 			</textField>
@@ -774,7 +781,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
+					<font size="8" fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{TRANSSYM}]]></textFieldExpression>
 			</textField>
@@ -787,7 +794,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
+					<font size="8" fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{CONVSYM}]]></textFieldExpression>
 			</textField>
@@ -800,7 +807,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
+					<font size="8" fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{CONVSYM}]]></textFieldExpression>
 			</textField>
@@ -813,7 +820,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
+					<font size="8" fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{TRANSSYM}]]></textFieldExpression>
 			</textField>
@@ -830,7 +837,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
+					<font size="8" fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{AUM}!=null)?$F{AUM}:new String(" ")]]></textFieldExpression>
 			</textField>
@@ -845,7 +852,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="8"/>
+					<font size="8" fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{AUMQTY}!=null)?$P{QUANTITYFORMAT}.format($F{AUMQTY}):new String(" ")]]></textFieldExpression>
 			</textField>
@@ -866,7 +873,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="8"/>
+					<font size="8" fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{QUANTITYORDER}!=null)?$P{QUANTITYFORMAT}.format($F{QUANTITYORDER}):new String(" ")]]></textFieldExpression>
 			</textField>
@@ -887,7 +894,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
+					<font size="8" fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{UOMNAME}!=null)?$F{UOMNAME}:new String(" ")]]></textFieldExpression>
 			</textField>
@@ -909,7 +916,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Bottom">
-					<font fontName="Helvetica" size="10"/>
+					<font fontName="DejaVu Sans" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></textFieldExpression>
 			</textField>
@@ -922,7 +929,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Bottom" rotation="None">
-					<font fontName="Helvetica" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="CP1252" isPdfEmbedded="false"/>
+					<font fontName="DejaVu Sans" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
@@ -948,7 +955,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement verticalAlignment="Bottom">
-					<font fontName="Times-Roman" size="10"/>
+					<font fontName="DejaVu Sans" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
 			</textField>
@@ -961,7 +968,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Bottom">
-					<font fontName="Times-Roman" size="10"/>
+					<font fontName="DejaVu Sans" size="10"/>
 				</textElement>
 				<text><![CDATA[Generated on]]></text>
 			</staticText>

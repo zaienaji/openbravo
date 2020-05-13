@@ -12,7 +12,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2001-2016 Openbravo SLU 
+ * All portions are Copyright (C) 2001-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -85,6 +85,6 @@
     <Parameter name="datefrom"/>
     <Parameter name="dateto"/>
     <Parameter name="parBPartnerId" optional="true" type="argument" after="AND 1=1"><![CDATA[ AND C_BPARTNER.C_BPARTNER_ID IN]]></Parameter>
-    <Parameter name="discount" optional="true" type="none" after="AND 2=2"><![CDATA[ AND (ROUND((ROUND(TOTALLINE/QTY,3)-ROUND(TOTALLINEDISCOUNT/QTY,3))/ROUND(TOTALLINE/QTY,3),2))*100 <>0]]></Parameter>
+    <Parameter name="discount" optional="true" type="none" after="AND 2=2"><![CDATA[ AND (ROUND((ROUND(TOTALLINE/QTY,3)-ROUND(TOTALLINEDISCOUNT/QTY,3))/CASE WHEN ROUND(TOTALLINE/QTY,3) = 0 THEN 1 ELSE ROUND(TOTALLINE/QTY,3) END,2))*100 <>0]]></Parameter>
   </SqlMethod>
 </SqlClass>

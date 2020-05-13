@@ -41,16 +41,16 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.openbravo.dal.core.OBContext;
+import org.openbravo.test.base.Issue;
 
 /**
  * Test to check that an Organization selector (both normal and custom query based) applies the
  * filter based on the role's organization access, even when an organization has been selected in
  * the field before calling to the datasource.
- * 
- * See issues: https://issues.openbravo.com/view.php?id=36151,
- * https://issues.openbravo.com/view.php?id=36863
  */
 @RunWith(Parameterized.class)
+@Issue("36151")
+@Issue("36863")
 public class OrganizationSelectorDataSourceTest extends BaseDataSourceTestDal {
   private static final String USER_ID = "100";
   private static final String ROLE_ID = "9D320A774FCD4E47801DF5E03AA11F2D";

@@ -11,7 +11,7 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU
- * All portions are Copyright (C) 2012-2018 Openbravo SLU
+ * All portions are Copyright (C) 2012-2019 Openbravo SLU
  * All Rights Reserved.
  * Contributor(s):  ______________________________________.
  *************************************************************************
@@ -41,8 +41,6 @@ import org.openbravo.exception.NoConnectionAvailableException;
 import org.openbravo.model.ad.domain.Preference;
 import org.openbravo.model.ad.system.Client;
 import org.openbravo.model.common.enterprise.Organization;
-import org.openbravo.model.common.plm.Product;
-import org.openbravo.model.materialmgmt.cost.CostingRule;
 import org.openbravo.model.materialmgmt.transaction.MaterialTransaction;
 import org.openbravo.scheduling.KillableProcess;
 import org.openbravo.scheduling.ProcessBundle;
@@ -81,19 +79,19 @@ public class CostingBackground extends DalBaseProcess implements KillableProcess
       // Initialize Transaction Cost Date Acct
       initializeMtransCostDateAcct();
 
+      //@formatter:off
       // Get organizations with costing rules.
-      StringBuffer where = new StringBuffer();
-      where.append(" as o");
-      where.append(" where exists (");
-      where.append("    select 1 from " + CostingRule.ENTITY_NAME + " as cr");
-      where.append("    where ad_isorgincluded(o.id, cr." + CostingRule.PROPERTY_ORGANIZATION
-          + ".id, " + CostingRule.PROPERTY_CLIENT + ".id) <> -1 ");
-      where.append("      and cr." + CostingRule.PROPERTY_VALIDATED + " is true");
-      where.append(" )");
-      where.append("    and ad_isorgincluded(o.id, '" + bundle.getContext().getOrganization()
-          + "', '" + bundle.getContext().getClient() + "') <> -1 ");
-      OBQuery<Organization> orgQry = OBDal.getInstance()
-          .createQuery(Organization.class, where.toString());
+      final String where = " as o"
+          + " where exists ("
+          + "    select 1 from CostingRule as cr"
+          + "    where ad_isorgincluded(o.id, cr.organization.id, client.id) <> -1 "
+          + "      and cr.validated is true"
+          + "    )"
+          + " and ad_isorgincluded(o.id, :orgId, :clientId) <> -1 ";
+      //@formatter:on
+      OBQuery<Organization> orgQry = OBDal.getInstance().createQuery(Organization.class, where);
+      orgQry.setNamedParameter("orgId", bundle.getContext().getOrganization());
+      orgQry.setNamedParameter("clientId", bundle.getContext().getClient());
       List<Organization> orgs = orgQry.list();
       if (orgs.size() == 0) {
         log4j.debug("No organizations with Costing Rule defined");
@@ -192,19 +190,17 @@ public class CostingBackground extends DalBaseProcess implements KillableProcess
    * flag = 'N'
    */
   private void setNotProcessedWhenNotCalculatedTransactions(List<String> orgsWithRule) {
-    final StringBuilder hqlTransactions = new StringBuilder();
-    hqlTransactions.append(" update " + MaterialTransaction.ENTITY_NAME + " as trx set trx."
-        + MaterialTransaction.PROPERTY_ISPROCESSED + " = false ");
-    hqlTransactions.append(" where trx." + MaterialTransaction.PROPERTY_ISPROCESSED + " = true");
-    hqlTransactions
-        .append("   and trx." + MaterialTransaction.PROPERTY_ISCOSTCALCULATED + " = false");
-    hqlTransactions.append("   and trx." + MaterialTransaction.PROPERTY_COSTINGSTATUS + " <> 'S'");
-    hqlTransactions
-        .append("   and trx." + MaterialTransaction.PROPERTY_ORGANIZATION + ".id in (:orgs)");
+    //@formatter:off
+    final String hqlTransactions = " update MaterialMgmtMaterialTransaction as trx "
+        + " set trx.isProcessed = false "
+        + " where trx.isProcessed = true"
+        + "   and trx.isCostCalculated = false"
+        + "   and trx.costingStatus <> 'S'"
+        + "   and trx.organization.id in (:orgs)";
+
+    //@formatter:on
     @SuppressWarnings("rawtypes")
-    Query updateTransactions = OBDal.getInstance()
-        .getSession()
-        .createQuery(hqlTransactions.toString());
+    Query updateTransactions = OBDal.getInstance().getSession().createQuery(hqlTransactions);
     updateTransactions.setParameterList("orgs", orgsWithRule);
     updateTransactions.executeUpdate();
 
@@ -212,27 +208,24 @@ public class CostingBackground extends DalBaseProcess implements KillableProcess
   }
 
   private List<String> getTransactionsBatch(List<String> orgsWithRule) {
-    StringBuffer where = new StringBuffer();
-    where.append(" select trx." + MaterialTransaction.PROPERTY_ID + " as id ");
-    where.append(" from " + MaterialTransaction.ENTITY_NAME + " as trx");
-    where.append(" join trx." + MaterialTransaction.PROPERTY_PRODUCT + " as p");
-    where.append("\n , " + org.openbravo.model.ad.domain.List.ENTITY_NAME + " as trxtype");
-    where.append("\n where trx." + MaterialTransaction.PROPERTY_ISPROCESSED + " = false");
-    where.append("   and trx." + MaterialTransaction.PROPERTY_COSTINGSTATUS + " <> 'S'");
-    where.append("   and p." + Product.PROPERTY_PRODUCTTYPE + " = 'I'");
-    where.append("   and p." + Product.PROPERTY_STOCKED + " = true");
-    where.append("   and trxtype." + CostAdjustmentUtils.propADListReference + ".id = :refid");
-    where.append("   and trxtype." + CostAdjustmentUtils.propADListValue + " = trx."
-        + MaterialTransaction.PROPERTY_MOVEMENTTYPE);
-    where.append("   and trx." + MaterialTransaction.PROPERTY_TRANSACTIONPROCESSDATE + " <= :now");
-    where.append("   and trx." + MaterialTransaction.PROPERTY_ORGANIZATION + ".id in (:orgs)");
-    where.append(" order by trx." + MaterialTransaction.PROPERTY_TRANSACTIONPROCESSDATE);
-    where.append(" , trxtype." + CostAdjustmentUtils.propADListPriority);
-    where.append(" , trx." + MaterialTransaction.PROPERTY_MOVEMENTQUANTITY + " desc");
-    where.append(" , trx." + MaterialTransaction.PROPERTY_ID);
-    Query<String> trxQry = OBDal.getInstance()
-        .getSession()
-        .createQuery(where.toString(), String.class);
+    //@formatter:off
+    final String where = " select trx.id as id "
+        + " from MaterialMgmtMaterialTransaction as trx"
+        + "   join trx.product as p,"
+        + "   ADList as trxtype"
+        + " where trx.isProcessed = false"
+        + "   and trx.costingStatus <> 'S'"
+        + "   and p.productType = 'I'"
+        + "   and p.stocked = true"
+        + "   and trxtype.reference.id = :refid"
+        + "   and trxtype.searchKey = trx.movementType"
+        + "   and trx.transactionProcessDate <= :now"
+        + "   and trx.organization.id in (:orgs)"
+        + " order by trx.transactionProcessDate, trxtype.sequenceNumber, "
+        + " trx.movementQuantity desc, trx.id";
+    
+    //@formatter:on
+    Query<String> trxQry = OBDal.getInstance().getSession().createQuery(where, String.class);
 
     trxQry.setParameter("refid", CostAdjustmentUtils.MovementTypeRefID);
     trxQry.setParameter("now", new Date());
@@ -242,21 +235,21 @@ public class CostingBackground extends DalBaseProcess implements KillableProcess
   }
 
   private int getTransactionsBatchCount(List<String> orgsWithRule) {
-    StringBuffer where = new StringBuffer();
-    where.append(" select count(trx." + MaterialTransaction.PROPERTY_ID + ") ");
-    where.append(" from " + MaterialTransaction.ENTITY_NAME + " as trx");
-    where.append(" join trx." + MaterialTransaction.PROPERTY_PRODUCT + " as p");
-    where.append("\n , " + org.openbravo.model.ad.domain.List.ENTITY_NAME + " as trxtype");
-    where.append("\n where trx." + MaterialTransaction.PROPERTY_ISPROCESSED + " = false");
-    where.append("   and trx." + MaterialTransaction.PROPERTY_COSTINGSTATUS + " <> 'S'");
-    where.append("   and p." + Product.PROPERTY_PRODUCTTYPE + " = 'I'");
-    where.append("   and p." + Product.PROPERTY_STOCKED + " = true");
-    where.append("   and trxtype." + CostAdjustmentUtils.propADListReference + ".id = :refid");
-    where.append("   and trxtype." + CostAdjustmentUtils.propADListValue + " = trx."
-        + MaterialTransaction.PROPERTY_MOVEMENTTYPE);
-    where.append("   and trx." + MaterialTransaction.PROPERTY_TRANSACTIONPROCESSDATE + " <= :now");
-    where.append("   and trx." + MaterialTransaction.PROPERTY_ORGANIZATION + ".id in (:orgs)");
-    Query<Long> trxQry = OBDal.getInstance().getSession().createQuery(where.toString(), Long.class);
+    //@formatter:off
+    final String where = " select count(trx.id) "
+        + " from MaterialMgmtMaterialTransaction as trx"
+        + "   join trx.product as p, ADList as trxtype"
+        + " where trx.isProcessed = false"
+        + "   and trx.costingStatus <> 'S'"
+        + "   and p.productType = 'I'"
+        + "   and p.stocked = true"
+        + "   and trxtype.reference.id = :refid"
+        + "   and trxtype.searchKey = trx.movementType"
+        + "   and trx.transactionProcessDate <= :now"
+        + "   and trx.organization.id in (:orgs)";
+
+    //@formatter:on
+    Query<Long> trxQry = OBDal.getInstance().getSession().createQuery(where, Long.class);
 
     trxQry.setParameter("refid", CostAdjustmentUtils.MovementTypeRefID);
     trxQry.setParameter("now", new Date());

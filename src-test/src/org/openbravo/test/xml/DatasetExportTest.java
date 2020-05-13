@@ -45,21 +45,18 @@ import org.openbravo.model.common.enterprise.OrganizationInformation;
 import org.openbravo.model.common.order.Order;
 import org.openbravo.model.common.order.OrderLine;
 import org.openbravo.service.db.DataExportService;
+import org.openbravo.test.base.Issue;
 import org.openbravo.test.base.OBBaseTest;
 
 /**
  * Tests the {@link DataExportService} specifically for exports driven by a {@link DataSet}. The
  * data set defines which objects to export and which properties of an object are exported.
  * 
- * See also the following mantis issues:
- * 
- * 8517: Export reference data ignores definition of exportable columns
- * 
- * 8516: Export of dataset, ignores 'exclude audit info' on data set table level
- * 
  * @author mtaal
  */
 
+@Issue("8517")
+@Issue("8516")
 public class DatasetExportTest extends OBBaseTest {
 
   /**

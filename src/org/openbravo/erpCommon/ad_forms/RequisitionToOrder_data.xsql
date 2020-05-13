@@ -12,7 +12,7 @@
  * under the License. 
  * The Original Code is Openbravo ERP. 
  * The Initial Developer of the Original Code is Openbravo SLU 
- * All portions are Copyright (C) 2008-2018 Openbravo SLU 
+ * All portions are Copyright (C) 2008-2019 Openbravo SLU 
  * All Rights Reserved. 
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -477,7 +477,7 @@
         ?,?,?,
         ?, ?, ?,?,TO_NUMBER(?),TO_NUMBER(?),TO_NUMBER(?),?,
         TO_NUMBER(?), 
-        M_GET_OFFERS_PRICE(to_date(now()),?,?,TO_NUMBER(?),TO_NUMBER(?),?),
+        TO_NUMBER(?),
         TO_NUMBER(?), ?, ?,TO_NUMBER(?), 
         TO_NUMBER(?),  TO_NUMBER(?), TO_NUMBER(?))
       ]]>
@@ -505,11 +505,7 @@
     <Parameter name="aumqty"/>
     <Parameter name="cCurrencyId"/>
     <Parameter name="pricelist"/>
-    <Parameter name="cBpartnerId"/>
-    <Parameter name="mProductId"/>
     <Parameter name="priceactual"/>
-    <Parameter name="qtyordered"/>
-    <Parameter name="pricelistid"/>
     <Parameter name="pricelimit"/>
     <Parameter name="cTaxId"/>
     <Parameter name="sResourceassignmentId"/>

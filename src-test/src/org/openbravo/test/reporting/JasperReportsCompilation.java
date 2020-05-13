@@ -22,6 +22,7 @@ import java.io.IOException;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+import org.openbravo.test.base.Issue;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -39,10 +40,9 @@ public class JasperReportsCompilation {
   /**
    * Compiles a jrxml which includes a String.replace. This case was failing using JDK8 with
    * jdt-compiler-3.1.1.jar. Before fixing the issue, this test case failed with an exception.
-   * 
-   * See issue #31709
    */
   @Test
+  @Issue("31709")
   public void jrxmlShouldBeCompiledWithAllSupportedJDKs() throws JRException, IOException {
     String jrxml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" //
         + "<jasperReport bottomMargin=\"20\" columnWidth=\"535\" leftMargin=\"30\" name=\"ReportTrialBalancePDF\" pageHeight=\"842\" pageWidth=\"595\" rightMargin=\"30\" topMargin=\"20\" uuid=\"94f73212-0a4e-4d01-a77d-7c1011919e14\"\n" //

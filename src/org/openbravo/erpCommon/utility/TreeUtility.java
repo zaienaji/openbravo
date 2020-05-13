@@ -11,7 +11,7 @@
  * under the License.
  * The Original Code is Openbravo ERP.
  * The Initial Developer of the Original Code is Openbravo SLU
- * All portions are Copyright (C) 2012-2018 Openbravo SLU
+ * All portions are Copyright (C) 2012-2019 Openbravo SLU
  * All Rights Reserved.
  * Contributor(s):  ______________________________________.
  ************************************************************************
@@ -25,7 +25,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.hibernate.query.Query;
 import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.core.SessionHandler;
 import org.openbravo.model.ad.utility.Tree;
@@ -60,11 +59,19 @@ public class TreeUtility {
   }
 
   private List<String> getChildrenOfTreeNode(final Tree t, String nodeId) {
-    final String nodeQryStr = "select tn.node from " + TreeNode.class.getName()
-        + " tn where tn.tree.id='" + t.getId() + "' and tn.reportSet = '" + nodeId + "'";
-    final Query<String> nodeQry = SessionHandler.getInstance()
-        .createQuery(nodeQryStr, String.class);
-    return nodeQry.list();
+    // @formatter:off
+    final String nodeQryStr =
+          "select tn.node"
+        + "  from ADTreeNode tn"
+        + " where tn.tree.id = :treeId"
+        + "   and tn.reportSet = :nodeId";
+    // @formatter:on
+
+    return SessionHandler.getInstance()
+        .createQuery(nodeQryStr, String.class)
+        .setParameter("treeId", t.getId())
+        .setParameter("nodeId", nodeId)
+        .list();
   }
 
   /**
@@ -81,10 +88,19 @@ public class TreeUtility {
 
   private List<Tree> getTreeIdsFromTreeType(String treeType) {
     final String clientId = OBContext.getOBContext().getCurrentClient().getId();
-    final String qryStr = "select t from " + Tree.class.getName() + " t where treetype='" + treeType
-        + "' and client.id='" + clientId + "'";
-    final Query<Tree> qry = SessionHandler.getInstance().createQuery(qryStr, Tree.class);
-    return qry.list();
+    // @formatter:off
+    final String qryStr =
+          "select t"
+        + "  from ADTree t"
+        + " where treetype = :treeType"
+        + "   and client.id = :clientId";
+    // @formatter:on
+
+    return SessionHandler.getInstance()
+        .createQuery(qryStr, Tree.class)
+        .setParameter("treeType", treeType)
+        .setParameter("clientId", clientId)
+        .list();
   }
 }
 

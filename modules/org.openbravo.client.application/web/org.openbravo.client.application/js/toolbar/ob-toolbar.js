@@ -310,6 +310,7 @@ isc.OBToolbar.addClassProperties({
       if (!this.view.isShowingForm) {
         this.setDisabled(true);
       }
+      this.view.updateSubtabVisibility();
     },
     disabled: true,
     buttonType: 'undo',

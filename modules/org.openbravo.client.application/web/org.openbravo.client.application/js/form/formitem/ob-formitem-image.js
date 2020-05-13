@@ -206,7 +206,8 @@ isc.OBImageCanvas.addProperties({
           OB.RemoteCallManager.call(
             'org.openbravo.client.application.DeleteImageActionHandler',
             {
-              img: imageId
+              img: imageId,
+              csrfToken: OB.User.csrfToken
             }
           );
         }

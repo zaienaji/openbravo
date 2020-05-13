@@ -62,6 +62,9 @@ isc.OBPickAndExecuteGrid.addProperties({
   // default selection
   selectionProperty: 'obSelected',
 
+  // Prevents group by option in context menu
+  canGroupBy: false,
+
   shouldFixRowHeight: function() {
     return true;
   },
@@ -1039,6 +1042,23 @@ isc.OBPickAndExecuteGrid.addProperties({
           );
         }
       }
+    }
+  },
+
+  setEditValue: function(
+    rowNum,
+    colNum,
+    newValue,
+    suppressDisplay,
+    suppressChange
+  ) {
+    this.Super('setEditValue', arguments);
+    if (
+      rowNum !== this.getEditRow() &&
+      this.isSelected(this.getRecord(rowNum))
+    ) {
+      this.validateRow(rowNum);
+      this.markForRedraw();
     }
   },
 

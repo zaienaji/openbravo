@@ -105,78 +105,11 @@ import org.openbravo.service.db.DalBaseProcess;
 import org.openbravo.service.db.DalConnectionProvider;
 import org.openbravo.service.json.DataEntityQueryService;
 import org.openbravo.service.json.DataToJsonConverter;
+import org.openbravo.test.base.Issue;
 import org.openbravo.test.base.OBBaseTest;
 
 /**
- * Tests the following issues:
- * 
- * - https://issues.openbravo.com/view.php?id=11461 When saving business object in S/C data level
- * then access level exception is thrown for the child object
- * 
- * - https://issues.openbravo.com/view.php?id=12202 OBQuery does not support list parameter
- * 
- * - https://issues.openbravo.com/view.php?id=12201 OBContext is not using system language as
- * default language
- * 
- * - https://issues.openbravo.com/view.php?id=12143 OBQuery class should add convenience method
- * uniqueResult similar to the OBCriteria class
- * 
- * - https://issues.openbravo.com/view.php?id=12497: Active property should have default value ==
- * true if no explicit default is defined
- * 
- * - https://issues.openbravo.com/view.php?id=12106: record identifier returned from dal uses ' ' as
- * separator of columns, but normal pl-version uses ' - '
- * 
- * - https://issues.openbravo.com/view.php?id=12702: Cycle in parent reference references then DAL
- * throws stack over flow error
- * 
- * - https://issues.openbravo.com/view.php?id=12853: OBQuery count not working with a query with
- * aliases
- * 
- * - https://issues.openbravo.com/view.php?id=12903: Error in OBQuery when using with hql clause
- * having order by but not where part
- * 
- * - https://issues.openbravo.com/view.php?id=12918 DAL: Exception in commitTransaction leaves
- * Postgres connection in illegal state
- * 
- * - https://issues.openbravo.com/view.php?id=13135: OBContext.getLanguage() returns 'wrong'
- * language, if user does not have a default language set
- * 
- * - https://issues.openbravo.com/view.php?id=13136: OBContext.getLanguage does only use users'
- * default language, and does not honor language change in the role change popup
- * 
- * - https://issues.openbravo.com/view.php?id=13281: [REST] when inserting an object through REST
- * allow setting the organization through xml
- * 
- * https://issues.openbravo.com/view.php?id=13283: [REST] use organization of the object to
- * retrieved referenced objects
- * 
- * https://issues.openbravo.com/view.php?id=13509: In a OBCriteria you can't use list() after a
- * count() call
- * 
- * https://issues.openbravo.com/view.php?id=14276: Need feature to disable maintaining audit info
- * via dal for one request/dal-session
- * 
- * https://issues.openbravo.com/view.php?id=15050: OBQuery: whereclause with alias with a comma
- * direct after the alias fails
- * 
- * https://issues.openbravo.com/view.php?id=15218: error when closing transaction
- * 
- * https://issues.openbravo.com/view.php?id=18688: Ability to call database functions from HQL query
- * 
- * https://issues.openbravo.com/view.php?id=20611: OBCriteria doesn't support ScrollabeResults
- * 
- * https://issues.openbravo.com/view.php?id=20733: Json serialization: always the identifier
- * properties of associated entities are serialized also, resulting in extra queries
- * 
- * https://issues.openbravo.com/view.php?id=21360 DalConnectionProvider: getTransactionConnection()
- * should be equal than ConnectionProviderImpl getTransactionConnection()
- * 
- * https://issues.openbravo.com/view.php?id=22235 OBMessageUtils asumes incorrectly that
- * RequestContext is set
- * 
- * https://issues.openbravo.com/view.php?id=23627 DalUtil.copy also reads the
- * non-parent-child-one-to-many associations, this is invalid
+ * Tests for some issues.
  * 
  * @author mtaal
  * @author iperdomo
@@ -185,12 +118,8 @@ import org.openbravo.test.base.OBBaseTest;
 public class IssuesTest extends OBBaseTest {
   private static final Logger log = LogManager.getLogger();
 
-  /**
-   * https://issues.openbravo.com/view.php?id=18688
-   * 
-   * @throws Exception
-   */
   @Test
+  @Issue("18688")
   public void test18688() throws Exception {
     // define the map containing the SQL function to be registered in Hibernate
     Map<String, SQLFunction> sqlFunctions = new HashMap<>();
@@ -207,10 +136,8 @@ public class IssuesTest extends OBBaseTest {
     }
   }
 
-  /**
-   * https://issues.openbravo.com/view.php?id=13749
-   */
   @Test
+  @Issue("13749")
   public void test13749() {
     setTestAdminContext();
     try {
@@ -226,10 +153,8 @@ public class IssuesTest extends OBBaseTest {
     }
   }
 
-  /**
-   * https://issues.openbravo.com/view.php?id=12918
-   */
   @Test
+  @Issue("12918")
   public void test12918() {
     setSystemAdministratorContext();
 
@@ -249,10 +174,8 @@ public class IssuesTest extends OBBaseTest {
     }
   }
 
-  /**
-   * Tests https://issues.openbravo.com/view.php?id=12702
-   */
   @Test
+  @Issue("12702")
   public void test12702() {
     final Reference ref1 = new Reference();
     final Reference ref2 = new Reference();
@@ -268,10 +191,8 @@ public class IssuesTest extends OBBaseTest {
     assertEquals(null, ref1.getModelImplementationClassName());
   }
 
-  /**
-   * Tests issue: https://issues.openbravo.com/view.php?id=12106
-   */
   @Test
+  @Issue("12106")
   public void test12106() {
     setSystemAdministratorContext();
     {
@@ -306,10 +227,8 @@ public class IssuesTest extends OBBaseTest {
     }
   }
 
-  /**
-   * Tests issue: https://issues.openbravo.com/view.php?id=12202
-   */
   @Test
+  @Issue("12202")
   public void test12202() {
     setSystemAdministratorContext();
     final List<Module> modules = OBDal.getInstance().createCriteria(Module.class).list();
@@ -321,10 +240,8 @@ public class IssuesTest extends OBBaseTest {
 
   }
 
-  /**
-   * Tests issue: https://issues.openbravo.com/view.php?id=12201
-   */
   @Test
+  @Issue("12201")
   public void test12201() {
     setSystemAdministratorContext();
     assertEquals("0", OBContext.getOBContext().getUser().getId());
@@ -332,10 +249,8 @@ public class IssuesTest extends OBBaseTest {
     assertTrue(OBContext.getOBContext().getLanguage().isSystemLanguage());
   }
 
-  /**
-   * Tests issue: https://issues.openbravo.com/view.php?id=12143
-   */
   @Test
+  @Issue("12143")
   public void test12143() {
     setSystemAdministratorContext();
     final OBQuery<Message> messages = OBDal.getInstance().createQuery(Message.class, null);
@@ -351,10 +266,8 @@ public class IssuesTest extends OBBaseTest {
     assertNotNull(organization);
   }
 
-  /**
-   * Tests issue: https://issues.openbravo.com/view.php?id=11812
-   */
   @Test
+  @Issue("11812")
   public void test11812() {
     assertTrue(24 == (Long) new LongDomainType().createFromString("24.0"));
     try {
@@ -365,10 +278,8 @@ public class IssuesTest extends OBBaseTest {
     }
   }
 
-  /**
-   * Tests issue: https://issues.openbravo.com/view.php?id=11461
-   */
   @Test
+  @Issue("11461")
   public void test11461() {
     setSystemAdministratorContext();
 
@@ -409,10 +320,8 @@ public class IssuesTest extends OBBaseTest {
     return query.uniqueResult();
   }
 
-  /**
-   * Tests issue: https://issues.openbravo.com/view.php?id=11681
-   */
   @Test
+  @Issue("11681")
   public void test11681() {
     setSystemAdministratorContext();
 
@@ -450,10 +359,8 @@ public class IssuesTest extends OBBaseTest {
     OBDal.getInstance().rollbackAndClose();
   }
 
-  /**
-   * Tests issue: https://issues.openbravo.com/view.php?id=12497
-   */
   @Test
+  @Issue("12497")
   public void test12497() {
     final InvoiceLine invoiceLine = OBProvider.getInstance().get(InvoiceLine.class);
     assertTrue(invoiceLine.isActive());
@@ -461,10 +368,8 @@ public class IssuesTest extends OBBaseTest {
     assertTrue(bpLoc.isActive());
   }
 
-  /**
-   * Tests issue: https://issues.openbravo.com/view.php?id=12853
-   */
   @Test
+  @Issue("12853")
   public void test12853() {
     setSystemAdministratorContext();
     final OBQuery<Product> products = OBDal.getInstance()
@@ -474,10 +379,8 @@ public class IssuesTest extends OBBaseTest {
     assertTrue(products.count() > 0);
   }
 
-  /**
-   * Tests issue: https://issues.openbravo.com/view.php?id=12903
-   */
   @Test
+  @Issue("12903")
   public void test12903() {
     setSystemAdministratorContext();
     OBQuery<Product> products;
@@ -510,10 +413,10 @@ public class IssuesTest extends OBBaseTest {
   }
 
   /**
-   * Tests: 13135: OBContext.getLanguage() returns 'wrong' language, if user does not have a default
-   * language set
+   * OBContext.getLanguage() returns 'wrong' language, if user does not have a default language set
    */
   @Test
+  @Issue("13135")
   public void test13135() {
     setSystemAdministratorContext();
 
@@ -535,24 +438,19 @@ public class IssuesTest extends OBBaseTest {
   }
 
   /**
-   * Tests: 13136: OBContext.getLanguage does only use users' default language, and does not honor
-   * language change in the role change popup
+   * OBContext.getLanguage does only use users' default language, and does not honor language change
+   * in the role change popup
    */
   @Test
+  @Issue("13136")
   public void test13136() {
     OBContext.setOBContext("100", "0", "0", "0", "en_IN");
     assertEquals("130", OBContext.getOBContext().getLanguage().getId());
   }
 
-  /**
-   * https://issues.openbravo.com/view.php?id=13281 [REST] when inserting an object through REST
-   * allow setting the organization through xml
-   * 
-   * https://issues.openbravo.com/view.php?id=13283: [REST] use organization of the object to
-   * retrieved referenced objects
-   */
   @Ignore("This test is currently disabled because it didn't work with the new Openbravo demo data. More info: https://issues.openbravo.com/view.php?id=20264")
   @Test
+  @Issue({ "13281", "13283" })
   public void test13281And13283() throws Exception {
     OBContext.setOBContext(TEST_USER_ID, TEST_ROLE_ID, TEST_CLIENT_ID, "0");
 
@@ -574,11 +472,9 @@ public class IssuesTest extends OBBaseTest {
     assertTrue(order.getOrganization().getId().equals("378AF0EAE1A2479EAAA33436645E9433"));
   }
 
-  /**
-   * https://issues.openbravo.com/view.php?id=13509: In a OBCriteria you can't use list() after a
-   * count() call
-   */
+  /** In a OBCriteria you can't use list() after a count() call */
   @Test
+  @Issue("13509")
   public void test13509() throws Exception {
     setTestAdminContext();
     final OBCriteria<Organization> orgs = OBDal.getInstance().createCriteria(Organization.class);
@@ -589,11 +485,9 @@ public class IssuesTest extends OBBaseTest {
     assertTrue(cnt == orgs.list().size());
   }
 
-  /**
-   * https://issues.openbravo.com/view.php?id=14276: Need feature to disable maintaining audit info
-   * via dal for one request/dal-session
-   */
+  /** Need feature to disable maintaining audit info via dal for one request/dal-session */
   @Test
+  @Issue("14276")
   public void test14276() throws Exception {
     setSystemAdministratorContext();
     OBInterceptor.setPreventUpdateInfoChange(true);
@@ -642,11 +536,9 @@ public class IssuesTest extends OBBaseTest {
     }
   }
 
-  /**
-   * https://issues.openbravo.com/view.php?id=15050: OBQuery: whereclause with alias with a comma
-   * direct after the alias fails
-   */
+  /** OBQuery: whereclause with alias with a comma direct after the alias fails */
   @Test
+  @Issue("15050")
   public void test15050() throws Exception {
     setSystemAdministratorContext();
     final String whereClause = " as t, ADColumn as c where c.table = t and c.keyColumn=true";
@@ -654,10 +546,9 @@ public class IssuesTest extends OBBaseTest {
     assertTrue(tables.list().size() > 0);
   }
 
-  /**
-   * https://issues.openbravo.com/view.php?id=15218: error when closing transaction
-   */
+  /** error when closing transaction */
   @Test
+  @Issue("15218")
   public void test15218() throws Exception {
     final OBContext obContext = OBContext.getOBContext();
     final DalThreadHandler dth = new DalThreadHandler() {
@@ -675,21 +566,17 @@ public class IssuesTest extends OBBaseTest {
     OBContext.setOBContext(obContext);
   }
 
-  /**
-   * https://issues.openbravo.com/view.php?id=15360: ModelProvider.getTable(tablename) should not
-   * fail
-   */
+  /** ModelProvider.getTable(tablename) should not fail */
   @Test
+  @Issue("15360")
   public void test15360() throws Exception {
     org.openbravo.base.model.Table corder = ModelProvider.getInstance().getTable("C_Order");
     assertFalse(corder == null);
   }
 
-  /**
-   * Testing part of code 'used' in the fix of issue 15742. Especially if storing 10000 'ñ'
-   * characters in a column of type clob/text works correctly.
-   */
+  /** Testing if storing 10000 'ñ' characters in a column of type clob/text works correctly. */
   @Test
+  @Issue("15742")
   public void test15742() {
     final int logsize = 10000;
     setSystemAdministratorContext();
@@ -709,10 +596,11 @@ public class IssuesTest extends OBBaseTest {
   }
 
   /**
-   * Testing issue 0017058. It verifies that the NVARCHAR JDBC type is properly mapped The test SQL
-   * query is used in the IDL module.
+   * It verifies that the NVARCHAR JDBC type is properly mapped The test SQL query is used in the
+   * IDL module.
    */
   @Test
+  @Issue("17058")
   public void test17058() {
 
     setSystemAdministratorContext();
@@ -730,10 +618,9 @@ public class IssuesTest extends OBBaseTest {
     query.list();
   }
 
-  /**
-   * Testing issue 20129. https://issues.openbravo.com/view.php?id=20129 Tests getChildOrg()
-   */
+  /** Tests getChildOrg() */
   @Test
+  @Issue("20129")
   public void test20129A() {
     setTestAdminContext();
     final String clientId = OBContext.getOBContext().getCurrentClient().getId();
@@ -751,6 +638,7 @@ public class IssuesTest extends OBBaseTest {
    * Tests getNaturalTree()
    */
   @Test
+  @Issue("20129")
   public void test20129B() {
     setTestAdminContext();
     final String clientId = OBContext.getOBContext().getCurrentClient().getId();
@@ -768,6 +656,7 @@ public class IssuesTest extends OBBaseTest {
    * Tests getReadableOrganizations()
    */
   @Test
+  @Issue("20129")
   public void test20129C() {
     setTestAdminContext();
     String[] readableOrganizations = OBContext.getOBContext().getReadableOrganizations();
@@ -780,6 +669,7 @@ public class IssuesTest extends OBBaseTest {
    * Tests getReadableClients()
    */
   @Test
+  @Issue("20129")
   public void test20129D() {
     setTestAdminContext();
     String[] readableClients = OBContext.getOBContext().getReadableClients();
@@ -792,6 +682,7 @@ public class IssuesTest extends OBBaseTest {
    * Tests getWritableOrganizations()
    */
   @Test
+  @Issue("20129")
   public void test20129E() {
     setTestAdminContext();
     Set<String> writableOrganizations = OBContext.getOBContext().getWritableOrganizations();
@@ -801,6 +692,7 @@ public class IssuesTest extends OBBaseTest {
   }
 
   @Test
+  @Issue("20611")
   public void test20611() {
     OBCriteria<BusinessPartner> c = OBDal.getInstance().createCriteria(BusinessPartner.class);
     ScrollableResults iterator = c.scroll(ScrollMode.FORWARD_ONLY);
@@ -808,10 +700,11 @@ public class IssuesTest extends OBBaseTest {
   }
 
   /**
-   * Testing issue 0020659. Tests that if an invalid organization id is provided, getChildOrg
-   * returns an empty set instead of null.
+   * Tests that if an invalid organization id is provided, getChildOrg returns an empty set instead
+   * of null.
    */
   @Test
+  @Issue("20659")
   public void test20659() {
     setTestAdminContext();
     String nonExistentOrg = "-123ZXY";
@@ -824,6 +717,7 @@ public class IssuesTest extends OBBaseTest {
   }
 
   @Test
+  @Issue("20733")
   public void test20733() {
     setTestUserContext();
     DataEntityQueryService service = new DataEntityQueryService();
@@ -841,6 +735,7 @@ public class IssuesTest extends OBBaseTest {
   }
 
   @Test
+  @Issue("21360")
   public void test21360() throws Exception {
     final DalConnectionProvider connectionProvider = new DalConnectionProvider(false);
 
@@ -862,6 +757,7 @@ public class IssuesTest extends OBBaseTest {
   }
 
   @Test
+  @Issue("22235")
   public void test22235() throws Exception {
     final OBContext obContext = OBContext.getOBContext();
     final VariablesSecureApp vars = new VariablesSecureApp(obContext.getUser().getId(),
@@ -885,6 +781,7 @@ public class IssuesTest extends OBBaseTest {
   }
 
   @Test
+  @Issue("23627")
   public void test23627() throws Exception {
     // read one order line, take its uom, copy it and check that the order line list is empty
     final OBQuery<OrderLine> ols = OBDal.getInstance().createQuery(OrderLine.class, null);
@@ -897,6 +794,7 @@ public class IssuesTest extends OBBaseTest {
   }
 
   @Test
+  @Issue("23743")
   public void test23743() throws Exception {
     // create a OBQuery where clause with WHERE keyword and see query does not return exception when
     // fetching results or getting count

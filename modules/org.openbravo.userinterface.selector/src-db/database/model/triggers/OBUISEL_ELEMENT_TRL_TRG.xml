@@ -17,7 +17,7 @@
 * parts created by ComPiere are Copyright (C) ComPiere, Inc.;
 * All Rights Reserved.
 * Contributor(s): Openbravo SLU
-* Contributions are Copyright (C) 2010 Openbravo, S.L.U.
+* Contributions are Copyright (C) 2010-2019 Openbravo, S.L.U.
 *
 * Specifically, this derivative work is based upon the following Compiere
 * file and version.
@@ -48,7 +48,7 @@ BEGIN --BODY
             Description = :NEW.Description,
             HELP = :NEW.HELP,
             IsTranslated = :NEW.IsTranslated
-        WHERE  AD_Language_ID = :NEW.AD_Language
+        WHERE AD_Language = :NEW.AD_Language
             AND OBUISEL_Selector_Field_ID IN (
                 SELECT F.OBUISEL_Selector_Field_ID
                 FROM OBUISEL_Selector_Field F, AD_Column C, AD_Module M

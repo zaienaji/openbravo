@@ -10,7 +10,7 @@
 # * under the License. 
 # * The Original Code is Openbravo ERP. 
 # * The Initial Developer of the Original Code is Openbravo SLU 
-# * All portions are Copyright (C) 2007-2018 Openbravo SLU 
+# * All portions are Copyright (C) 2007-2019 Openbravo SLU 
 # * All Rights Reserved. 
 # * Contributor(s):  ______________________________________.
 # ************************************************************************
@@ -35,8 +35,7 @@ dateTimeFormat.sql=DD-MM-YYYY HH24:MI:SS
 # Don't change this unless you know what you are doing
 web.url=@actual_url_context@/web
 
-# Full URL of the context, *only* used by the Web Services installation 
-# and diagnostic task
+# Full URL of the context, *only* used by unit tests and diagnostic task
 context.url=http://localhost:8080/openbravo
 
 # Absolute path to the attachments directory

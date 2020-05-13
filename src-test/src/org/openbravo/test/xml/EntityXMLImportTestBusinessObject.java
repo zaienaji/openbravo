@@ -49,6 +49,7 @@ import org.openbravo.model.financialmgmt.payment.PaymentTermLine;
 import org.openbravo.model.financialmgmt.payment.PaymentTermTrl;
 import org.openbravo.service.db.DataImportService;
 import org.openbravo.service.db.ImportResult;
+import org.openbravo.test.base.Issue;
 
 /**
  * Test import of data with a business object ({@link PaymentTerm} and {@link PaymentTermLine}),
@@ -244,11 +245,9 @@ public class EntityXMLImportTestBusinessObject extends XMLBaseTest {
     OBDal.getInstance().commitAndClose();
   }
 
-  /**
-   * Tests that the previous test {@link #testEPaymentTerm()} did not really remove a line. See this
-   * issue: https://issues.openbravo.com/view.php?id=15690
-   */
+  /** Tests that the previous test {@link #testEPaymentTerm()} did not really remove a line. */
   @Test
+  @Issue("15690")
   public void testFPaymentTerm() {
     setUserContext(QA_TEST_ADMIN_USER_ID);
     final List<PaymentTerm> pts = getPaymentTerms();

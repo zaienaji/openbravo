@@ -16,7 +16,7 @@
 * under the License.
 * The Original Code is Openbravo ERP.
 * The Initial Developer of the Original Code is Openbravo SLU
-* All portions are Copyright (C) 2001-2016 Openbravo SLU
+* All portions are Copyright (C) 2001-2019 Openbravo SLU
 * All Rights Reserved.
 * Contributor(s):  ______________________________________.
 ************************************************************************/
@@ -244,7 +244,7 @@
             END IF;
 
             -- Calculate Price Actual
-            v_PriceActual := COALESCE(Cur_SOLINES.priceactual,M_Get_Offers_Price(now(), Cur_SO.C_BPARTNER_ID, Cur_SOLINES.M_PRODUCT_ID, v_PriceStd, Cur_SOLINES.Qty, Cur_SO.M_PRICELIST_ID),0);
+            v_PriceActual := COALESCE(Cur_SOLINES.priceactual,v_PriceStd,0);
 
             IF (v_PriceStd IS NULL) THEN
              v_PriceStd :=  v_PriceActual ;
