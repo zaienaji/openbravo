@@ -2,7 +2,7 @@
 
 Original Openbravo ERP repository is not available in git, here I provide manually converted from Openbravo's mercurial pristin main repository to Git.
 
-First, configure make sure **git large file system** (LFS) installed. To install Git LFS, for short in debian based OS:
+First of all, this repo use **git large file system** (LFS), so make sure you install it. Github does not aware LFS file when you download a repo, so **do not download** this repo, **clone** it instead. To install Git LFS, for short in debian based OS:
 
  1. url -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
  2. sudo apt-get install git-lfs
