@@ -120,9 +120,13 @@ public class ModuleManagement extends HttpSecureAppServlet {
   public static final String UPDATE_ALL_RECORD_ID = "FFF";
   private static final String UPGRADE_INFO_URL = "https://butler.openbravo.com/heartbeat-server/org.openbravo.utility.centralrepository/UpgradeInfo";
   private static final String SUPPORT_STATUS_REF = "C1A2527F810E43EC8E67DEDCBE504057";
+  private static final Logger logger = LogManager.getLogger();   
+  
+  public ModuleManagement() {
+	  super();
+	  log4j = LogManager.getLogger();
+  }
 
-  @SuppressWarnings("hiding")
-  private static final Logger log4j = LogManager.getLogger();
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -418,9 +422,9 @@ public class ModuleManagement extends HttpSecureAppServlet {
     boolean runningInTomcat;
     try {
       runningInTomcat = RequestContext.getServletContext().getServerInfo().contains("Tomcat");
-      log4j.debug("Server Info:" + RequestContext.getServletContext().getServerInfo());
+      logger.debug("Server Info:" + RequestContext.getServletContext().getServerInfo());
     } catch (OBException e) {
-      log4j.error("Couldn't get servlet context", e);
+      logger.error("Couldn't get servlet context", e);
       return false;
     }
     if (!runningInTomcat) {
