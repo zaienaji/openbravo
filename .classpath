@@ -26,5 +26,7 @@
 	<classpathentry including="**/*.java" kind="src" path="build/javasqlc/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/build/servlet-api.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/OpenbravoTrl"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/OpenbravoWAD"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
